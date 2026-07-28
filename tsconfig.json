@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Ø¨Ø±Ø±Ø³ÛŒ Ù¾Ø§ÛŒÙ‡ ÙØ¶Ø§ÛŒ Ú©Ø§Ø±ÛŒ",
+  "display": "بررسی پایه فضای کاری",
   "extends": "./packages/typescript-config/node.json",
   "compilerOptions": {
     "rootDir": "."

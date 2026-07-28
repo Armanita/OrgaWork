@@ -12,3 +12,4 @@ pnpm-lock.yaml
 .env
 .env.*
 !.env.example
+apps/web/next-env.d.ts
