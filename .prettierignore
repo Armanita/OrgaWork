@@ -1,0 +1,14 @@
+node_modules
+.pnpm-store
+.next
+.turbo
+dist
+build
+coverage
+test-results
+playwright-report
+pnpm-lock.yaml
+*.tsbuildinfo
+.env
+.env.*
+!.env.example

@@ -1,4 +1,6 @@
 packages:
-  - "apps/*"
-  - "packages/*"
-  - "modules/*"
+  - 'apps/*'
+  - 'packages/*'
+  - 'modules/*'
+allowBuilds:
+  esbuild: true
