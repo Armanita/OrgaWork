@@ -903,7 +903,13 @@ Tag:
 | `P1.3.4` | `448a7fa910c299b27f8201041e61595ba7a07e3c` | `stage-p1.3.4-scheduler-application-bootstrap`              |
 | `P1.3.5` | `25e195c055e6446d16bfd0106e51510fa0457c2b` | `stage-p1.3.5-coordinated-application-execution`            |
 
-Tagهای هدف `P1.3.6` هنوز ایجاد نشده‌اند.
+پذیرش `P1.3.6` با شواهد رسمی زیر ثبت شده است:
+
+- Commit پذیرش: `089a7066e31cd413cfce3a5246ee0038cc2e5e73`
+- Tag پذیرش: `stage-p1.3.6-executable-applications-acceptance`
+- Tag تکمیل مرحله مادر: `stage-p1.3-executable-applications-bootstrap-complete`
+
+هر دو Tag سبک و اشاره‌کننده به Commit پذیرش هستند.
 
 # بخش دوازدهم — دروازه کنترل کیفیت
 

@@ -723,12 +723,13 @@ GAP-###   شکاف ردیابی
 
 ## 69. P1.3.6 — پذیرش برنامه‌ها
 
-- Commit: `همین Commit پذیرش`
-- Tag: `هنوز ایجاد نشده`
-- وضعیت: پذیرش فنی و مستنداتی موفق؛ آماده ثبت رسمی
+- Commit: `089a7066e31cd413cfce3a5246ee0038cc2e5e73`
+- Tag پذیرش: `stage-p1.3.6-executable-applications-acceptance`
+- Tag تکمیل مرحله مادر: `stage-p1.3-executable-applications-bootstrap-complete`
+- وضعیت: پذیرفته‌شده و بسته‌شده
 - شاهد: `EVD-008`
-- شکاف: دو Tag هدف، Git پاک و انتقال به `P1.4.1`.
-- ریسک: `RISK-001`.
+- شکاف: ندارد
+- ریسک `RISK-001`: بسته‌شده
 
 ## 70. P1.4 — زیرساخت محلی
 
@@ -902,8 +903,11 @@ GAP-###   شکاف ردیابی
 
 - منبع شاهد: اجرای نهایی پذیرش روی وضعیت نهایی مستندات
 - جزئیات: `14` سند معتبر، `9` فایل آزمون، `44` آزمون موفق، Build تازه چهار برنامه با `0` Cache، Smoke هماهنگ، Cleanup، UTF-8 و Diff Check
-- وضعیت اعتبار: معتبر برای ایجاد Commit و Tagهای پذیرش
-- محدودیت: Tagهای رسمی هنوز ایجاد نشده‌اند.
+- Commit ثبت شاهد: `089a7066e31cd413cfce3a5246ee0038cc2e5e73`
+- Tag پذیرش: `stage-p1.3.6-executable-applications-acceptance`
+- Tag تکمیل مرحله مادر: `stage-p1.3-executable-applications-bootstrap-complete`
+- وضعیت اعتبار: معتبر و ثبت‌شده
+- محدودیت پذیرش `P1.3.6`: ندارد
 
 ## 96. ماتریس آزمون زبان و زمان
 
@@ -956,10 +960,13 @@ GAP-###   شکاف ردیابی
 
 ## 101. GAP-001 — Commit و Tag P1.3.6
 
-- وضعیت: باز، محدود به ثبت رسمی
-- مرحله مالک: P1.3.6
-- شاهد باقی‌مانده برای بسته‌شدن: دو Tag هدف، Git پاک و انتقال رسمی به `P1.4.1`
-- پذیرش فنی و مستنداتی: انجام‌شده
+- وضعیت: بسته‌شده
+- مرحله مالک: `P1.3.6`
+- Commit شاهد: `089a7066e31cd413cfce3a5246ee0038cc2e5e73`
+- Tag پذیرش: `stage-p1.3.6-executable-applications-acceptance`
+- Tag تکمیل مرحله مادر: `stage-p1.3-executable-applications-bootstrap-complete`
+- فضای کاری پس از ثبت: پاک
+- انتقال رسمی: `P1.4.1 — ممیزی Docker Desktop و Docker Compose`
 
 ## 102. GAP-002 — ابزار Migration
 
