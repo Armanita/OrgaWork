@@ -1,0 +1,37 @@
+# وابستگی‌ها
+node_modules/
+.pnpm-store/
+
+# خروجی ساخت و آزمون
+.next/
+dist/
+build/
+coverage/
+test-results/
+playwright-report/
+.turbo/
+*.tsbuildinfo
+
+# فایل‌های محیطی و محرمانه
+.env
+.env.*
+!.env.example
+
+# گزارش‌ها و فایل‌های موقت
+*.log
+logs/
+tmp/
+temp/
+.cache/
+
+# ویرایشگرها و سیستم‌عامل
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ابزارهای محلی
+.local/
+data/
+uploads/
