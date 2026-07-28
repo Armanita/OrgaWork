@@ -17,7 +17,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "check": "pnpm format:check \u0026\u0026 pnpm lint \u0026\u0026 pnpm typecheck \u0026\u0026 pnpm test"
+    "check": "pnpm format:check \u0026\u0026 pnpm lint \u0026\u0026 pnpm typecheck \u0026\u0026 pnpm test",
+    "build:apps": "turbo run build --filter=@workspace/web --filter=@workspace/api --filter=@workspace/worker --filter=@workspace/scheduler",
+    "dev:apps": "turbo run dev --parallel --filter=@workspace/web --filter=@workspace/api --filter=@workspace/worker --filter=@workspace/scheduler",
+    "start:apps": "pnpm build:apps \u0026\u0026 tsx tools/scripts/start-applications.ts",
+    "smoke:apps": "pnpm build:apps \u0026\u0026 tsx tools/checks/coordinated-applications-smoke.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
