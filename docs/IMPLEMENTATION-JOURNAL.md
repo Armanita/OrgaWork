@@ -1302,3 +1302,52 @@ PostgreSQL 16.14، Redis 7.4.10 و MinIO در زمان بسته‌شدن این 
 قید ادامه:
 
 Healthcheck و Readiness رسمی سرویس‌ها فقط در `P1.4.7` تعریف می‌شوند. ایجاد خودکار Bucket خصوصی فایل‌ها متعلق به `P1.4.8` است. آزمون رسمی ماندگاری داده پس از Restart مطابق Roadmap در `P1.4.11` انجام می‌شود.
+
+## 72. بسته‌شدن P1.4.7 و انتقال به P1.4.8
+
+- وضعیت `P1.4.7`: بسته‌شده
+- هدف: تعریف و پذیرش رسمی Healthcheck و Readiness سرویس‌های PostgreSQL، Redis و MinIO
+- Compose Project مشترک: `orgawork-data-local`
+- شبکه اختصاصی حفظ‌شده: `orgawork-internal`
+- Volume PostgreSQL حفظ‌شده: `orgawork-postgres-data`
+- Volume Redis حفظ‌شده: `orgawork-redis-data`
+- Volume MinIO حفظ‌شده: `orgawork-minio-data`
+- زمان‌بندی مشترک Healthcheckها: `interval=10s`، `timeout=5s`، `retries=5` و `start_period=20s`
+- Healthcheck PostgreSQL: `pg_isready` با `POSTGRES_USER` و `POSTGRES_DB`
+- Healthcheck Redis: `redis-cli` احرازشده با `REDIS_PASSWORD` و انتظار پاسخ دقیق `PONG`
+- Healthcheck MinIO: Endpoint داخلی `/minio/health/ready`
+- Credentialهای واقعی فقط در فایل محلی و ignored `.env.local` باقی ماندند.
+
+شواهد آزمون و پذیرش:
+
+- اعتبارسنجی ترکیبی سه فایل Compose: موفق
+- بازسازی هر سه Container با قرارداد Healthcheck جدید: موفق
+- وضعیت نهایی PostgreSQL: `healthy`
+- وضعیت نهایی Redis: `healthy`
+- وضعیت نهایی MinIO: `healthy`
+- Failing Streak هر سه سرویس: `0`
+- آخرین Exit Code هر سه Healthcheck: `0`
+- عملیات آمادگی PostgreSQL: `pg_isready` و `SELECT 1` موفق
+- هویت PostgreSQL: `160014|orgawork|orgawork`
+- عملیات آمادگی Redis: `PING` احرازشده با پاسخ `PONG`
+- درخواست Redis بدون احراز هویت: `NOAUTH Authentication required.`
+- Endpoint آمادگی MinIO: HTTP `200`
+- درخواست احرازشده `ListBuckets`: HTTP `200` و XML معتبر `ListAllMyBucketsResult`
+- شبکه، Port Bindingها و Volumeهای نام‌دار: بدون تغییر
+- آزمون متمرکز قرارداد Healthcheck و Readiness: `4/4` موفق
+- کنترل کامل `pnpm check`: موفق
+- تعداد فایل‌های آزمون: `12`
+- تعداد آزمون‌های موفق: `56/56`
+- `git diff --check`: موفق
+- فضای کاری پس از Commit فنی: پاک
+
+ثبت Git:
+
+- Commit فنی: `dc29514df161c4f10cb5ff58e2b0a06c5617ad82`
+- پیام Commit: `Stage P1.4.7: add service health and readiness checks`
+- Tag اختصاصی برای `P1.4.7` از قبل تعریف نشده بود و ایجاد نشد.
+- انتقال رسمی: `P1.4.8 — ایجاد خودکار Bucket خصوصی فایل‌ها`
+
+قید ادامه:
+
+ایجاد خودکار Bucket خصوصی فایل‌ها فقط در `P1.4.8` انجام می‌شود. فرمان‌های یکپارچه آغاز، توقف، گزارش و پاک‌سازی زیرساخت متعلق به `P1.4.9` است. آزمون رسمی ماندگاری داده پس از Restart مطابق Roadmap در `P1.4.11` انجام می‌شود.

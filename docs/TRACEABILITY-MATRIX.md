@@ -735,12 +735,12 @@ GAP-###   شکاف ردیابی
 
 - وضعیت: در حال اجرا
 - خروجی هدف: PostgreSQL 16، Redis 7، MinIO
-- زیرمرحله بسته‌شده: `P1.4.6 — تعریف شبکه داخلی و Volumeهای پایدار`
-- زیرمرحله جاری: `P1.4.7 — تعریف بررسی سلامت و آمادگی سرویس‌ها`
-- شواهد مرحله: `EVD-009`، `EVD-010`، `EVD-011`، `EVD-012`، `EVD-013` و `EVD-014`
+- زیرمرحله بسته‌شده: `P1.4.7 — تعریف بررسی سلامت و آمادگی سرویس‌ها`
+- زیرمرحله جاری: `P1.4.8 — ایجاد خودکار Bucket خصوصی فایل‌ها`
+- شواهد مرحله: `EVD-009`، `EVD-010`، `EVD-011`، `EVD-012`، `EVD-013`، `EVD-014` و `EVD-015`
 - ریسک `RISK-003`: بسته‌شده
 - فرض `ASM-001`: در `P1.4.1` رفع شد؛ Docker در `P1.4.3` نصب و پذیرفته شد
-- ادعای پیاده‌سازی فعلی: PostgreSQL 16.14، Redis 7.4.10 و MinIO `RELEASE.2025-09-07T16-13-09Z` روی شبکه اختصاصی `orgawork-internal` و Volumeهای نام‌دار پایدار فعال‌اند؛ Healthcheck و Readiness رسمی هنوز تعریف نشده‌اند
+- ادعای پیاده‌سازی فعلی: PostgreSQL 16.14، Redis 7.4.10 و MinIO `RELEASE.2025-09-07T16-13-09Z` روی شبکه اختصاصی و Volumeهای پایدار فعال‌اند و هر سه سرویس Healthcheck و Readiness رسمی پذیرفته‌شده دارند؛ Bucket خصوصی فایل‌ها هنوز ایجاد نشده است
 
 ## 71. P1.5 — Migration و RLS
 
@@ -1050,6 +1050,38 @@ GAP-###   شکاف ردیابی
 - Tag اختصاصی: از قبل تعریف نشده بود و ایجاد نشد
 - آزمون رسمی ماندگاری داده پس از Restart: واگذارشده به `P1.4.11`
 - انتقال رسمی: `P1.4.7 — تعریف بررسی سلامت و آمادگی سرویس‌ها`
+
+## 95.7. EVD-015 — شاهد P1.4.7
+
+- منبع شاهد: سه فایل Compose، Docker Inspect، گزارش اجرای Healthcheckها، آزمون متمرکز قرارداد Health و پذیرش عملیات پایه سرویس‌ها
+- وضعیت اعتبار: معتبر و ثبت‌شده
+- Compose Project مشترک: `orgawork-data-local`
+- شبکه اختصاصی حفظ‌شده: `orgawork-internal`
+- Volume PostgreSQL حفظ‌شده: `orgawork-postgres-data`
+- Volume Redis حفظ‌شده: `orgawork-redis-data`
+- Volume MinIO حفظ‌شده: `orgawork-minio-data`
+- Healthcheck PostgreSQL: `pg_isready` با `POSTGRES_USER` و `POSTGRES_DB`
+- Healthcheck Redis: `redis-cli` احرازشده با `REDIS_PASSWORD` و انتظار پاسخ `PONG`
+- Healthcheck MinIO: Endpoint داخلی `/minio/health/ready`
+- زمان‌بندی مشترک: `interval=10s`، `timeout=5s`، `retries=5` و `start_period=20s`
+- وضعیت Runtime PostgreSQL: `healthy`
+- وضعیت Runtime Redis: `healthy`
+- وضعیت Runtime MinIO: `healthy`
+- Failing Streak هر سه سرویس: `0`
+- آخرین Exit Code هر سه Healthcheck: `0`
+- عملیات PostgreSQL: `pg_isready` و `SELECT 1` موفق
+- هویت PostgreSQL: `160014|orgawork|orgawork`
+- عملیات Redis احرازشده: `PONG`
+- عملیات Redis بدون احراز هویت: `NOAUTH Authentication required.`
+- Endpoint آمادگی MinIO: HTTP `200`
+- درخواست احرازشده `ListBuckets`: HTTP `200` و XML معتبر `ListAllMyBucketsResult`
+- Port Bindingها، شبکه و Volumeهای پایدار: بدون تغییر
+- آزمون متمرکز قرارداد Healthcheck و Readiness: `4/4` موفق
+- کنترل کامل پروژه: `12` فایل آزمون و `56/56` آزمون موفق
+- Commit فنی: `dc29514df161c4f10cb5ff58e2b0a06c5617ad82`
+- Tag اختصاصی: از قبل تعریف نشده بود و ایجاد نشد
+- آزمون رسمی ماندگاری داده پس از Restart: واگذارشده به `P1.4.11`
+- انتقال رسمی: `P1.4.8 — ایجاد خودکار Bucket خصوصی فایل‌ها`
 
 ## 96. ماتریس آزمون زبان و زمان
 
