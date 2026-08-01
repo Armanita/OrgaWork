@@ -1143,3 +1143,49 @@ Docker Desktop، Docker CLI و Docker Compose هنوز نصب نیستند. نخ
 قید ادامه:
 
 PostgreSQL 16.14 در زمان بسته‌شدن این زیرمرحله فعال است، اما داده آن عمداً روی `tmpfs` قرار دارد. شبکه داخلی و Volume پایدار فقط در `P1.4.6` تعریف می‌شود. مرحله جاری بعدی فقط به راه‌اندازی Redis 7 با نسخه ثابت اختصاص دارد.
+
+## 69. بسته‌شدن P1.4.4 و انتقال به P1.4.5
+
+- وضعیت `P1.4.4`: بسته‌شده
+- هدف: راه‌اندازی Redis 7 با نسخه و Digest ثابت و پذیرش فنی واقعی
+- تصویر Redis: `redis:7.4.10-bookworm`
+- Digest معماری `linux/amd64`: `sha256:fe24fa2bcb59930f8863cf36a472df24efaccd8be4ee98ffe528f06d57d68dc2`
+- نام Container: `orgawork-redis`
+- Compose Project مستقل: `orgawork-redis-local`
+- نسخه واقعی Redis: `7.4.10`
+- Endpoint محلی: `127.0.0.1:6379`
+- Network Mode موقت: `bridge`
+- ذخیره‌سازی مرحله جاری: `tmpfs` و غیرپایدار
+- Snapshot زمان‌بندی‌شده: غیرفعال
+- AOF: غیرفعال
+- Docker Volume پایدار ایجادشده: `0`
+- Secret واقعی: فقط در `.env.local` و خارج از Git
+- فایل Compose: `infra/compose/redis.compose.yaml`
+- وضعیت PostgreSQL هم‌زمان: `160014|orgawork|orgawork`
+
+شواهد آزمون و پذیرش:
+
+- `PING` احرازشده: `PONG`
+- دسترسی بدون رمز: با `NOAUTH` رد شد
+- اتصال احرازشده از Endpoint میزبان: موفق
+- کنترل نسخه و Digest ثابت: موفق
+- کنترل نبود Volume پایدار زودهنگام: موفق
+- کنترل غیرفعال‌بودن Snapshot و AOF: موفق
+- حذف هشدار Orphan با جداسازی Compose Project: موفق
+- سلامت هم‌زمان PostgreSQL 16.14: موفق
+- کنترل کامل `pnpm check`: موفق
+- تعداد فایل‌های آزمون: `10`
+- تعداد آزمون‌های موفق: `48/48`
+- `git diff --check`: موفق
+- فضای کاری پس از Commit فنی: پاک
+
+ثبت Git:
+
+- Commit فنی: `4a1f7fba8d625a26c7faf19c7e20ae35264759c0`
+- پیام Commit: `Stage P1.4.4: add pinned Redis 7 service`
+- Tag اختصاصی برای `P1.4.4` از قبل تعریف نشده بود و ایجاد نشد.
+- انتقال رسمی: `P1.4.5 — راه‌اندازی MinIO با نسخه ثابت`
+
+قید ادامه:
+
+PostgreSQL 16.14 و Redis 7.4.10 در زمان بسته‌شدن این زیرمرحله فعال‌اند، اما داده هر دو عمداً روی `tmpfs` قرار دارد. شبکه داخلی و Volumeهای پایدار فقط در `P1.4.6` تعریف می‌شوند. مرحله جاری بعدی فقط به راه‌اندازی MinIO با نسخه و Digest ثابت اختصاص دارد.
