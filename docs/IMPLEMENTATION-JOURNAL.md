@@ -1403,3 +1403,71 @@ Healthcheck و Readiness رسمی سرویس‌ها فقط در `P1.4.7` تعر�
 قید ادامه:
 
 فرمان‌های یکپارچه آغاز، توقف، گزارش و پاک‌سازی زیرساخت فقط در `P1.4.9` تعریف می‌شوند. آزمون اتصال واقعی برنامه‌ها به سرویس‌های محلی متعلق به `P1.4.10` و آزمون رسمی ماندگاری داده پس از Restart متعلق به `P1.4.11` است.
+
+## 74. بسته‌شدن P1.4.9 و انتقال به P1.4.10
+
+- وضعیت `P1.4.9`: بسته‌شده
+- هدف: افزودن فرمان‌های یکپارچه، امن و قابل‌آزمون برای آغاز، توقف، گزارش و پاک‌سازی زیرساخت محلی داده
+- Compose Project ثابت: `orgawork-data-local`
+- فایل محیط محلی: `.env.local`
+- فایل‌های Compose مدیریت‌شده: `postgresql.compose.yaml`، `redis.compose.yaml` و `minio.compose.yaml`
+- فرمان آغاز: `pnpm infra:start`
+- فرمان توقف: `pnpm infra:stop`
+- فرمان گزارش: `pnpm infra:report`
+- فرمان پاک‌سازی: `pnpm infra:cleanup`
+- برنامه مرکزی فرمان‌ها: `tools/scripts/local-infrastructure-plan.ts`
+- اجرای واقعی فرمان‌ها: `tools/scripts/local-infrastructure.ts`
+- آزمون قرارداد فرمان‌ها: `tools/checks/local-infrastructure-commands.test.ts`
+- حذف Volume با `--volumes` یا `-v`: ممنوع
+- استفاده از `--remove-orphans`: ممنوع
+
+شواهد آزمون و پذیرش:
+
+- فرمان `infra:report`: موفق و کاملاً فقط‌خواندنی
+- تغییر Containerها توسط گزارش: صفر
+- تغییر شبکه و Volumeها توسط گزارش: صفر
+- تغییر فضای کاری توسط گزارش: صفر
+- فرمان `infra:stop`: موفق
+- Containerهای متوقف‌شده: `4/4`
+- Containerهای حذف‌شده در توقف: `0`
+- شناسه Containerها پس از توقف: بدون تغییر
+- شبکه اختصاصی پس از توقف: حفظ‌شده
+- Volumeهای پایدار پس از توقف: `3/3` حفظ‌شده
+- اجرای `infra:start` پس از توقف: موفق
+- سرویس‌های اصلی سالم پس از آغاز: `3/3`
+- شناسه Containerهای اصلی پس از آغاز: بدون تغییر
+- Initializer پس از آغاز: Exit Code برابر `0` و Restart Policy برابر `no`
+- فرمان `infra:cleanup`: چهار Container و شبکه Compose را حذف کرد
+- Volumeهای پایدار پس از پاک‌سازی: `3/3` حفظ‌شده
+- هویت Volumeهای پایدار پس از پاک‌سازی: بدون تغییر
+- علت خطای گزارش پس از پاک‌سازی: تطبیق حساس به بزرگی و کوچکی حروف در پیام `no such object`
+- اصلاح خطا: تطبیق case-insensitive پیام نبود Container
+- اجرای مجدد `infra:cleanup` در وضعیت ازپیش‌پاک‌شده: موفق
+- پذیرش idempotent پاک‌سازی: موفق
+- اجرای تازه `infra:start` پس از پاک‌سازی کامل: موفق
+- Containerهای ایجادشده پس از آغاز تازه: `4/4`
+- شبکه `orgawork-internal`: دوباره ایجاد شد و Label پروژه صحیح باقی ماند
+- سرویس‌های اصلی پس از آغاز تازه: PostgreSQL، Redis و MinIO همگی `healthy`
+- Initializer پس از آغاز تازه: Exit Code برابر `0`
+- Bucket نهایی: دقیقاً یک Bucket با نام `orgawork-files`
+- دسترسی احرازشده Bucket: HTTP `200`
+- دسترسی بدون احراز هویت Bucket: HTTP `403`
+- Policy Bucket: `private`
+- آزمون متمرکز قرارداد فرمان‌های زیرساخت: `8/8` موفق
+- کنترل کامل `pnpm check`: موفق
+- تعداد فایل‌های آزمون: `14`
+- تعداد آزمون‌های موفق: `69/69`
+- `git diff --check`: موفق
+- بررسی Secretهای محلی در Diff و Staging: موفق
+- فضای کاری پس از Commit فنی: پاک
+
+ثبت Git:
+
+- Commit فنی: `061bbe20b0acda86d1aca2ac786cb076c98e5690`
+- پیام Commit: `Stage P1.4.9: add unified local infrastructure commands`
+- Tag اختصاصی برای `P1.4.9` از قبل تعریف نشده بود و ایجاد نشد.
+- انتقال رسمی: `P1.4.10 — آزمون اتصال واقعی برنامه‌ها به سرویس‌های محلی`
+
+قید ادامه:
+
+آزمون اتصال واقعی برنامه‌های Web، API، Worker و Scheduler به PostgreSQL، Redis و MinIO فقط در `P1.4.10` انجام می‌شود. آزمون رسمی ماندگاری محتوای داده پس از توقف و آغاز مجدد متعلق به `P1.4.11` است. هیچ Credential یا Secret واقعی نباید در Git ثبت شود.

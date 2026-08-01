@@ -851,61 +851,60 @@
 - Commit رسمی پذیرش: `089a7066e31cd413cfce3a5246ee0038cc2e5e73`
 - Tag پذیرش: `stage-p1.3.6-executable-applications-acceptance`
 - Tag تکمیل مرحله مادر: `stage-p1.3-executable-applications-bootstrap-complete`
-- مرحله جاری: `P1.4.9 — افزودن فرمان‌های آغاز، توقف، گزارش و پاک‌سازی زیرساخت`
+- مرحله جاری: `P1.4.10 — آزمون اتصال واقعی برنامه‌ها به سرویس‌های محلی`
 
 ## 42. مرحله جاری
 
 مرحله جاری:
 
 ```text
-P1.4.9 — افزودن فرمان‌های آغاز، توقف، گزارش و پاک‌سازی زیرساخت
+P1.4.10 — آزمون اتصال واقعی برنامه‌ها به سرویس‌های محلی
 ```
 
 آخرین زیرمرحله بسته‌شده:
 
 ```text
-P1.4.8 — ایجاد خودکار Bucket خصوصی فایل‌ها
+P1.4.9 — افزودن فرمان‌های آغاز، توقف، گزارش و پاک‌سازی زیرساخت
 ```
 
 مرحله بعد از زیرمرحله جاری:
 
 ```text
-P1.4.10 — آزمون اتصال واقعی برنامه‌ها به سرویس‌های محلی
+P1.4.11 — آزمون پایداری داده پس از توقف و آغاز مجدد
 ```
 
-شواهد بسته‌شدن `P1.4.8`:
+شواهد بسته‌شدن `P1.4.9`:
 
-- نام ثابت و غیرحساس Bucket با `MINIO_BUCKET=orgawork-files` در `.env.example` ثبت شد.
-- سرویس یک‌باره `minio_bucket_init` با Container صریح `orgawork-minio-bucket-init` به Compose اضافه شد.
-- Initializer فقط پس از `healthy` شدن MinIO و روی شبکه اختصاصی `orgawork-internal` اجرا می‌شود.
-- همان Image و Digest ثابت‌شده MinIO برای Initializer استفاده می‌شود و Restart Policy آن `no` است.
-- Bucket با `mc mb --ignore-existing` به‌صورت idempotent ایجاد و با `mc anonymous set private` خصوصی می‌شود.
-- اجرای اولیه و دو اجرای مجدد Initializer، هر سه با Exit Code برابر `0` پذیرفته شدند.
-- پس از سه اجرا دقیقاً یک Bucket با نام `orgawork-files` وجود داشت.
-- فهرست‌گیری احرازشده از Bucket پاسخ HTTP `200` و دسترسی بدون احراز هویت پاسخ HTTP `403` برگرداند.
-- Container اصلی MinIO بازسازی نشد و Image و Digest، شبکه، Volume، Port Bindingها و Healthcheck آن بدون تغییر باقی ماندند.
-- PostgreSQL، Redis و MinIO در پایان پذیرش همگی در وضعیت `healthy` بودند.
-- آزمون متمرکز قرارداد Bucket و محیط با `9/9` آزمون موفق اجرا شد.
-- کنترل کامل پروژه با `13` فایل آزمون و `61/61` آزمون موفق بود.
-- Commit فنی: `96126445f2ec1c6ba174767f75b062b46e5663fe`
+- چهار فرمان `pnpm infra:start`، `pnpm infra:stop`، `pnpm infra:report` و `pnpm infra:cleanup` در `package.json` ثبت شدند.
+- همه فرمان‌ها از Compose Project ثابت `orgawork-data-local`، فایل ignored `.env.local` و هر سه فایل Compose استفاده می‌کنند.
+- حذف Volume با `--volumes` یا `-v` و استفاده از `--remove-orphans` در برنامه‌های مدیریت‌شده ممنوع شد.
+- `infra:report` به‌صورت فقط‌خواندنی پذیرفته شد و هیچ Container، شبکه، Volume یا فایل مخزن را تغییر نداد.
+- `infra:stop` هر چهار Container را با Exit Code برابر `0` متوقف کرد؛ Containerها حذف نشدند، شناسه آن‌ها ثابت ماند و شبکه و سه Volume پایدار حفظ شدند.
+- `infra:start` پس از توقف، PostgreSQL، Redis و MinIO را با همان شناسه Container و وضعیت `healthy` بالا آورد و Initializer را با Exit Code برابر `0` اجرا کرد.
+- `infra:cleanup` چهار Container و شبکه `orgawork-internal` را حذف کرد، اما هر سه Volume پایدار و هویت آن‌ها را بدون تغییر نگه داشت.
+- خطای گزارش پس از پاک‌سازی برای پیام `no such object` به‌صورت case-insensitive اصلاح و با آزمون مستقل پوشش داده شد.
+- اجرای مجدد `infra:cleanup` در وضعیت ازپیش‌پاک‌شده نیز موفق بود و تکرارپذیری پاک‌سازی اثبات شد.
+- اجرای تازه `infra:start` پس از پاک‌سازی کامل، شبکه و چهار Container را دوباره ایجاد کرد؛ سه سرویس اصلی `healthy` شدند و Initializer با Exit Code برابر `0` پایان یافت.
+- Bucket خصوصی `orgawork-files` دقیقاً یک‌بار موجود بود؛ دسترسی احرازشده HTTP `200` و دسترسی بدون احراز هویت HTTP `403` باقی ماند.
+- آزمون متمرکز قرارداد فرمان‌های زیرساخت با `8/8` آزمون موفق اجرا شد.
+- کنترل کامل پروژه با `14` فایل آزمون و `69/69` آزمون موفق بود.
+- Commit فنی: `061bbe20b0acda86d1aca2ac786cb076c98e5690`
 - Tag اختصاصی از قبل تعریف نشده بود و ایجاد نشد.
 
-## 43. قید اجرای P1.4.9
+## 43. قید اجرای P1.4.10
 
-`P1.4.9` فقط به تعریف فرمان‌های یکپارچه آغاز، توقف، گزارش و پاک‌سازی کنترل‌شده زیرساخت محلی داده اختصاص دارد.
+`P1.4.10` فقط به آزمون اتصال واقعی چهار برنامه Web، API، Worker و Scheduler به PostgreSQL، Redis و MinIO محلی اختصاص دارد.
 
 قواعد دامنه:
 
-- همه فرمان‌ها باید سه فایل Compose را با Compose Project مشترک `orgawork-data-local` مدیریت کنند.
-- فرمان آغاز باید PostgreSQL، Redis و MinIO را با قراردادهای پذیرفته‌شده اجرا کند و Initializer یک‌باره Bucket خصوصی را نیز در مسیر صحیح قرار دهد.
-- فرمان توقف نباید Volumeهای نام‌دار `orgawork-postgres-data`، `orgawork-redis-data` و `orgawork-minio-data` را حذف کند.
-- فرمان گزارش باید فقط‌خواندنی باشد و وضعیت Containerها، Healthcheckها، Initializer و Bucket خصوصی را نمایش دهد.
-- فرمان پاک‌سازی باید فقط منابع متعلق به همین Compose Project را هدف بگیرد و حذف Volumeهای پایدار در این زیرمرحله مجاز نیست.
-- اجرای `--remove-orphans` همراه با فایل Compose ناقص یا جزئی مجاز نیست.
-- نسخه‌ها و Digestها، شبکه `orgawork-internal`، Port Bindingهای محلی، Healthcheckها و Policy خصوصی Bucket نباید تغییر کنند.
-- آزمون اتصال واقعی برنامه‌ها به سرویس‌های محلی متعلق به `P1.4.10` است.
-- آزمون رسمی ماندگاری داده پس از Restart متعلق به `P1.4.11` است.
-- هیچ Credential، Secret واقعی یا داده حساس نباید در Git ثبت شود.
+- زیرساخت باید از طریق فرمان‌های پذیرفته‌شده `infra:start`، `infra:report`، `infra:stop` و `infra:cleanup` مدیریت شود.
+- آزمون‌ها باید اتصال واقعی برنامه‌ها به PostgreSQL، Redis و MinIO را با Credentialهای محلی موجود اثبات کنند.
+- نتیجه هر برنامه باید به‌صورت مستقل قابل مشاهده باشد تا شکست یک اتصال با اتصال‌های دیگر مخلوط نشود.
+- اتصال MinIO باید وجود و دسترسی احرازشده به Bucket خصوصی `orgawork-files` را بررسی کند و هیچ دسترسی عمومی فعال نکند.
+- نسخه‌ها و Digestها، شبکه `orgawork-internal`، Port Bindingها، Healthcheckها، Volumeهای پایدار و Policy خصوصی Bucket نباید تغییر کنند.
+- هیچ Credential، Secret واقعی یا داده حساس نباید در خروجی آزمون یا Git ثبت شود.
+- آزمون رسمی ماندگاری محتوای داده پس از توقف و آغاز مجدد متعلق به `P1.4.11` است و در این زیرمرحله ادعا نمی‌شود.
+- پذیرش نهایی کل مرحله مادر `P1.4` متعلق به `P1.4.12` است.
 
 # بخش دهم — بسته تحویل به گفت‌وگو یا توسعه‌دهنده جدید
 
