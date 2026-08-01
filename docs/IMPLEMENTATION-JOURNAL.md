@@ -1097,3 +1097,49 @@ stage-p1.3-executable-applications-bootstrap-complete
 قید اجرایی مرحله بعد:
 
 Docker Desktop، Docker CLI و Docker Compose هنوز نصب نیستند. نخستین اقدام اجرایی `P1.4.3` نصب و پذیرش Docker Desktop است. PostgreSQL 16 فقط پس از موفقیت Docker Engine، Docker Compose و اجرای یک Container آزمایشی راه‌اندازی می‌شود.
+
+## 68. بسته‌شدن P1.4.3 و انتقال به P1.4.4
+
+- وضعیت `P1.4.3`: بسته‌شده
+- هدف: نصب و پذیرش Docker Desktop و راه‌اندازی PostgreSQL 16 با نسخه ثابت
+- Docker Desktop: نسخه `4.84.0`
+- Docker Engine: نسخه `29.6.2`
+- Docker Compose: نسخه `5.3.1`
+- Docker Context: `desktop-linux`
+- آزمون Container عمومی: `hello-world` موفق
+- تصویر PostgreSQL: `postgres:16.14-bookworm`
+- Digest معماری `linux/amd64`: `sha256:c95fd5346040eba2de3c435e14874af18f5d681fb5848d4f081dbead0878af28`
+- نام Container: `orgawork-postgres`
+- نسخه واقعی Server: `16.14`
+- پایگاه داده و کاربر: `orgawork|orgawork`
+- Endpoint محلی: `127.0.0.1:5432`
+- Network Mode موقت: `bridge`
+- ذخیره‌سازی مرحله جاری: `tmpfs` و غیرپایدار
+- Docker Volume پایدار ایجادشده: `0`
+- Secret واقعی: فقط در `.env.local` و خارج از Git
+- فایل Compose: `infra/compose/postgresql.compose.yaml`
+
+شواهد آزمون و پذیرش:
+
+- Docker CLI، Engine، Compose و Context فعال: موفق
+- اجرای `hello-world`: موفق
+- Query واقعی PostgreSQL: `160014|orgawork|orgawork`
+- اتصال TCP میزبان به پورت `5432`: موفق
+- کنترل تصویر و Digest ثابت: موفق
+- بررسی نبود Volume پایدار زودهنگام: موفق
+- کنترل کامل `pnpm check`: موفق
+- تعداد فایل‌های آزمون: `10`
+- تعداد آزمون‌های موفق: `48/48`
+- `git diff --check`: موفق
+- فضای کاری پس از Commit فنی: پاک
+
+ثبت Git:
+
+- Commit فنی: `b20f68df858ed4568d2e3fdb3d414491a4276445`
+- پیام Commit: `Stage P1.4.3: add pinned PostgreSQL 16 service`
+- Tag اختصاصی برای `P1.4.3` از قبل تعریف نشده بود و ایجاد نشد.
+- انتقال رسمی: `P1.4.4 — راه‌اندازی Redis 7 با نسخه ثابت`
+
+قید ادامه:
+
+PostgreSQL 16.14 در زمان بسته‌شدن این زیرمرحله فعال است، اما داده آن عمداً روی `tmpfs` قرار دارد. شبکه داخلی و Volume پایدار فقط در `P1.4.6` تعریف می‌شود. مرحله جاری بعدی فقط به راه‌اندازی Redis 7 با نسخه ثابت اختصاص دارد.
