@@ -1351,3 +1351,55 @@ Healthcheck و Readiness رسمی سرویس‌ها فقط در `P1.4.7` تعر�
 قید ادامه:
 
 ایجاد خودکار Bucket خصوصی فایل‌ها فقط در `P1.4.8` انجام می‌شود. فرمان‌های یکپارچه آغاز، توقف، گزارش و پاک‌سازی زیرساخت متعلق به `P1.4.9` است. آزمون رسمی ماندگاری داده پس از Restart مطابق Roadmap در `P1.4.11` انجام می‌شود.
+
+## 73. بسته‌شدن P1.4.8 و انتقال به P1.4.9
+
+- وضعیت `P1.4.8`: بسته‌شده
+- هدف: ایجاد خودکار، تکرارپذیر و امن Bucket خصوصی فایل‌ها در MinIO
+- نام Bucket: `orgawork-files`
+- متغیر محیطی غیرحساس: `MINIO_BUCKET=orgawork-files`
+- سرویس یک‌باره Compose: `minio_bucket_init`
+- Container: `orgawork-minio-bucket-init`
+- Image و Digest: همان نسخه ثابت‌شده MinIO
+- وابستگی اجرا: `condition: service_healthy` برای سرویس MinIO
+- شبکه اختصاصی: `orgawork-internal`
+- Restart Policy: `no`
+- ایجاد Alias داخلی احرازشده: `mc alias set`
+- ایجاد idempotent: `mc mb --ignore-existing`
+- تحمیل Policy خصوصی: `mc anonymous set private`
+- کنترل وجود Bucket: `mc stat`
+- Credentialهای واقعی فقط در فایل محلی و ignored `.env.local` باقی ماندند.
+
+شواهد آزمون و پذیرش:
+
+- اعتبارسنجی ترکیبی سه فایل Compose: موفق
+- اجرای اولیه Initializer: Exit Code برابر `0`
+- دو اجرای مجدد idempotent Initializer: `2/2` موفق
+- تعداد کل اجرای پذیرفته‌شده Initializer: `3`
+- تعداد نهایی Bucketها پس از سه اجرا: `1`
+- Bucket نهایی: `orgawork-files`
+- فهرست‌گیری احرازشده Bucket: HTTP `200`
+- دسترسی بدون احراز هویت به Bucket: HTTP `403`
+- Policy ناشناس Bucket: `private`
+- Container اصلی MinIO بازسازی نشد.
+- شناسه Container، Image و Digest، شبکه، Volume، Port Bindingها و Healthcheck MinIO بدون تغییر باقی ماندند.
+- وضعیت نهایی PostgreSQL: `healthy`
+- وضعیت نهایی Redis: `healthy`
+- وضعیت نهایی MinIO: `healthy`
+- آزمون متمرکز قرارداد Bucket و محیط: `9/9` موفق
+- کنترل کامل `pnpm check`: موفق
+- تعداد فایل‌های آزمون: `13`
+- تعداد آزمون‌های موفق: `61/61`
+- `git diff --check`: موفق
+- فضای کاری پس از Commit فنی: پاک
+
+ثبت Git:
+
+- Commit فنی: `96126445f2ec1c6ba174767f75b062b46e5663fe`
+- پیام Commit: `Stage P1.4.8: add automatic private MinIO bucket initialization`
+- Tag اختصاصی برای `P1.4.8` از قبل تعریف نشده بود و ایجاد نشد.
+- انتقال رسمی: `P1.4.9 — افزودن فرمان‌های آغاز، توقف، گزارش و پاک‌سازی زیرساخت`
+
+قید ادامه:
+
+فرمان‌های یکپارچه آغاز، توقف، گزارش و پاک‌سازی زیرساخت فقط در `P1.4.9` تعریف می‌شوند. آزمون اتصال واقعی برنامه‌ها به سرویس‌های محلی متعلق به `P1.4.10` و آزمون رسمی ماندگاری داده پس از Restart متعلق به `P1.4.11` است.

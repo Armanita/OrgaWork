@@ -735,12 +735,12 @@ GAP-###   شکاف ردیابی
 
 - وضعیت: در حال اجرا
 - خروجی هدف: PostgreSQL 16، Redis 7، MinIO
-- زیرمرحله بسته‌شده: `P1.4.7 — تعریف بررسی سلامت و آمادگی سرویس‌ها`
-- زیرمرحله جاری: `P1.4.8 — ایجاد خودکار Bucket خصوصی فایل‌ها`
-- شواهد مرحله: `EVD-009`، `EVD-010`، `EVD-011`، `EVD-012`، `EVD-013`، `EVD-014` و `EVD-015`
+- زیرمرحله بسته‌شده: `P1.4.8 — ایجاد خودکار Bucket خصوصی فایل‌ها`
+- زیرمرحله جاری: `P1.4.9 — افزودن فرمان‌های آغاز، توقف، گزارش و پاک‌سازی زیرساخت`
+- شواهد مرحله: `EVD-009`، `EVD-010`، `EVD-011`، `EVD-012`، `EVD-013`، `EVD-014`، `EVD-015` و `EVD-016`
 - ریسک `RISK-003`: بسته‌شده
 - فرض `ASM-001`: در `P1.4.1` رفع شد؛ Docker در `P1.4.3` نصب و پذیرفته شد
-- ادعای پیاده‌سازی فعلی: PostgreSQL 16.14، Redis 7.4.10 و MinIO `RELEASE.2025-09-07T16-13-09Z` روی شبکه اختصاصی و Volumeهای پایدار فعال‌اند و هر سه سرویس Healthcheck و Readiness رسمی پذیرفته‌شده دارند؛ Bucket خصوصی فایل‌ها هنوز ایجاد نشده است
+- ادعای پیاده‌سازی فعلی: PostgreSQL 16.14، Redis 7.4.10 و MinIO `RELEASE.2025-09-07T16-13-09Z` روی شبکه اختصاصی و Volumeهای پایدار فعال و سالم‌اند؛ Bucket خصوصی `orgawork-files` نیز به‌صورت خودکار، idempotent و بدون دسترسی ناشناس ایجاد می‌شود
 
 ## 71. P1.5 — Migration و RLS
 
@@ -1082,6 +1082,43 @@ GAP-###   شکاف ردیابی
 - Tag اختصاصی: از قبل تعریف نشده بود و ایجاد نشد
 - آزمون رسمی ماندگاری داده پس از Restart: واگذارشده به `P1.4.11`
 - انتقال رسمی: `P1.4.8 — ایجاد خودکار Bucket خصوصی فایل‌ها`
+
+## 95.8. EVD-016 — شاهد P1.4.8
+
+- منبع شاهد: `.env.example`، فایل Compose MinIO، Docker Inspect، گزارش اجرای Initializer، S3 API و آزمون متمرکز قرارداد Bucket
+- وضعیت اعتبار: معتبر و ثبت‌شده
+- نام Bucket: `orgawork-files`
+- متغیر محیطی غیرحساس: `MINIO_BUCKET=orgawork-files`
+- سرویس یک‌باره Compose: `minio_bucket_init`
+- Container: `orgawork-minio-bucket-init`
+- Image و Digest Initializer: همان Image و Digest ثابت‌شده MinIO
+- شرط اجرا: `condition: service_healthy`
+- شبکه Initializer: `orgawork-internal`
+- Restart Policy: `no`
+- ایجاد Alias احرازشده: `mc alias set`
+- ایجاد idempotent Bucket: `mc mb --ignore-existing`
+- تحمیل دسترسی خصوصی: `mc anonymous set private`
+- کنترل وجود Bucket: `mc stat`
+- اجرای اولیه Initializer: Exit Code برابر `0`
+- اجرای مجدد idempotent: `2/2` موفق
+- تعداد کل اجرای پذیرفته‌شده Initializer: `3`
+- تعداد نهایی Bucketها: `1`
+- Bucket نهایی: `orgawork-files`
+- فهرست‌گیری احرازشده Bucket: HTTP `200`
+- دسترسی بدون احراز هویت به Bucket: HTTP `403`
+- Policy ناشناس: `private`
+- Container اصلی MinIO بازسازی نشد
+- شناسه Container، Image و Digest، شبکه، Volume، Port Bindingها و Healthcheck MinIO: بدون تغییر
+- وضعیت PostgreSQL: `healthy`
+- وضعیت Redis: `healthy`
+- وضعیت MinIO: `healthy`
+- آزمون متمرکز قرارداد Bucket و محیط: `9/9` موفق
+- کنترل کامل پروژه: `13` فایل آزمون و `61/61` آزمون موفق
+- Commit فنی: `96126445f2ec1c6ba174767f75b062b46e5663fe`
+- Tag اختصاصی: از قبل تعریف نشده بود و ایجاد نشد
+- آزمون اتصال واقعی برنامه‌ها به سرویس‌های محلی: واگذارشده به `P1.4.10`
+- آزمون رسمی ماندگاری داده پس از Restart: واگذارشده به `P1.4.11`
+- انتقال رسمی: `P1.4.9 — افزودن فرمان‌های آغاز، توقف، گزارش و پاک‌سازی زیرساخت`
 
 ## 96. ماتریس آزمون زبان و زمان
 
