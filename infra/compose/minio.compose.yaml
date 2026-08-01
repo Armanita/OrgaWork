@@ -1,0 +1,21 @@
+name: orgawork-minio-local
+
+services:
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z@sha256:a1a8bd4ac40ad7881a245bab97323e18f971e4d4cba2c2007ec1bedd21cbaba2
+    container_name: orgawork-minio
+    platform: linux/amd64
+    network_mode: bridge
+    tmpfs:
+      - /data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?MINIO_ROOT_PASSWORD must be set in .env.local}
+    command:
+      - server
+      - /data
+      - --console-address
+      - :9001
+    ports:
+      - '${MINIO_HOST:-127.0.0.1}:${MINIO_API_PORT:-9000}:9000'
+      - '${MINIO_HOST:-127.0.0.1}:${MINIO_CONSOLE_PORT:-9001}:9001'

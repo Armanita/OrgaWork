@@ -65,6 +65,10 @@ describe('الگوی امن محیط محلی', () => {
       'POSTGRES_USER',
       'REDIS_HOST',
       'REDIS_PORT',
+      'MINIO_HOST',
+      'MINIO_API_PORT',
+      'MINIO_CONSOLE_PORT',
+      'MINIO_ROOT_USER',
     ]);
   });
 
@@ -85,6 +89,10 @@ describe('الگوی امن محیط محلی', () => {
       POSTGRES_USER: 'orgawork',
       REDIS_HOST: '127.0.0.1',
       REDIS_PORT: '6379',
+      MINIO_HOST: '127.0.0.1',
+      MINIO_API_PORT: '9000',
+      MINIO_CONSOLE_PORT: '9001',
+      MINIO_ROOT_USER: 'orgawork-minio',
     });
 
     for (const [key, value] of entries) {
