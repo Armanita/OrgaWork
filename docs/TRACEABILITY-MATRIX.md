@@ -735,12 +735,12 @@ GAP-###   شکاف ردیابی
 
 - وضعیت: در حال اجرا
 - خروجی هدف: PostgreSQL 16، Redis 7، MinIO
-- زیرمرحله بسته‌شده: `P1.4.5 — راه‌اندازی MinIO با نسخه ثابت`
-- زیرمرحله جاری: `P1.4.6 — تعریف شبکه داخلی و Volumeهای پایدار`
-- شواهد مرحله: `EVD-009`، `EVD-010`، `EVD-011`، `EVD-012` و `EVD-013`
+- زیرمرحله بسته‌شده: `P1.4.6 — تعریف شبکه داخلی و Volumeهای پایدار`
+- زیرمرحله جاری: `P1.4.7 — تعریف بررسی سلامت و آمادگی سرویس‌ها`
+- شواهد مرحله: `EVD-009`، `EVD-010`، `EVD-011`، `EVD-012`، `EVD-013` و `EVD-014`
 - ریسک `RISK-003`: بسته‌شده
 - فرض `ASM-001`: در `P1.4.1` رفع شد؛ Docker در `P1.4.3` نصب و پذیرفته شد
-- ادعای پیاده‌سازی فعلی: PostgreSQL 16.14، Redis 7.4.10 و MinIO `RELEASE.2025-09-07T16-13-09Z` محلی فعال‌اند؛ شبکه اختصاصی و Volumeهای پایدار هنوز تعریف نشده‌اند
+- ادعای پیاده‌سازی فعلی: PostgreSQL 16.14، Redis 7.4.10 و MinIO `RELEASE.2025-09-07T16-13-09Z` روی شبکه اختصاصی `orgawork-internal` و Volumeهای نام‌دار پایدار فعال‌اند؛ Healthcheck و Readiness رسمی هنوز تعریف نشده‌اند
 
 ## 71. P1.5 — Migration و RLS
 
@@ -1017,6 +1017,39 @@ GAP-###   شکاف ردیابی
 - Commit فنی: `c95a5a527df830cd2847df8d17b11320fe34d061`
 - Tag اختصاصی: از قبل تعریف نشده بود و ایجاد نشد
 - انتقال رسمی: `P1.4.6 — تعریف شبکه داخلی و Volumeهای پایدار`
+
+## 95.6. EVD-014 — شاهد P1.4.6
+
+- منبع شاهد: سه فایل Compose، Docker Inspect، شبکه و Volumeهای واقعی، آزمون متمرکز قرارداد زیرساخت و پذیرش Runtime
+- وضعیت اعتبار: معتبر و ثبت‌شده
+- Compose Project مشترک: `orgawork-data-local`
+- شبکه اختصاصی: `orgawork-internal`
+- Network Driver: `bridge`
+- Network Internal: `false`
+- Gateway پذیرفته‌شده: `172.18.0.1`
+- اعضای فعال شبکه: `orgawork-postgres`، `orgawork-redis` و `orgawork-minio`
+- Volume PostgreSQL: `orgawork-postgres-data` روی `/var/lib/postgresql/data`
+- Volume Redis: `orgawork-redis-data` روی `/data`
+- Volume MinIO: `orgawork-minio-data` روی `/data`
+- Bind Mount داده: `0`
+- tmpfs باقی‌مانده: `0`
+- Redis Persistence: `appendonly=yes` و `appendfsync=everysec`
+- انتشار PostgreSQL: `127.0.0.1:5432`
+- انتشار Redis: `127.0.0.1:6379`
+- انتشار MinIO API: `127.0.0.1:9000`
+- انتشار MinIO Console: `127.0.0.1:9001`
+- هویت PostgreSQL: `160014|orgawork|orgawork`
+- پاسخ Redis: `PONG`
+- سلامت MinIO: HTTP `200`
+- درخواست S3 بدون احراز هویت: HTTP `403`
+- درخواست احرازشده `ListBuckets`: HTTP `200` و XML معتبر `ListAllMyBucketsResult`
+- DNS داخلی و اتصال TCP میان سرویس‌ها: موفق
+- آزمون متمرکز قرارداد زیرساخت: `4/4` موفق
+- کنترل کامل پروژه: `11` فایل آزمون و `52/52` آزمون موفق
+- Commit فنی: `eb54b2bbf9f5e6668dd4f1ea1ee53159cc09ac94`
+- Tag اختصاصی: از قبل تعریف نشده بود و ایجاد نشد
+- آزمون رسمی ماندگاری داده پس از Restart: واگذارشده به `P1.4.11`
+- انتقال رسمی: `P1.4.7 — تعریف بررسی سلامت و آمادگی سرویس‌ها`
 
 ## 96. ماتریس آزمون زبان و زمان
 

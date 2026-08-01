@@ -1244,3 +1244,61 @@ PostgreSQL 16.14 و Redis 7.4.10 در زمان بسته‌شدن این زیرم
 قید ادامه:
 
 PostgreSQL 16.14، Redis 7.4.10 و MinIO در زمان بسته‌شدن این زیرمرحله فعال‌اند، اما داده هر سه سرویس عمداً غیرپایدار است. شبکه داخلی اختصاصی و Volumeهای پایدار فقط در `P1.4.6` تعریف می‌شوند. Healthcheck و Readiness رسمی همچنان متعلق به `P1.4.7` است.
+
+## 71. بسته‌شدن P1.4.6 و انتقال به P1.4.7
+
+- وضعیت `P1.4.6`: بسته‌شده
+- هدف: تعریف شبکه اختصاصی مشترک و Docker Volumeهای نام‌دار پایدار برای PostgreSQL، Redis و MinIO
+- Compose Project مشترک: `orgawork-data-local`
+- شبکه اختصاصی: `orgawork-internal`
+- Network Driver: `bridge`
+- Network Internal: `false` برای حفظ انتشار Endpointهای محلی در Docker Desktop
+- Gateway پذیرفته‌شده: `172.18.0.1`
+- تعداد اعضای فعال شبکه: `3`
+- Volume PostgreSQL: `orgawork-postgres-data` روی `/var/lib/postgresql/data`
+- Volume Redis: `orgawork-redis-data` روی `/data`
+- Volume MinIO: `orgawork-minio-data` روی `/data`
+- Bind Mount داده: `0`
+- tmpfs باقی‌مانده: `0`
+- Redis Persistence: `appendonly=yes` و `appendfsync=everysec`
+- Endpoint PostgreSQL: `127.0.0.1:5432`
+- Endpoint Redis: `127.0.0.1:6379`
+- Endpoint MinIO API: `127.0.0.1:9000`
+- Endpoint MinIO Console: `127.0.0.1:9001`
+- تصاویر، Digestها، Credentialها و نسخه‌های پذیرفته‌شده بدون تغییر حفظ شدند.
+
+شواهد آزمون و پذیرش:
+
+- اعتبارسنجی ترکیبی سه فایل Compose: موفق
+- کنترل شبکه اختصاصی مشترک و سه عضو فعال: موفق
+- کنترل Gateway واقعی شبکه: موفق
+- کنترل اتصال هر سه Container به `orgawork-internal`: موفق
+- کنترل نبود `tmpfs` در هر سه سرویس: موفق
+- کنترل Mountهای نوع `volume` و نام‌های صریح: موفق
+- کنترل نبود Bind Mount میزبان: موفق
+- کنترل انتشار همه Portها فقط روی `127.0.0.1`: موفق
+- کنترل هویت PostgreSQL: `160014|orgawork|orgawork`
+- کنترل Redis: `PONG`
+- کنترل AOF Redis: `appendonly=yes` و `appendfsync=everysec`
+- مسیر سلامت MinIO: HTTP `200`
+- درخواست S3 بدون احراز هویت: HTTP `403`
+- درخواست احرازشده `ListBuckets`: HTTP `200` و XML معتبر `ListAllMyBucketsResult`
+- کنترل DNS داخلی برای `redis` و `minio`: موفق
+- کنترل اتصال TCP داخلی PostgreSQL به Redis و MinIO: موفق
+- آزمون متمرکز قرارداد زیرساخت: `4/4` موفق
+- کنترل کامل `pnpm check`: موفق
+- تعداد فایل‌های آزمون: `11`
+- تعداد آزمون‌های موفق: `52/52`
+- `git diff --check`: موفق
+- فضای کاری پس از Commit فنی: پاک
+
+ثبت Git:
+
+- Commit فنی: `eb54b2bbf9f5e6668dd4f1ea1ee53159cc09ac94`
+- پیام Commit: `Stage P1.4.6: add dedicated network and persistent volumes`
+- Tag اختصاصی برای `P1.4.6` از قبل تعریف نشده بود و ایجاد نشد.
+- انتقال رسمی: `P1.4.7 — تعریف بررسی سلامت و آمادگی سرویس‌ها`
+
+قید ادامه:
+
+Healthcheck و Readiness رسمی سرویس‌ها فقط در `P1.4.7` تعریف می‌شوند. ایجاد خودکار Bucket خصوصی فایل‌ها متعلق به `P1.4.8` است. آزمون رسمی ماندگاری داده پس از Restart مطابق Roadmap در `P1.4.11` انجام می‌شود.
