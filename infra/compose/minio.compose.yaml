@@ -29,6 +29,31 @@ services:
       - '${MINIO_HOST:-127.0.0.1}:${MINIO_API_PORT:-9000}:9000'
       - '${MINIO_HOST:-127.0.0.1}:${MINIO_CONSOLE_PORT:-9001}:9001'
 
+  minio_bucket_init:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z@sha256:a1a8bd4ac40ad7881a245bab97323e18f971e4d4cba2c2007ec1bedd21cbaba2
+    container_name: orgawork-minio-bucket-init
+    platform: linux/amd64
+    depends_on:
+      minio:
+        condition: service_healthy
+    networks:
+      - orgawork_internal
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?MINIO_ROOT_PASSWORD must be set in .env.local}
+      MINIO_BUCKET: ${MINIO_BUCKET:-orgawork-files}
+    entrypoint:
+      - /bin/sh
+      - -c
+    command:
+      - |
+        set -eu
+        mc alias set local http://minio:9000 "$$MINIO_ROOT_USER" "$$MINIO_ROOT_PASSWORD"
+        mc mb --ignore-existing "local/$$MINIO_BUCKET"
+        mc anonymous set private "local/$$MINIO_BUCKET"
+        mc stat "local/$$MINIO_BUCKET" >/dev/null
+    restart: 'no'
+
 networks:
   orgawork_internal:
     name: orgawork-internal
