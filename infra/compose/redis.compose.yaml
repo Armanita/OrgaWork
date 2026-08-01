@@ -1,13 +1,14 @@
-name: orgawork-redis-local
+name: orgawork-data-local
 
 services:
   redis:
     image: redis:7.4.10-bookworm@sha256:fe24fa2bcb59930f8863cf36a472df24efaccd8be4ee98ffe528f06d57d68dc2
     container_name: orgawork-redis
     platform: linux/amd64
-    network_mode: bridge
-    tmpfs:
-      - /data
+    networks:
+      - orgawork_internal
+    volumes:
+      - orgawork_redis_data:/data
     command:
       - redis-server
       - --requirepass
@@ -15,6 +16,17 @@ services:
       - --save
       - ''
       - --appendonly
-      - 'no'
+      - 'yes'
+      - --appendfsync
+      - everysec
     ports:
       - '${REDIS_HOST:-127.0.0.1}:${REDIS_PORT:-6379}:6379'
+
+networks:
+  orgawork_internal:
+    name: orgawork-internal
+    driver: bridge
+
+volumes:
+  orgawork_redis_data:
+    name: orgawork-redis-data
