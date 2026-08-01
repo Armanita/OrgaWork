@@ -59,6 +59,10 @@ describe('الگوی امن محیط محلی', () => {
       'SCHEDULER_NAME',
       'SCHEDULER_INTERVAL_MS',
       'SCHEDULER_RUN_ONCE',
+      'POSTGRES_HOST',
+      'POSTGRES_PORT',
+      'POSTGRES_DB',
+      'POSTGRES_USER',
     ]);
   });
 
@@ -73,6 +77,10 @@ describe('الگوی امن محیط محلی', () => {
       SCHEDULER_NAME: 'orgawork-scheduler',
       SCHEDULER_INTERVAL_MS: '60000',
       SCHEDULER_RUN_ONCE: 'false',
+      POSTGRES_HOST: '127.0.0.1',
+      POSTGRES_PORT: '5432',
+      POSTGRES_DB: 'orgawork',
+      POSTGRES_USER: 'orgawork',
     });
 
     for (const [key, value] of entries) {
