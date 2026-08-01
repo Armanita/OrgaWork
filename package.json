@@ -21,7 +21,11 @@
     "build:apps": "turbo run build --filter=@workspace/web --filter=@workspace/api --filter=@workspace/worker --filter=@workspace/scheduler",
     "dev:apps": "turbo run dev --parallel --filter=@workspace/web --filter=@workspace/api --filter=@workspace/worker --filter=@workspace/scheduler",
     "start:apps": "pnpm build:apps \u0026\u0026 tsx tools/scripts/start-applications.ts",
-    "smoke:apps": "pnpm build:apps \u0026\u0026 tsx tools/checks/coordinated-applications-smoke.ts"
+    "smoke:apps": "pnpm build:apps \u0026\u0026 tsx tools/checks/coordinated-applications-smoke.ts",
+    "infra:start": "tsx tools/scripts/local-infrastructure.ts start",
+    "infra:stop": "tsx tools/scripts/local-infrastructure.ts stop",
+    "infra:report": "tsx tools/scripts/local-infrastructure.ts report",
+    "infra:cleanup": "tsx tools/scripts/local-infrastructure.ts cleanup"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
