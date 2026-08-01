@@ -735,12 +735,12 @@ GAP-###   شکاف ردیابی
 
 - وضعیت: در حال اجرا
 - خروجی هدف: PostgreSQL 16، Redis 7، MinIO
-- زیرمرحله بسته‌شده: `P1.4.4 — راه‌اندازی Redis 7 با نسخه ثابت`
-- زیرمرحله جاری: `P1.4.5 — راه‌اندازی MinIO با نسخه ثابت`
-- شواهد مرحله: `EVD-009`، `EVD-010`، `EVD-011` و `EVD-012`
+- زیرمرحله بسته‌شده: `P1.4.5 — راه‌اندازی MinIO با نسخه ثابت`
+- زیرمرحله جاری: `P1.4.6 — تعریف شبکه داخلی و Volumeهای پایدار`
+- شواهد مرحله: `EVD-009`، `EVD-010`، `EVD-011`، `EVD-012` و `EVD-013`
 - ریسک `RISK-003`: بسته‌شده
-- فرض `ASM-001`: در `P1.4.1` رد شد؛ Docker در `P1.4.3` نصب و پذیرفته شد
-- ادعای پیاده‌سازی فعلی: PostgreSQL 16.14 و Redis 7.4.10 محلی فعال‌اند؛ MinIO هنوز ایجاد نشده است
+- فرض `ASM-001`: در `P1.4.1` رفع شد؛ Docker در `P1.4.3` نصب و پذیرفته شد
+- ادعای پیاده‌سازی فعلی: PostgreSQL 16.14، Redis 7.4.10 و MinIO `RELEASE.2025-09-07T16-13-09Z` محلی فعال‌اند؛ شبکه اختصاصی و Volumeهای پایدار هنوز تعریف نشده‌اند
 
 ## 71. P1.5 — Migration و RLS
 
@@ -987,6 +987,36 @@ GAP-###   شکاف ردیابی
 - Commit فنی: `4a1f7fba8d625a26c7faf19c7e20ae35264759c0`
 - Tag اختصاصی: از قبل تعریف نشده بود و ایجاد نشد
 - انتقال رسمی: `P1.4.5 — راه‌اندازی MinIO با نسخه ثابت`
+
+## 95.5. EVD-013 — شاهد P1.4.5
+
+- منبع شاهد: فایل Compose، Docker Registry، اجرای واقعی MinIO، کنترل Endpointها و پذیرش احرازشده S3
+- وضعیت اعتبار: معتبر و ثبت‌شده
+- تصویر MinIO: `minio/minio:RELEASE.2025-09-07T16-13-09Z`
+- Digest معماری `linux/amd64`: `sha256:a1a8bd4ac40ad7881a245bab97323e18f971e4d4cba2c2007ec1bedd21cbaba2`
+- Container فعال: `orgawork-minio`
+- Compose Project: `orgawork-minio-local`
+- Compose Service: `minio`
+- نسخه واقعی Runtime: `RELEASE.2025-09-07T16-13-09Z`
+- API محلی: `127.0.0.1:9000`
+- Console محلی: `127.0.0.1:9001`
+- مسیر سلامت API: HTTP `200`
+- درخواست S3 بدون احراز هویت: HTTP `403`
+- درخواست احرازشده `ListBuckets` با AWS Signature Version 4: HTTP `200`
+- قرارداد XML احرازشده: `ListAllMyBucketsResult`
+- Console: HTTP `200`
+- Network Mode موقت: `bridge`
+- HostConfig Binds: `null`
+- ذخیره‌سازی موقت: `tmpfs` روی `/data`
+- Persistent Mount ایجادشده: `0`
+- Docker Volume پایدار ایجادشده: `0`
+- Credential واقعی ثبت‌شده در Git: `0`
+- سلامت PostgreSQL: `160014|orgawork|orgawork`
+- سلامت Redis: `PONG`
+- کنترل کامل پروژه: `10` فایل آزمون و `48/48` آزمون موفق
+- Commit فنی: `c95a5a527df830cd2847df8d17b11320fe34d061`
+- Tag اختصاصی: از قبل تعریف نشده بود و ایجاد نشد
+- انتقال رسمی: `P1.4.6 — تعریف شبکه داخلی و Volumeهای پایدار`
 
 ## 96. ماتریس آزمون زبان و زمان
 

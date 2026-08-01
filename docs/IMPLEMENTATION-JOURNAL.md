@@ -1189,3 +1189,58 @@ PostgreSQL 16.14 در زمان بسته‌شدن این زیرمرحله فعا�
 قید ادامه:
 
 PostgreSQL 16.14 و Redis 7.4.10 در زمان بسته‌شدن این زیرمرحله فعال‌اند، اما داده هر دو عمداً روی `tmpfs` قرار دارد. شبکه داخلی و Volumeهای پایدار فقط در `P1.4.6` تعریف می‌شوند. مرحله جاری بعدی فقط به راه‌اندازی MinIO با نسخه و Digest ثابت اختصاص دارد.
+
+## 70. بسته‌شدن P1.4.5 و انتقال به P1.4.6
+
+- وضعیت `P1.4.5`: بسته‌شده
+- هدف: راه‌اندازی MinIO با نسخه و Digest ثابت و پذیرش فنی واقعی S3
+- تصویر MinIO: `minio/minio:RELEASE.2025-09-07T16-13-09Z`
+- Digest معماری `linux/amd64`: `sha256:a1a8bd4ac40ad7881a245bab97323e18f971e4d4cba2c2007ec1bedd21cbaba2`
+- نام Container: `orgawork-minio`
+- Compose Project مستقل: `orgawork-minio-local`
+- Compose Service: `minio`
+- نسخه واقعی MinIO: `RELEASE.2025-09-07T16-13-09Z`
+- Endpoint محلی API: `127.0.0.1:9000`
+- Endpoint محلی Console: `127.0.0.1:9001`
+- Network Mode موقت: `bridge`
+- ذخیره‌سازی مرحله جاری: `tmpfs` روی `/data` و غیرپایدار
+- Bind Mount ایجادشده: `0`
+- Persistent Mount ایجادشده: `0`
+- Docker Volume پایدار ایجادشده: `0`
+- Credential واقعی: فقط در `.env.local` و خارج از Git
+- فایل Compose: `infra/compose/minio.compose.yaml`
+- وضعیت PostgreSQL هم‌زمان: `160014|orgawork|orgawork`
+- وضعیت Redis هم‌زمان: `PONG`
+
+شواهد آزمون و پذیرش:
+
+- کنترل تصویر و Digest ثابت معماری `linux/amd64`: موفق
+- کنترل نسخه واقعی داخل Container: موفق
+- مسیر سلامت API: HTTP `200`
+- دسترسی بدون احراز هویت به S3: با HTTP `403` رد شد
+- درخواست احرازشده `ListBuckets` با AWS Signature Version 4: HTTP `200`
+- پاسخ XML احرازشده: `ListAllMyBucketsResult`
+- دسترسی به Console: HTTP `200`
+- کنترل انتشار API و Console فقط روی `127.0.0.1`: موفق
+- کنترل `Binds=null`: موفق
+- کنترل `tmpfs` روی `/data`: موفق
+- کنترل نبود Persistent Mount و Docker Volume: موفق
+- سلامت هم‌زمان PostgreSQL 16.14: موفق
+- سلامت هم‌زمان Redis 7.4.10: موفق
+- کنترل نبود Credential واقعی در Diff و Stage: موفق
+- کنترل کامل `pnpm check`: موفق
+- تعداد فایل‌های آزمون: `10`
+- تعداد آزمون‌های موفق: `48/48`
+- `git diff --check`: موفق
+- فضای کاری پس از Commit فنی: پاک
+
+ثبت Git:
+
+- Commit فنی: `c95a5a527df830cd2847df8d17b11320fe34d061`
+- پیام Commit: `Stage P1.4.5: add pinned MinIO service`
+- Tag اختصاصی برای `P1.4.5` از قبل تعریف نشده بود و ایجاد نشد.
+- انتقال رسمی: `P1.4.6 — تعریف شبکه داخلی و Volumeهای پایدار`
+
+قید ادامه:
+
+PostgreSQL 16.14، Redis 7.4.10 و MinIO در زمان بسته‌شدن این زیرمرحله فعال‌اند، اما داده هر سه سرویس عمداً غیرپایدار است. شبکه داخلی اختصاصی و Volumeهای پایدار فقط در `P1.4.6` تعریف می‌شوند. Healthcheck و Readiness رسمی همچنان متعلق به `P1.4.7` است.
