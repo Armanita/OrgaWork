@@ -63,6 +63,8 @@ describe('الگوی امن محیط محلی', () => {
       'POSTGRES_PORT',
       'POSTGRES_DB',
       'POSTGRES_USER',
+      'REDIS_HOST',
+      'REDIS_PORT',
     ]);
   });
 
@@ -81,6 +83,8 @@ describe('الگوی امن محیط محلی', () => {
       POSTGRES_PORT: '5432',
       POSTGRES_DB: 'orgawork',
       POSTGRES_USER: 'orgawork',
+      REDIS_HOST: '127.0.0.1',
+      REDIS_PORT: '6379',
     });
 
     for (const [key, value] of entries) {

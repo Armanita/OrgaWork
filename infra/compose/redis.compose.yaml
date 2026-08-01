@@ -1,0 +1,20 @@
+name: orgawork-redis-local
+
+services:
+  redis:
+    image: redis:7.4.10-bookworm@sha256:fe24fa2bcb59930f8863cf36a472df24efaccd8be4ee98ffe528f06d57d68dc2
+    container_name: orgawork-redis
+    platform: linux/amd64
+    network_mode: bridge
+    tmpfs:
+      - /data
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env.local}
+      - --save
+      - ''
+      - --appendonly
+      - 'no'
+    ports:
+      - '${REDIS_HOST:-127.0.0.1}:${REDIS_PORT:-6379}:6379'
