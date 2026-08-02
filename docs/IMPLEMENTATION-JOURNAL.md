@@ -5,7 +5,7 @@
 - شناسه سند: `IMPLEMENTATION-JOURNAL`
 - نسخه بازبینی‌شده: `0.2.0`
 - وضعیت: دفتر تاریخی اجرای واقعی پروژه
-- تاریخ بازبینی فنی: `2026-08-01`
+- تاریخ بازبینی فنی: `2026-08-02`
 - شاخه مرجع: `main`
 - مرجع وضعیت جاری: `PROJECT-STATUS.md`
 - مرجع ترتیب آینده: `ROADMAP.md`
@@ -1471,3 +1471,56 @@ Healthcheck و Readiness رسمی سرویس‌ها فقط در `P1.4.7` تعر�
 قید ادامه:
 
 آزمون اتصال واقعی برنامه‌های Web، API، Worker و Scheduler به PostgreSQL، Redis و MinIO فقط در `P1.4.10` انجام می‌شود. آزمون رسمی ماندگاری محتوای داده پس از توقف و آغاز مجدد متعلق به `P1.4.11` است. هیچ Credential یا Secret واقعی نباید در Git ثبت شود.
+
+## 75. بسته‌شدن P1.4.10 و انتقال به P1.4.11
+
+- وضعیت `P1.4.10`: بسته‌شده
+- هدف: اثبات اتصال واقعی Web، API، Worker و Scheduler به PostgreSQL، Redis و MinIO محلی با عملیات فقط‌خواندنی و خروجی پاک‌سازی‌شده
+- دامنه عملیات: `SELECT 1` برای PostgreSQL، `PING` برای Redis و `HeadBucket` برای MinIO
+- Bucket هدف MinIO: `orgawork-files` با Policy خصوصی
+- ثبت Secret واقعی در Git یا خروجی آزمون: ممنوع
+
+خروجی‌های فنی:
+
+- بسته تنظیمات مشترک: `packages/configuration`
+- بسته اتصال PostgreSQL: `packages/database`
+- بسته اتصال Redis: `packages/queue`
+- بسته اتصال MinIO: `packages/storage`
+- مسیر اتصال API: `GET /connectivity`
+- مسیر اتصال Web: `GET /api/connectivity`
+- رخداد آغاز Worker و Scheduler: `connectivity-verified`
+- قرارداد نسخه‌ها: `tools/checks/application-connectivity-plan.ts`
+- آزمون قرارداد: `tools/checks/application-connectivity-contract.test.ts`
+
+شواهد آزمون و پذیرش:
+
+- آزمون قرارداد اتصال: `6/6` موفق
+- آزمون تنظیمات مشترک: `4/4` موفق
+- پذیرش واقعی API، Worker، Scheduler و Web در برابر هر سه سرویس: موفق
+- عملیات تغییردهنده داده در پذیرش واقعی: صفر
+- Secretهای چاپ‌شده در پذیرش واقعی: صفر
+- کنترل کامل `pnpm check`: موفق
+- تعداد فایل‌های آزمون: `20`
+- تعداد آزمون‌های موفق: `86/86`
+- ساخت Turbo برای چهار برنامه و چهار بسته وابسته: `8/8` موفق
+- `git diff --check`: موفق
+- `pnpm-workspace.yaml`: بدون تغییر
+- `.env.local`: ignored و ثبت‌نشده در Git
+
+خطاها و اصلاحات ثبت‌شده:
+
+- اجرای نخست پذیرش واقعی به‌دلیل Top-level Await در فایل موقت CommonJS متوقف شد؛ Importها به تابع `async` منتقل و پذیرش واقعی موفق شد.
+- Closure نخست وجود اسکریپت ریشه‌ای `build` را به‌اشتباه فرض کرد؛ فرمان‌های واقعی `pnpm check` و `pnpm build:apps` اجرا شدند.
+- بررسی پس از Commit به‌دلیل تفاوت جداکننده مسیر Windows و Git توقف کرد؛ دامنه Commit با مسیرهای نرمال‌شده دوباره بررسی و دقیقاً `40` فایل تأیید شد.
+
+ثبت Git:
+
+- Commit فنی: `707f3f855ccd3fe618d4fcf6d95daa2022143680`
+- پیام Commit: `P1.4.10: connect applications to local data services`
+- فایل‌های Commit فنی: `40` فایل دقیق
+- Tag اختصاصی از قبل تعریف نشده بود و ایجاد نشد.
+- انتقال رسمی: `P1.4.11 — آزمون پایداری داده پس از توقف و آغاز مجدد`
+
+قید ادامه:
+
+در `P1.4.11` باید محتوای واقعی و قابل‌شناسایی در PostgreSQL، Redis و MinIO ایجاد شود، سرویس‌ها با فرمان پذیرفته‌شده متوقف و دوباره آغاز شوند و حفظ همان محتوا بدون حذف یا بازسازی Volumeها اثبات شود. استفاده از `infra:cleanup`، حذف Volume یا تغییر Policy خصوصی Bucket مجاز نیست.
