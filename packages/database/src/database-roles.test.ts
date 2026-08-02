@@ -15,6 +15,7 @@ interface RoleInspectionRow extends QueryResultRow {
   readonly can_create_database: boolean;
   readonly can_create_role: boolean;
   readonly can_replicate: boolean;
+  readonly bypasses_rls: boolean;
   readonly can_connect: boolean;
   readonly can_use_public_schema: boolean;
   readonly can_create_in_public_schema: boolean;
@@ -42,6 +43,7 @@ function roleRow(
     can_create_database: false,
     can_create_role: false,
     can_replicate: false,
+    bypasses_rls: false,
     can_connect: true,
     can_use_public_schema: true,
     can_create_in_public_schema: migration,
@@ -147,6 +149,7 @@ describe('least-privilege PostgreSQL roles', () => {
       canCreateDatabase: false,
       canCreateRole: false,
       canReplicate: false,
+      bypassesRowLevelSecurity: false,
       canConnect: true,
       canUsePublicSchema: true,
       canCreateInPublicSchema: true,
@@ -180,6 +183,15 @@ describe('least-privilege PostgreSQL roles', () => {
     expectRoleError(error, 'ROLE_PRIVILEGE_MISMATCH', databaseRoleNames.migration);
   });
 
+  it('rejects a role that can bypass row-level security', async () => {
+    const fake = createExecutor([
+      roleRow(databaseRoleNames.migration),
+      roleRow(databaseRoleNames.runtime, { bypasses_rls: true }),
+    ]);
+    const error = await captureError(inspectLeastPrivilegeDatabaseRoles(fake.executor));
+
+    expectRoleError(error, 'ROLE_PRIVILEGE_MISMATCH', databaseRoleNames.runtime);
+  });
   it('rejects a migration role without schema creation or history write access', async () => {
     const fake = createExecutor([
       roleRow(databaseRoleNames.migration, { can_insert_migration_history: false }),

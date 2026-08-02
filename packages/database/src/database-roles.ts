@@ -36,6 +36,7 @@ export interface DatabaseRoleState {
   readonly canCreateDatabase: false;
   readonly canCreateRole: false;
   readonly canReplicate: false;
+  readonly bypassesRowLevelSecurity: false;
   readonly canConnect: true;
   readonly canUsePublicSchema: true;
   readonly canCreateInPublicSchema: boolean;
@@ -67,6 +68,7 @@ interface DatabaseRoleInspectionRow extends QueryResultRow {
   readonly can_create_database: boolean;
   readonly can_create_role: boolean;
   readonly can_replicate: boolean;
+  readonly bypasses_rls: boolean;
   readonly can_connect: boolean;
   readonly can_use_public_schema: boolean;
   readonly can_create_in_public_schema: boolean;
@@ -84,6 +86,7 @@ const roleInspectionSql = `
     roles.rolcreatedb AS can_create_database,
     roles.rolcreaterole AS can_create_role,
     roles.rolreplication AS can_replicate,
+    roles.rolbypassrls AS bypasses_rls,
     has_database_privilege(roles.oid, current_database(), 'CONNECT') AS can_connect,
     has_schema_privilege(roles.oid, 'public', 'USAGE') AS can_use_public_schema,
     has_schema_privilege(roles.oid, 'public', 'CREATE') AS can_create_in_public_schema,
@@ -167,6 +170,7 @@ function assertSharedLeastPrivilege(row: DatabaseRoleInspectionRow, role: Databa
     row.can_create_database ||
     row.can_create_role ||
     row.can_replicate ||
+    row.bypasses_rls ||
     !row.can_connect ||
     !row.can_use_public_schema ||
     row.can_update_migration_history ||
@@ -212,6 +216,7 @@ function toRoleState(row: DatabaseRoleInspectionRow, role: DatabaseRoleName): Da
     canCreateDatabase: false,
     canCreateRole: false,
     canReplicate: false,
+    bypassesRowLevelSecurity: false,
     canConnect: true,
     canUsePublicSchema: true,
     canCreateInPublicSchema: row.can_create_in_public_schema,
