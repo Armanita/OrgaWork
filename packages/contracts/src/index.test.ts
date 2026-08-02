@@ -14,6 +14,9 @@ import {
   normalizeFilterSpec,
   normalizePageRequest,
   normalizeSortSpec,
+  contractOperations,
+  parseHealthResponse,
+  parseReadinessResponse,
 } from './index.js';
 
 const identifiers = {
@@ -126,5 +129,60 @@ describe('shared contract foundations', () => {
       organizationId: identifiers.organization,
       requestId: identifiers.request,
     });
+  });
+});
+
+describe('operational HTTP contracts', () => {
+  it('exposes stable health and readiness operations', () => {
+    expect(contractOperations).toEqual({
+      health: {
+        operationId: 'getHealth',
+        method: 'GET',
+        path: '/health',
+      },
+      readiness: {
+        operationId: 'getReadiness',
+        method: 'GET',
+        path: '/ready',
+      },
+    });
+  });
+
+  it('parses a valid health response', () => {
+    expect(
+      parseHealthResponse({
+        service: 'orgawork-api',
+        status: 'ok',
+        timestamp: '2026-08-03T00:00:00.000Z',
+      }),
+    ).toEqual({
+      service: 'orgawork-api',
+      status: 'ok',
+      timestamp: '2026-08-03T00:00:00.000Z',
+    });
+  });
+
+  it('parses a valid readiness response', () => {
+    expect(
+      parseReadinessResponse({
+        service: 'orgawork-api',
+        status: 'ready',
+        timestamp: '2026-08-03T00:00:00.000Z',
+      }),
+    ).toEqual({
+      service: 'orgawork-api',
+      status: 'ready',
+      timestamp: '2026-08-03T00:00:00.000Z',
+    });
+  });
+
+  it('rejects malformed operational responses', () => {
+    expect(() =>
+      parseHealthResponse({
+        service: 'orgawork-api',
+        status: 'ready',
+        timestamp: 'secret=value',
+      }),
+    ).toThrow(TypeError);
   });
 });

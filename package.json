@@ -5,8 +5,8 @@
   "type": "module",
   "packageManager": "pnpm@11.17.0",
   "engines": {
-    "node": "\u003e=24.0.0 \u003c25",
-    "pnpm": "\u003e=11.0.0 \u003c12"
+    "node": ">=24.0.0 <25",
+    "pnpm": ">=11.0.0 <12"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -17,16 +17,17 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "check": "pnpm format:check \u0026\u0026 pnpm lint \u0026\u0026 pnpm typecheck \u0026\u0026 pnpm test",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
     "build:apps": "turbo run build --filter=@workspace/web --filter=@workspace/api --filter=@workspace/worker --filter=@workspace/scheduler",
     "dev:apps": "turbo run dev --parallel --filter=@workspace/web --filter=@workspace/api --filter=@workspace/worker --filter=@workspace/scheduler",
-    "start:apps": "pnpm build:apps \u0026\u0026 tsx tools/scripts/start-applications.ts",
-    "smoke:apps": "pnpm build:apps \u0026\u0026 tsx tools/checks/coordinated-applications-smoke.ts",
+    "start:apps": "pnpm build:apps && tsx tools/scripts/start-applications.ts",
+    "smoke:apps": "pnpm build:apps && tsx tools/checks/coordinated-applications-smoke.ts",
     "infra:start": "tsx tools/scripts/local-infrastructure.ts start",
     "infra:stop": "tsx tools/scripts/local-infrastructure.ts stop",
     "infra:report": "tsx tools/scripts/local-infrastructure.ts report",
     "infra:persistence": "tsx tools/scripts/local-data-persistence.ts",
-    "infra:cleanup": "tsx tools/scripts/local-infrastructure.ts cleanup"
+    "infra:cleanup": "tsx tools/scripts/local-infrastructure.ts cleanup",
+    "contract:check": "tsx tools/checks/contract-drift.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

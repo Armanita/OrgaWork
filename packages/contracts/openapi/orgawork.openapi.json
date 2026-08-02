@@ -1,0 +1,281 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OrgaWork API",
+    "version": "1.0.0",
+    "description": "قرارداد پایه و نسخه‌دار رابط برنامه‌نویسی OrgaWork"
+  },
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "servers": [
+    {
+      "url": "http://127.0.0.1:3001",
+      "description": "محیط محلی"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "summary": "بررسی زنده‌بودن رابط برنامه‌نویسی",
+        "responses": {
+          "200": {
+            "description": "رابط برنامه‌نویسی زنده است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "operationId": "getReadiness",
+        "summary": "بررسی آمادگی رابط برنامه‌نویسی",
+        "responses": {
+          "200": {
+            "description": "رابط برنامه‌نویسی آماده است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadinessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "RequestId": {
+        "name": "X-Request-Id",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Uuid"
+        }
+      },
+      "CorrelationId": {
+        "name": "X-Correlation-Id",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Uuid"
+        }
+      },
+      "SessionId": {
+        "name": "X-Session-Id",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Uuid"
+        }
+      },
+      "OrganizationId": {
+        "name": "X-Organization-Id",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Uuid"
+        }
+      },
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Uuid"
+        }
+      }
+    },
+    "schemas": {
+      "Uuid": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "UtcTimestamp": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "HealthResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["service", "status", "timestamp"],
+        "properties": {
+          "service": {
+            "const": "orgawork-api"
+          },
+          "status": {
+            "const": "ok"
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/UtcTimestamp"
+          }
+        }
+      },
+      "ReadinessResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["service", "status", "timestamp"],
+        "properties": {
+          "service": {
+            "const": "orgawork-api"
+          },
+          "status": {
+            "const": "ready"
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/UtcTimestamp"
+          }
+        }
+      },
+      "ResponseMeta": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["requestId", "correlationId", "timestamp", "contractVersion"],
+        "properties": {
+          "requestId": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "correlationId": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/UtcTimestamp"
+          },
+          "contractVersion": {
+            "const": "1.0.0"
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ok", "data", "meta"],
+        "properties": {
+          "ok": {
+            "const": true
+          },
+          "data": {},
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ok", "error", "meta"],
+        "properties": {
+          "ok": {
+            "const": false
+          },
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "message"],
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "VALIDATION_ERROR",
+                  "UNAUTHENTICATED",
+                  "FORBIDDEN",
+                  "NOT_FOUND",
+                  "CONFLICT",
+                  "RATE_LIMITED",
+                  "SERVICE_UNAVAILABLE",
+                  "INTERNAL_ERROR"
+                ]
+              },
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "field": {
+                "type": "string"
+              }
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        }
+      },
+      "PageRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["page", "pageSize"],
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      },
+      "SortSpec": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "direction"],
+        "properties": {
+          "field": {
+            "type": "string",
+            "pattern": "^[a-z][a-zA-Z0-9_.]{0,63}$"
+          },
+          "direction": {
+            "type": "string",
+            "enum": ["asc", "desc"]
+          }
+        }
+      },
+      "FilterSpec": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "operator", "value"],
+        "properties": {
+          "field": {
+            "type": "string",
+            "pattern": "^[a-z][a-zA-Z0-9_.]{0,63}$"
+          },
+          "operator": {
+            "type": "string",
+            "enum": ["eq", "neq", "contains", "startsWith", "gt", "gte", "lt", "lte", "in"]
+          },
+          "value": {}
+        }
+      },
+      "SessionOrganizationContext": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sessionId", "userId", "organizationId", "requestId", "correlationId"],
+        "properties": {
+          "sessionId": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "userId": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "organizationId": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "requestId": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "correlationId": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      }
+    }
+  }
+}

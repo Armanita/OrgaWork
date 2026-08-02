@@ -1,26 +1,27 @@
 {
-  "name": "@workspace/contracts",
+  "name": "@workspace/api-client",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "main": "./dist/index.js",
-  "types": "./src/index.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./openapi": "./openapi/orgawork.openapi.json"
+    }
   },
   "files": [
-    "dist",
-    "openapi"
+    "dist"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@workspace/contracts": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "24.13.3",

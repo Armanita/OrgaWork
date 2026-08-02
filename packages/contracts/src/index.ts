@@ -268,3 +268,61 @@ export function createSessionOrganizationContext(input: {
     correlationId: createCorrelationId(input.correlationId),
   };
 }
+
+export interface HealthResponse {
+  readonly service: 'orgawork-api';
+  readonly status: 'ok';
+  readonly timestamp: UtcTimestamp;
+}
+
+export interface ReadinessResponse {
+  readonly service: 'orgawork-api';
+  readonly status: 'ready';
+  readonly timestamp: UtcTimestamp;
+}
+
+export const contractOperations = {
+  health: {
+    operationId: 'getHealth',
+    method: 'GET',
+    path: '/health',
+  },
+  readiness: {
+    operationId: 'getReadiness',
+    method: 'GET',
+    path: '/ready',
+  },
+} as const;
+
+function isContractRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function parseOperationalResponse(value: unknown, status: 'ok' | 'ready'): UtcTimestamp {
+  if (
+    !isContractRecord(value) ||
+    value['service'] !== 'orgawork-api' ||
+    value['status'] !== status ||
+    typeof value['timestamp'] !== 'string'
+  ) {
+    throw new TypeError('پاسخ عملیاتی رابط برنامه‌نویسی معتبر نیست.');
+  }
+
+  return createUtcTimestamp(value['timestamp']);
+}
+
+export function parseHealthResponse(value: unknown): HealthResponse {
+  return {
+    service: 'orgawork-api',
+    status: 'ok',
+    timestamp: parseOperationalResponse(value, 'ok'),
+  };
+}
+
+export function parseReadinessResponse(value: unknown): ReadinessResponse {
+  return {
+    service: 'orgawork-api',
+    status: 'ready',
+    timestamp: parseOperationalResponse(value, 'ready'),
+  };
+}
