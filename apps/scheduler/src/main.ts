@@ -1,3 +1,4 @@
+import { verifySchedulerConnectivity } from './connectivity.js';
 import { resolveSchedulerRuntimeConfiguration } from './runtime-configuration.js';
 import { runScheduler, type SchedulerRunReport } from './scheduler.js';
 
@@ -9,25 +10,23 @@ interface SchedulerLogEvent {
 }
 
 function writeOutput(event: SchedulerLogEvent): void {
-  process.stdout.write(`${JSON.stringify(event)}\n`);
+  process.stdout.write(JSON.stringify(event) + '\n');
 }
 
 function writeError(error: unknown): void {
   const detail = error instanceof Error ? error.message : 'خطای ناشناخته رخ داد.';
-
   process.stderr.write(
-    `${JSON.stringify({
+    JSON.stringify({
       service: 'orgawork-scheduler',
       event: 'scheduler-failed',
       message: 'اجرای زمان‌بند ناموفق بود.',
       detail,
-    })}\n`,
+    }) + '\n',
   );
 }
 
 async function main(): Promise<void> {
   const configuration = resolveSchedulerRuntimeConfiguration();
-
   const controller = new AbortController();
 
   function requestShutdown(): void {
@@ -38,6 +37,8 @@ async function main(): Promise<void> {
   process.once('SIGTERM', requestShutdown);
 
   try {
+    writeOutput({ ...(await verifySchedulerConnectivity()) });
+
     await runScheduler({
       name: configuration.name,
       intervalMilliseconds: configuration.intervalMilliseconds,

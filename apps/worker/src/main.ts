@@ -1,3 +1,4 @@
+import { verifyWorkerConnectivity } from './connectivity.js';
 import { resolveWorkerRuntimeConfiguration } from './runtime-configuration.js';
 import { runWorker, type WorkerCycleReport } from './worker.js';
 
@@ -9,19 +10,18 @@ interface WorkerLogEvent {
 }
 
 function writeOutput(event: WorkerLogEvent): void {
-  process.stdout.write(`${JSON.stringify(event)}\n`);
+  process.stdout.write(JSON.stringify(event) + '\n');
 }
 
 function writeError(error: unknown): void {
   const detail = error instanceof Error ? error.message : 'خطای ناشناخته رخ داد.';
-
   process.stderr.write(
-    `${JSON.stringify({
+    JSON.stringify({
       service: 'orgawork-worker',
       event: 'worker-failed',
       message: 'اجرای پردازشگر پس‌زمینه ناموفق بود.',
       detail,
-    })}\n`,
+    }) + '\n',
   );
 }
 
@@ -37,6 +37,8 @@ async function main(): Promise<void> {
   process.once('SIGTERM', requestShutdown);
 
   try {
+    writeOutput({ ...(await verifyWorkerConnectivity()) });
+
     await runWorker({
       name: configuration.name,
       pollingIntervalMilliseconds: configuration.pollingIntervalMilliseconds,

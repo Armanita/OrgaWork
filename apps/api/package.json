@@ -12,6 +12,10 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@workspace/configuration": "workspace:*",
+    "@workspace/database": "workspace:*",
+    "@workspace/queue": "workspace:*",
+    "@workspace/storage": "workspace:*",
     "fastify": "5.10.0"
   },
   "devDependencies": {

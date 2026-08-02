@@ -11,6 +11,12 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
   },
+  "dependencies": {
+    "@workspace/configuration": "workspace:*",
+    "@workspace/database": "workspace:*",
+    "@workspace/queue": "workspace:*",
+    "@workspace/storage": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "24.13.3",
     "@workspace/eslint-config": "workspace:*",
