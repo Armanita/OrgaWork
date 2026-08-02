@@ -314,3 +314,5 @@ export async function probePostgreSqlConnectivity(
     await client.end();
   }
 }
+
+export * from './migrations.js';
