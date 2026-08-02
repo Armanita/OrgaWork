@@ -318,3 +318,5 @@ export async function probePostgreSqlConnectivity(
 export * from './migrations.js';
 
 export * from './migration-history.js';
+
+export * from './database-roles.js';
