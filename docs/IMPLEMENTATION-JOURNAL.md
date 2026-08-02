@@ -1776,3 +1776,33 @@ Healthcheck و Readiness رسمی سرویس‌ها فقط در `P1.4.7` تعر�
 قید ادامه:
 
 مرحله `P1.7` باید بدون ورود زودهنگام به طراحی واقعی رابط کاربری اجرا شود.
+
+## 83. بسته نخست P1.7 و انتقال به P1.7.5
+
+- زیرمرحله‌های بسته‌شده: `P1.7.1` تا `P1.7.4`
+- انتقال رسمی: `P1.7.5 — ایجاد سنجه‌های پایه رابط برنامه‌نویسی`
+
+خروجی‌های فنی:
+
+- بسته جدید `@workspace/observability`
+- Structured Logger مشترک با خروجی JSON Line
+- Request ID و Correlation ID معتبر و نسخه‌پذیر
+- W3C Trace Parent، Trace ID، Span ID و Child Span
+- Async Context مشترک با AsyncLocalStorage
+- Redaction مرکزی برای Password، Secret، Token، Authorization، Cookie، API Key و URI Credential
+- ثبت مستقیم Hookهای مشاهده‌پذیری روی نمونه اصلی API و پاسخ Headerهای درخواست و Trace
+- استفاده Worker و Scheduler از Logger مشترک
+
+پذیرش:
+
+- آزمون‌های متمرکز مشاهده‌پذیری: موفق
+- آزمون Request Header و Trace Header: موفق
+- Lint، Typecheck و Build: موفق
+- کنترل کامل پروژه: موفق
+- Build مستقیم برنامه‌ها بدون Turbo: موفق
+- Commit فنی: `5bb17a094ba2fa3dfc25fed565e404f676c403f7`
+- Tag اختصاصی ایجاد نشد.
+
+قید ادامه:
+
+سنجه‌های API، پایگاه داده، صف و پردازشگر در بسته دوم P1.7 انجام می‌شوند. طراحی واقعی رابط کاربری همچنان خارج از دامنه است.
