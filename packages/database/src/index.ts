@@ -322,3 +322,5 @@ export * from './migration-history.js';
 export * from './database-roles.js';
 
 export * from './tenant-runtime.js';
+
+export * from './migration-integrity.js';
