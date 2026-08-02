@@ -25,6 +25,7 @@
     "infra:start": "tsx tools/scripts/local-infrastructure.ts start",
     "infra:stop": "tsx tools/scripts/local-infrastructure.ts stop",
     "infra:report": "tsx tools/scripts/local-infrastructure.ts report",
+    "infra:persistence": "tsx tools/scripts/local-data-persistence.ts",
     "infra:cleanup": "tsx tools/scripts/local-infrastructure.ts cleanup"
   },
   "devDependencies": {
