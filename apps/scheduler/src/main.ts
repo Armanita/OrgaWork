@@ -1,28 +1,18 @@
-import { verifySchedulerConnectivity } from './connectivity.js';
+import {
+  createObservabilityContext,
+  createStructuredLogger,
+  runWithObservabilityContext,
+} from '@workspace/observability';
+
 import { resolveSchedulerRuntimeConfiguration } from './runtime-configuration.js';
 import { runScheduler, type SchedulerRunReport } from './scheduler.js';
 
-interface SchedulerLogEvent {
-  readonly service: string;
-  readonly event: string;
-  readonly message: string;
-  readonly [key: string]: unknown;
-}
-
-function writeOutput(event: SchedulerLogEvent): void {
-  process.stdout.write(JSON.stringify(event) + '\n');
-}
+const logger = createStructuredLogger({
+  service: 'orgawork-scheduler',
+});
 
 function writeError(error: unknown): void {
-  const detail = error instanceof Error ? error.message : 'خطای ناشناخته رخ داد.';
-  process.stderr.write(
-    JSON.stringify({
-      service: 'orgawork-scheduler',
-      event: 'scheduler-failed',
-      message: 'اجرای زمان‌بند ناموفق بود.',
-      detail,
-    }) + '\n',
-  );
+  logger.error('scheduler-failed', 'اجرای زمان‌بند ناموفق بود.', { error });
 }
 
 async function main(): Promise<void> {
@@ -37,7 +27,10 @@ async function main(): Promise<void> {
   process.once('SIGTERM', requestShutdown);
 
   try {
-    writeOutput({ ...(await verifySchedulerConnectivity()) });
+    logger.info('scheduler-started', 'زمان‌بند آغاز شد.', {
+      intervalMilliseconds: configuration.intervalMilliseconds,
+      runOnce: configuration.runOnce,
+    });
 
     await runScheduler({
       name: configuration.name,
@@ -45,18 +38,16 @@ async function main(): Promise<void> {
       runOnce: configuration.runOnce,
       signal: controller.signal,
       onRun: (report: SchedulerRunReport) => {
-        writeOutput({
-          ...report,
-          event: 'schedule-run-completed',
-          message: 'اجرای زمان‌بندی‌شده با موفقیت انجام شد.',
+        runWithObservabilityContext(createObservabilityContext(), () => {
+          logger.info('schedule-run-completed', 'اجرای زمان‌بندی‌شده با موفقیت انجام شد.', {
+            ...report,
+            heartbeatAt: report.completedAt,
+          });
         });
       },
     });
 
-    writeOutput({
-      service: configuration.name,
-      event: 'scheduler-stopped',
-      message: 'زمان‌بند با موفقیت متوقف شد.',
+    logger.info('scheduler-stopped', 'زمان‌بند با موفقیت متوقف شد.', {
       reason: configuration.runOnce ? 'run-once' : 'shutdown-signal',
     });
   } finally {

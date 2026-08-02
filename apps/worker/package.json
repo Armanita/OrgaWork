@@ -15,7 +15,8 @@
     "@workspace/configuration": "workspace:*",
     "@workspace/database": "workspace:*",
     "@workspace/queue": "workspace:*",
-    "@workspace/storage": "workspace:*"
+    "@workspace/storage": "workspace:*",
+    "@workspace/observability": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "24.13.3",
