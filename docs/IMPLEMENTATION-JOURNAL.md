@@ -1986,3 +1986,34 @@ P2.2 فقط مدل دامنه را ایجاد می‌کند. Migration، ذخی�
 مرز ادامه:
 
 هیچ Migration، جدول، RLS، Hash گذرواژه، Endpoint یا رابط کاربری در P2.2 ایجاد نشده است. P2.3 مالک تبدیل مدل خالص به Schema پایدار و جداسازی سازمانی است.
+
+## 90. بسته‌شدن P2.3 و انتقال به P2.4
+
+- زیرمرحله بسته‌شده: `P2.3 — ایجاد مهاجرت‌ها و سیاست‌های جداسازی سازمانی`
+- انتقال رسمی: `P2.4 — پیاده‌سازی ذخیره امن گذرواژه`
+
+خروجی‌های پذیرفته‌شده:
+
+- Migration نسخه `0004` برای User، Organization، Membership، Team و TeamMembership
+- یکتایی ایمیل نرمال‌شده و رابطه User/Organization
+- Composite Foreign Key برای Team و Membership هم‌سازمان
+- Triggerهای Transition و نسخه موجودیت
+- جلوگیری واقعی از افزودن Membership غیرفعال به Team
+- RLS فعال و اجباری روی چهار جدول سازمانی
+- Policy مبتنی بر `orgawork_current_organization_id()`
+- آزمون واقعی نبود Tenant Context، جداسازی دو سازمان و درج بین‌سازمانی
+- اجرای دوباره Migration با تاریخچه و Fingerprint ثابت
+
+پذیرش:
+
+- آزمون‌های متمرکز Schema و Audit: موفق
+- Migration واقعی PostgreSQL: موفق
+- آزمون منفی RLS و Composite Constraint: موفق
+- کنترل کامل پروژه: موفق
+- Commit فنی: `00863aaace2515b69e8b66a20cf54ebf61a3848c`
+- Evidence: `EVD-033`
+- Tag اختصاصی: ایجاد نشد
+
+مرز ادامه:
+
+P2.4 مالک PasswordCredential، Argon2id و Benchmark است. هیچ جدول Session، Invitation، Endpoint یا رابط کاربری در P2.3 ایجاد نشده است. توقف اجباری پیش از P2.13 فعال باقی می‌ماند.

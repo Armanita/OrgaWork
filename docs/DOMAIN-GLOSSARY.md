@@ -2575,3 +2575,33 @@ Snapshot نهایی گزارش تغییر نمی‌کند.
 ## 243. ناوردای TeamMembership
 
 TeamMembership فقط برای Membership فعال و هم‌سازمان ایجاد می‌شود و حذف آن Membership سازمانی را حذف یا لغو نمی‌کند.
+
+# الحاقیه P2.3 — واژگان Persistence و جداسازی
+
+## 244. User سراسری
+
+رکورد `orgawork_users` هویت مستقل از Organization است. عضویت سازمانی فقط از طریق Membership ایجاد می‌شود.
+
+## 245. جدول سازمانی
+
+جدولی است که مالکیت آن با Organization تعیین می‌شود و Runtime فقط با Tenant Context همان Organization به آن دسترسی دارد.
+
+## 246. کلید خارجی مرکب سازمانی
+
+Foreign Key شامل شناسه منبع و `organization_id` است تا رابطه میان رکوردهای دو سازمان متفاوت در PostgreSQL ناممکن شود.
+
+## 247. RLS اجباری
+
+ترکیب `ENABLE ROW LEVEL SECURITY` و `FORCE ROW LEVEL SECURITY` است که Policy سازمان را برای نقش Runtime و مالک عادی جدول اعمال می‌کند.
+
+## 248. Trigger انتقال وضعیت
+
+Trigger پایگاه داده‌ای است که Transitionهای مصوب دامنه و افزایش Version را هنگام UPDATE کنترل می‌کند.
+
+## 249. Migration اثرانگشت‌دار
+
+Migration نسخه‌داری است که متن آن با SHA-256 در `orgawork_migration_history` ثبت می‌شود و تغییر بعد از اعمال را رد می‌کند.
+
+## 250. مرز P2.3
+
+این مرز شامل Schema هویت و سازمان، Constraint، Trigger و RLS است و شامل PasswordCredential، Session، Invitation، Endpoint و UI نیست.

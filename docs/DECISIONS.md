@@ -932,3 +932,35 @@ Membership رابطه User و Organization است. TeamMembership به Membershi
 - وضعیت: `پذیرفته‌شده`
 
 مدل‌های P2.2 هیچ SQL، Repository اجرایی یا ORM ندارند. Mapping به PostgreSQL، Composite Constraint و RLS فقط در P2.3 انجام می‌شود.
+
+# الحاقیه P2.3 — Schema هویت و جداسازی سازمانی
+
+## DEC-P23-001 — User سراسری و جداول سازمانی RLS
+
+- وضعیت: `پذیرفته‌شده`
+
+User هویت سراسری است و RLS سازمانی ندارد. Organization، Membership، Team و TeamMembership جداول سازمانی هستند و RLS آن‌ها فعال و اجباری است.
+
+## DEC-P23-002 — روابط مرکب هم‌سازمان
+
+- وضعیت: `پذیرفته‌شده`
+
+TeamMembership با Foreign Key مرکب `(team_id, organization_id)` و `(membership_id, organization_id)` از اتصال دو سازمان متفاوت جلوگیری می‌کند. یکتایی Membership در Organization و عضویت در Team نیز در PostgreSQL اعمال می‌شود.
+
+## DEC-P23-003 — Transition و نسخه در مرز داده
+
+- وضعیت: `پذیرفته‌شده`
+
+Transitionهای User و Membership، مالکیت تغییرناپذیر و افزایش دقیق Version با Trigger کنترل می‌شوند. TeamMembership فقط برای Membership فعال ساخته می‌شود.
+
+## DEC-P23-004 — زمینه سازمان فقط داخل Transaction
+
+- وضعیت: `پذیرفته‌شده`
+
+Policyها فقط از `orgawork_current_organization_id()` استفاده می‌کنند و Runtime با `SET LOCAL` داخل Transaction زمینه سازمان را اعمال می‌کند. نبود زمینه، مشاهده یا درج داده سازمانی را مجاز نمی‌کند.
+
+## DEC-P23-005 — مرز Persistence مرحله
+
+- وضعیت: `پذیرفته‌شده`
+
+PasswordCredential، Session و Invitation عمداً در P2.3 ساخته نمی‌شوند و به مراحل مالک خود منتقل می‌شوند. ORM جدید نیز وارد پروژه نشده است.
