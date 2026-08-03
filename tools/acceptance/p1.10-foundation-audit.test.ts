@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   inspectFoundationAcceptance,
+  isPostFoundationStage,
   p110RequirementIds,
   type FoundationAcceptanceMode,
 } from './p1.10-foundation-audit.js';
@@ -12,9 +13,7 @@ import {
 function currentMode(): FoundationAcceptanceMode {
   const roadmap = readFileSync(resolve(process.cwd(), 'docs/ROADMAP.md'), 'utf8');
 
-  return roadmap.includes('- مرحله جاری: `P2.1 تثبیت قرارداد دامنه هویت و سازمان`')
-    ? 'closed'
-    : 'pre';
+  return roadmap.includes('- [x] P1.10.11 ') ? 'closed' : 'pre';
 }
 
 describe('P1.10 foundation acceptance audit', () => {
@@ -46,6 +45,15 @@ describe('P1.10 foundation acceptance audit', () => {
     expect(report.workspaces).toBeGreaterThanOrEqual(13);
     expect(report.sourceFiles).toBeGreaterThanOrEqual(68);
     expect(report.evidenceCount).toBe(report.mode === 'closed' ? 30 : 29);
+  });
+
+  it('remains valid after the project advances beyond P2.1', () => {
+    expect(isPostFoundationStage('P2.1 تثبیت قرارداد')).toBe(true);
+    expect(isPostFoundationStage('P2.2 ایجاد مدل دامنه')).toBe(true);
+    expect(isPostFoundationStage('P3.1 آغاز قابلیت‌ها')).toBe(true);
+    expect(isPostFoundationStage('P12.1 پذیرش نهایی')).toBe(true);
+    expect(isPostFoundationStage('P1.10 پذیرش بنیاد')).toBe(false);
+    expect(isPostFoundationStage('invalid')).toBe(false);
   });
 
   it('includes repository security and package coverage in the report', () => {

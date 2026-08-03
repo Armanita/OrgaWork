@@ -44,7 +44,10 @@
     "ci:p1.9": "vitest run tools/spikes/p1.9-models.test.ts tools/spikes/p1.9-report.test.ts tools/checks/p1.9-acceptance.test.ts",
     "accept:p1.10:audit": "tsx tools/acceptance/p1.10-foundation-audit.ts auto",
     "accept:p1.10:audit:pre": "tsx tools/acceptance/p1.10-foundation-audit.ts pre",
-    "accept:p1.10:audit:closed": "tsx tools/acceptance/p1.10-foundation-audit.ts closed"
+    "accept:p1.10:audit:closed": "tsx tools/acceptance/p1.10-foundation-audit.ts closed",
+    "accept:p2.1:audit": "tsx tools/acceptance/p2.1-identity-organization-contract-audit.ts auto",
+    "accept:p2.1:audit:pre": "tsx tools/acceptance/p2.1-identity-organization-contract-audit.ts pre",
+    "accept:p2.1:audit:closed": "tsx tools/acceptance/p2.1-identity-organization-contract-audit.ts closed"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

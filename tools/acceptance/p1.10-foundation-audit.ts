@@ -69,9 +69,7 @@ function resolveMode(
     return requestedMode;
   }
 
-  return roadmap.includes('- مرحله جاری: `P2.1 تثبیت قرارداد دامنه هویت و سازمان`')
-    ? 'closed'
-    : 'pre';
+  return roadmap.includes('- [x] P1.10.11 ') ? 'closed' : 'pre';
 }
 
 function checklistPattern(stage: string, checked: boolean): RegExp {
@@ -85,6 +83,23 @@ function requireMarker(issues: string[], content: string, marker: string, label:
   if (!content.includes(marker)) {
     issues.push(`${label}: ${marker}`);
   }
+}
+
+export function isPostFoundationStage(stage: string): boolean {
+  const match = /^P(\d+)(?:\.|$)/u.exec(stage);
+  const major = match?.[1];
+
+  return major !== undefined && Number.parseInt(major, 10) >= 2;
+}
+
+function roadmapCurrentStage(roadmap: string): string | undefined {
+  return /^- مرحله جاری: `([^`]+)`/mu.exec(roadmap)?.[1];
+}
+
+function statusCurrentStages(status: string): readonly string[] {
+  return [...status.matchAll(/^- زیرمرحله جاری: `([^`]+)`/gmu)]
+    .map((match) => match[1])
+    .filter((stage): stage is string => stage !== undefined);
 }
 
 export function inspectFoundationAcceptance(
@@ -151,23 +166,25 @@ export function inspectFoundationAcceptance(
       'وضعیت جاری پیش از پذیرش',
     );
   } else {
-    requireMarker(
-      issues,
-      roadmap,
-      '- مرحله جاری: `P2.1 تثبیت قرارداد دامنه هویت و سازمان`',
-      'مرحله جاری پس از پذیرش',
-    );
-    requireMarker(
-      issues,
-      roadmap,
-      '- آخرین زیرمرحله بسته‌شده: `P1.10.11 — ایجاد کامیت و برچسب بسته‌شدن P1`',
-      'آخرین زیرمرحله بسته‌شده',
-    );
+    const currentRoadmapStage = roadmapCurrentStage(roadmap);
+    const currentStatusStages = statusCurrentStages(status);
+
+    if (currentRoadmapStage === undefined || !isPostFoundationStage(currentRoadmapStage)) {
+      issues.push(`مرحله جاری باید پس از بنیاد P1 باشد: ${String(currentRoadmapStage)}`);
+    }
+
+    if (
+      currentStatusStages.length === 0 ||
+      currentStatusStages.some((stage) => !isPostFoundationStage(stage))
+    ) {
+      issues.push(`وضعیت جاری باید پس از بنیاد P1 باشد: ${currentStatusStages.join(', ')}`);
+    }
+
     requireMarker(
       issues,
       status,
-      '- زیرمرحله جاری: `P2.1 — تثبیت قرارداد دامنه هویت و سازمان`',
-      'وضعیت جاری پس از پذیرش',
+      '- فاز بنیاد محصول: تکمیل و بسته‌شده',
+      'وضعیت بسته‌شدن بنیاد محصول',
     );
     requireMarker(
       issues,
