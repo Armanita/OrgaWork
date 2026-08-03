@@ -27,7 +27,17 @@
     "infra:report": "tsx tools/scripts/local-infrastructure.ts report",
     "infra:persistence": "tsx tools/scripts/local-data-persistence.ts",
     "infra:cleanup": "tsx tools/scripts/local-infrastructure.ts cleanup",
-    "contract:check": "tsx tools/checks/contract-drift.ts"
+    "contract:check": "tsx tools/checks/contract-drift.ts",
+    "test:ci": "vitest run --config vitest.ci.config.ts",
+    "test:coverage:ci": "vitest run --config vitest.ci.config.ts --coverage",
+    "build:foundation:direct": "pnpm --filter @workspace/configuration build && pnpm --filter @workspace/contracts build && pnpm --filter @workspace/api-client build && pnpm --filter @workspace/observability build && pnpm --filter @workspace/database build && pnpm --filter @workspace/queue build && pnpm --filter @workspace/storage build",
+    "build:apps:direct": "pnpm build:foundation:direct && pnpm --filter @workspace/api build && pnpm --filter @workspace/worker build && pnpm --filter @workspace/scheduler build && pnpm --filter @workspace/web build",
+    "ci:contracts": "vitest run tools/checks/contract-drift.test.ts tools/checks/api-contract-compatibility.test.ts",
+    "ci:migrations": "vitest run packages/database/src/migrations.test.ts packages/database/src/migration-history.test.ts packages/database/src/migration-integrity.test.ts packages/database/src/database-roles.test.ts packages/database/src/tenant-runtime.test.ts",
+    "ci:architecture": "tsx tools/checks/architecture-policy.ts",
+    "ci:security": "tsx tools/checks/repository-security.ts",
+    "ci:report": "tsx tools/scripts/ci-report.ts",
+    "ci:acceptance": "vitest run tools/checks/ci-contract.test.ts tools/checks/p1.8-acceptance.test.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
