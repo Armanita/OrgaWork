@@ -906,3 +906,29 @@ User هویت سراسری است و Membership رابطه مستقل User و Or
 - وضعیت: `پذیرفته‌شده`
 
 P2.2 تا P2.12 در بسته‌های فنی کنترل‌شده اجرا می‌شوند. پیش از P2.13 توقف و اطلاع مستقیم به کاربر الزامی است. هیچ طراحی صفحه، رنگ، فونت یا چیدمان در مراحل قبل مجاز نیست.
+
+# الحاقیه P2.2 — مرز مدل‌های دامنه
+
+## DEC-P22-001 — سه Workspace خالص دامنه
+
+- وضعیت: `پذیرفته‌شده`
+
+User در `@workspace/identity`، Organization و Membership در `@workspace/organizations` و Team و TeamMembership در `@workspace/teams` نگهداری می‌شوند. این Workspaceها فقط به قراردادهای مشترک وابسته‌اند و به Database، Queue، Storage یا برنامه اجرایی وابستگی ندارند.
+
+## DEC-P22-002 — مدل تغییرناپذیر و نسخه‌دار
+
+- وضعیت: `پذیرفته‌شده`
+
+Factory و Transitionهای دامنه Aggregate جدید برمی‌گردانند و نسخه موجودیت را فقط در تغییر واقعی افزایش می‌دهند. تکرار Transition هم‌وضعیت، عملیات بدون تغییر است.
+
+## DEC-P22-003 — مالکیت Membership و TeamMembership
+
+- وضعیت: `پذیرفته‌شده`
+
+Membership رابطه User و Organization است. TeamMembership به Membership فعال همان Organization متصل می‌شود. حذف از Team وضعیت Membership سازمانی را تغییر نمی‌دهد.
+
+## DEC-P22-004 — Persistence خارج از مدل P2.2
+
+- وضعیت: `پذیرفته‌شده`
+
+مدل‌های P2.2 هیچ SQL، Repository اجرایی یا ORM ندارند. Mapping به PostgreSQL، Composite Constraint و RLS فقط در P2.3 انجام می‌شود.
