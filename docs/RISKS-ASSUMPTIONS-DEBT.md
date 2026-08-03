@@ -1030,3 +1030,21 @@ Loop پایه وجود دارد، اما Reminder Intent و Due Event پایدا
 تصمیم باز مجوز پیاده‌سازی حدسی ایجاد نمی‌کند.
 
 هر موضوع فعال باید مالک، مرحله، اقدام و شاهد بسته‌شدن داشته باشد.
+
+# الحاقیه P1.9 — بدهی‌های فنی ثبت‌شده
+
+## DEBT-P19-001 — Chaos چند Worker
+
+آزمون Partition شبکه و رقابت چند Node به P10 منتقل شد.
+
+## DEBT-P19-002 — ادغام واقعی Cache Web
+
+ادغام Cache و Router و آزمون مرورگر تعویض سازمان به P2 منتقل شد.
+
+## DEBT-P19-003 — Transaction Pooling
+
+سازگاری PgBouncer و Transaction Pooling در P10 بررسی می‌شود.
+
+## DEBT-P19-004 — Composite FK دامنه
+
+الگوی Composite FK باید در Migrationهای P2 تا P9 به آزمون بازگشتی تبدیل شود.
