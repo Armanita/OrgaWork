@@ -212,9 +212,8 @@ export function inspectFoundationAcceptance(
   const scripts = packageDocument.scripts ?? {};
   const expectedScripts: Readonly<Record<string, string>> = {
     check: 'pnpm format:check && pnpm prepare:quality && pnpm lint && pnpm typecheck && pnpm test',
-    'prepare:quality': 'pnpm build:foundation:direct',
-    'build:apps:direct':
-      'pnpm build:foundation:direct && pnpm --filter @workspace/api build && pnpm --filter @workspace/worker build && pnpm --filter @workspace/scheduler build && pnpm --filter @workspace/web build',
+    'build:foundation:direct':
+      'pnpm --filter @workspace/configuration build && pnpm --filter @workspace/contracts build && pnpm --filter @workspace/api-client build && pnpm --filter @workspace/observability build && pnpm --filter @workspace/database build && pnpm --filter @workspace/queue build && pnpm --filter @workspace/storage build',
     'infra:start': 'tsx tools/scripts/local-infrastructure.ts start',
     'smoke:apps': 'pnpm build:apps && tsx tools/checks/coordinated-applications-smoke.ts',
     'accept:p1.10:audit': 'tsx tools/acceptance/p1.10-foundation-audit.ts auto',
@@ -224,6 +223,13 @@ export function inspectFoundationAcceptance(
     if (scripts[name] !== command) {
       issues.push(`فرمان Package معتبر نیست: ${name}`);
     }
+  }
+
+  if (
+    !scripts['prepare:quality']?.startsWith('pnpm build:foundation:direct') ||
+    !scripts['build:apps:direct']?.includes('pnpm --filter @workspace/web build')
+  ) {
+    issues.push('فرمان‌های ساخت باید بنیاد P1 و چهار برنامه را حفظ کنند.');
   }
 
   const installIndex = workflow.indexOf('pnpm install --frozen-lockfile');

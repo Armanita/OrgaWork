@@ -47,7 +47,9 @@ describe('continuous integration contract', () => {
   });
 
   it('prepares foundation declarations before clean type-aware lint', () => {
-    expect(packageJson.scripts['prepare:quality']).toBe('pnpm build:foundation:direct');
+    expect(packageJson.scripts['prepare:quality']).toBe(
+      'pnpm build:foundation:direct && pnpm build:domain:direct',
+    );
     expect(packageJson.scripts['check']).toContain('pnpm prepare:quality && pnpm lint');
 
     const installIndex = workflow.indexOf('pnpm install --frozen-lockfile');
@@ -59,8 +61,14 @@ describe('continuous integration contract', () => {
     expect(lintIndex).toBeGreaterThan(prepareIndex);
   });
 
-  it('defines direct builds for all four applications', () => {
+  it('defines direct builds for domain modules and all four applications', () => {
+    const domainScript = packageJson.scripts['build:domain:direct'];
     const script = packageJson.scripts['build:apps:direct'];
+
+    expect(domainScript).toContain('@workspace/identity');
+    expect(domainScript).toContain('@workspace/organizations');
+    expect(domainScript).toContain('@workspace/teams');
+    expect(script).toContain('pnpm prepare:quality');
 
     expect(script).toContain('@workspace/web');
     expect(script).toContain('@workspace/api');

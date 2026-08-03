@@ -61,6 +61,31 @@ function marker(issues: string[], content: string, expected: string, label: stri
   }
 }
 
+export function isAtOrAfterP22(stage: string): boolean {
+  const match = /^P(\d+)(?:\.(\d+))?/u.exec(stage);
+  const majorText = match?.[1];
+  const minorText = match?.[2];
+
+  if (majorText === undefined) {
+    return false;
+  }
+
+  const major = Number.parseInt(majorText, 10);
+  const minor = minorText === undefined ? 0 : Number.parseInt(minorText, 10);
+
+  return major > 2 || (major === 2 && minor >= 2);
+}
+
+function currentRoadmapStage(roadmap: string): string | undefined {
+  return /^- مرحله جاری: `([^`]+)`/mu.exec(roadmap)?.[1];
+}
+
+function currentStatusStages(status: string): readonly string[] {
+  return [...status.matchAll(/^- زیرمرحله جاری: `([^`]+)`/gmu)]
+    .map((match) => match[1])
+    .filter((stage): stage is string => stage !== undefined);
+}
+
 function resolveMode(
   roadmap: string,
   requestedMode: IdentityContractAuditMode,
@@ -69,9 +94,7 @@ function resolveMode(
     return requestedMode;
   }
 
-  return roadmap.includes('- مرحله جاری: `P2.2 ایجاد مدل کاربر، سازمان، عضویت و تیم`')
-    ? 'closed'
-    : 'pre';
+  return roadmap.includes('- [x] P2.1 ') ? 'closed' : 'pre';
 }
 
 export function inspectIdentityOrganizationContract(
@@ -157,30 +180,16 @@ export function inspectIdentityOrganizationContract(
       '- [x] P2.1 تثبیت قرارداد دامنه هویت و سازمان',
       'وضعیت Roadmap پس از بسته‌شدن',
     );
-    marker(
-      issues,
-      roadmap,
-      '- مرحله جاری: `P2.2 ایجاد مدل کاربر، سازمان، عضویت و تیم`',
-      'مرحله جاری پس از بسته‌شدن',
-    );
-    marker(
-      issues,
-      roadmap,
-      '- آخرین زیرمرحله بسته‌شده: `P2.1 — تثبیت قرارداد دامنه هویت و سازمان`',
-      'آخرین مرحله بسته‌شده',
-    );
-    marker(
-      issues,
-      roadmap,
-      '- مرحله بعد از زیرمرحله جاری: `P2.3 ایجاد مهاجرت‌ها و سیاست‌های جداسازی سازمانی`',
-      'مرحله بعد',
-    );
-    marker(
-      issues,
-      status,
-      '- زیرمرحله جاری: `P2.2 — ایجاد مدل کاربر، سازمان، عضویت و تیم`',
-      'Project Status پس از بسته‌شدن',
-    );
+    const roadmapStage = currentRoadmapStage(roadmap);
+    const statusStages = currentStatusStages(status);
+
+    if (roadmapStage === undefined || !isAtOrAfterP22(roadmapStage)) {
+      issues.push(`مرحله جاری باید در P2.2 یا بعد از آن باشد: ${String(roadmapStage)}`);
+    }
+
+    if (statusStages.length === 0 || statusStages.some((stage) => !isAtOrAfterP22(stage))) {
+      issues.push(`Project Status باید در P2.2 یا بعد از آن باشد: ${statusStages.join(', ')}`);
+    }
     marker(issues, decisions, 'DEC-P21-003 — نشست Server Side و محافظت مرورگر', 'تصمیم نشست');
     marker(issues, decisions, 'DEC-P21-005 — ترتیب قطعی تصمیم دسترسی', 'تصمیم مجوز');
     marker(issues, risks, 'الحاقیه P2.1 — تصمیم‌های بسته و انتقال‌های کنترل‌شده', 'ثبت ریسک P2.1');

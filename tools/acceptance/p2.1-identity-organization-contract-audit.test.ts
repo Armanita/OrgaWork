@@ -5,15 +5,14 @@ import { describe, expect, it } from 'vitest';
 
 import {
   inspectIdentityOrganizationContract,
+  isAtOrAfterP22,
   type IdentityContractAuditMode,
 } from './p2.1-identity-organization-contract-audit.js';
 
 function currentMode(): IdentityContractAuditMode {
   const roadmap = readFileSync(resolve(process.cwd(), 'docs/ROADMAP.md'), 'utf8');
 
-  return roadmap.includes('- مرحله جاری: `P2.2 ایجاد مدل کاربر، سازمان، عضویت و تیم`')
-    ? 'closed'
-    : 'pre';
+  return roadmap.includes('- [x] P2.1 ') ? 'closed' : 'pre';
 }
 
 describe('P2.1 identity and organization contract', () => {
@@ -28,6 +27,13 @@ describe('P2.1 identity and organization contract', () => {
     expect(report.issues).toEqual([]);
     expect(report.contractSections).toBeGreaterThanOrEqual(22);
     expect(report.evidenceCount).toBe(report.mode === 'closed' ? 31 : 30);
+  });
+
+  it('remains valid after later P2 stages begin', () => {
+    expect(isAtOrAfterP22('P2.2 ایجاد مدل دامنه')).toBe(true);
+    expect(isAtOrAfterP22('P2.3 ایجاد مهاجرت')).toBe(true);
+    expect(isAtOrAfterP22('P3.1 ایجاد پرونده')).toBe(true);
+    expect(isAtOrAfterP22('P2.1 قرارداد')).toBe(false);
   });
 
   it('keeps the password and session security floor explicit', () => {

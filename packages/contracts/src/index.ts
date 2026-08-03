@@ -8,6 +8,9 @@ export type Brand<Value, Name extends string> = Value & {
 
 export type OrganizationId = Brand<string, 'OrganizationId'>;
 export type UserId = Brand<string, 'UserId'>;
+export type MembershipId = Brand<string, 'MembershipId'>;
+export type TeamId = Brand<string, 'TeamId'>;
+export type TeamMembershipId = Brand<string, 'TeamMembershipId'>;
 export type SessionId = Brand<string, 'SessionId'>;
 export type RequestId = Brand<string, 'RequestId'>;
 export type CorrelationId = Brand<string, 'CorrelationId'>;
@@ -34,6 +37,18 @@ export function createOrganizationId(value: string): OrganizationId {
 
 export function createUserId(value: string): UserId {
   return createIdentifier<'UserId'>(value, 'کاربر');
+}
+
+export function createMembershipId(value: string): MembershipId {
+  return createIdentifier<'MembershipId'>(value, 'عضویت');
+}
+
+export function createTeamId(value: string): TeamId {
+  return createIdentifier<'TeamId'>(value, 'تیم');
+}
+
+export function createTeamMembershipId(value: string): TeamMembershipId {
+  return createIdentifier<'TeamMembershipId'>(value, 'عضویت تیم');
 }
 
 export function createSessionId(value: string): SessionId {
