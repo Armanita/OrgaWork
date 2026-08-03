@@ -49,22 +49,23 @@ describe('local infrastructure command contract', () => {
     ]);
   });
 
-  it('starts healthy data services before the one-shot bucket initializer', () => {
+  it('starts healthy data services and waits for the detached bucket initializer', () => {
     const plan = buildInfrastructureCommandPlan('start');
 
-    expect(plan).toHaveLength(2);
+    expect(plan).toHaveLength(3);
     expect(plan[0]?.arguments).toContain('--wait');
     expect(plan[0]?.arguments).toContain('--wait-timeout');
     expect(plan[0]?.arguments).toEqual(expect.arrayContaining(['postgres', 'redis', 'minio']));
     expect(plan[1]?.arguments).toEqual(
-      expect.arrayContaining([
-        '--no-deps',
-        '--force-recreate',
-        '--abort-on-container-exit',
-        '--exit-code-from',
-        'minio_bucket_init',
-      ]),
+      expect.arrayContaining(['up', '-d', '--no-deps', '--force-recreate', 'minio_bucket_init']),
     );
+    expect(plan[1]?.arguments).not.toContain('--abort-on-container-exit');
+    expect(plan[1]?.arguments).not.toContain('--exit-code-from');
+    expect(plan[2]).toEqual({
+      description: 'انتظار کنترل‌شده برای پایان موفق Initializer خصوصی',
+      arguments: ['wait', 'orgawork-minio-bucket-init'],
+      expectedOutput: '0',
+    });
   });
 
   it('stops services without deleting persistent resources', () => {
@@ -117,6 +118,12 @@ describe('local infrastructure command contract', () => {
 
   it('handles a missing MinIO container case-insensitively after cleanup', () => {
     expect(commandScript).toContain("error.message.toLowerCase().includes('no such object')");
+  });
+
+  it('validates the initializer exit code without attaching to its output stream', () => {
+    expect(commandScript).toContain('step.expectedOutput !== undefined');
+    expect(commandScript).toContain('خروجی فرمان Docker معتبر نیست');
+    expect(commandScript).not.toContain('--abort-on-container-exit');
   });
   it('keeps report operations read-only and checks the private bucket and volumes', () => {
     expect(commandScript).toContain("buildComposeArguments('ps', '-a')");

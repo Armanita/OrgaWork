@@ -9,7 +9,8 @@
     "tools/checks/**/*.ts",
     "*.config.ts",
     "tools/scripts/**/*.ts",
-    "tools/spikes/**/*.ts"
+    "tools/spikes/**/*.ts",
+    "tools/acceptance/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

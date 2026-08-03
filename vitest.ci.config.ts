@@ -21,6 +21,7 @@ export default defineConfig({
         'packages/**/src/**/*.{ts,tsx}',
         'tools/checks/**/*.ts',
         'tools/scripts/**/*.ts',
+        'tools/acceptance/**/*.ts',
       ],
       exclude: [
         '**/*.test.{ts,tsx}',

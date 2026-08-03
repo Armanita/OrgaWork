@@ -47,6 +47,9 @@ jobs:
       - name: Install with frozen lockfile
         run: pnpm install --frozen-lockfile
 
+      - name: Build foundation type declarations
+        run: pnpm prepare:quality
+
       - name: Formatting gate
         run: pnpm format:check
 

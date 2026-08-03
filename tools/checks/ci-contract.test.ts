@@ -20,6 +20,7 @@ describe('continuous integration contract', () => {
 
   it('contains all required quality and architecture gates', () => {
     for (const command of [
+      'pnpm prepare:quality',
       'pnpm format:check',
       'pnpm lint',
       'pnpm typecheck',
@@ -43,6 +44,19 @@ describe('continuous integration contract', () => {
     expect(vitestConfiguration).toContain('artifacts/test-results/junit.xml');
     expect(vitestConfiguration).toContain('artifacts/coverage');
     expect(packageJson.scripts['ci:report']).toBe('tsx tools/scripts/ci-report.ts');
+  });
+
+  it('prepares foundation declarations before clean type-aware lint', () => {
+    expect(packageJson.scripts['prepare:quality']).toBe('pnpm build:foundation:direct');
+    expect(packageJson.scripts['check']).toContain('pnpm prepare:quality && pnpm lint');
+
+    const installIndex = workflow.indexOf('pnpm install --frozen-lockfile');
+    const prepareIndex = workflow.indexOf('pnpm prepare:quality');
+    const lintIndex = workflow.indexOf('pnpm lint');
+
+    expect(installIndex).toBeGreaterThanOrEqual(0);
+    expect(prepareIndex).toBeGreaterThan(installIndex);
+    expect(lintIndex).toBeGreaterThan(prepareIndex);
   });
 
   it('defines direct builds for all four applications', () => {

@@ -18,6 +18,7 @@ export type InfrastructureAction = 'start' | 'stop' | 'report' | 'cleanup';
 export interface DockerCommandStep {
   readonly description: string;
   readonly arguments: readonly string[];
+  readonly expectedOutput?: string;
 }
 
 const composePrefix = [
@@ -61,16 +62,19 @@ export function buildInfrastructureCommandPlan(
           ),
         },
         {
-          description: 'اجرای Initializer یک‌باره Bucket خصوصی',
+          description: 'آغاز جداشده Initializer یک‌باره Bucket خصوصی',
           arguments: buildComposeArguments(
             'up',
+            '-d',
             '--no-deps',
             '--force-recreate',
-            '--abort-on-container-exit',
-            '--exit-code-from',
-            'minio_bucket_init',
             'minio_bucket_init',
           ),
+        },
+        {
+          description: 'انتظار کنترل‌شده برای پایان موفق Initializer خصوصی',
+          arguments: ['wait', 'orgawork-minio-bucket-init'],
+          expectedOutput: '0',
         },
       ];
 

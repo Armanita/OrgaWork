@@ -5,6 +5,11 @@ import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import {
+  validateSchedulerProcessOutput,
+  validateWorkerProcessOutput,
+} from './coordinated-applications-smoke-events.js';
+
 interface CapturedProcess {
   readonly name: string;
   readonly child: ChildProcess;
@@ -54,22 +59,6 @@ function writeMessage(message: string): void {
 
 function isJsonRecord(value: unknown): value is JsonRecord {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-function parseJsonRecord(text: string): JsonRecord {
-  let value: unknown;
-
-  try {
-    value = JSON.parse(text) as unknown;
-  } catch {
-    throw new Error(`رخداد دارای قالب معتبر نیست: ${text}`);
-  }
-
-  if (!isJsonRecord(value)) {
-    throw new Error(`رخداد باید یک شیء باشد: ${text}`);
-  }
-
-  return value;
 }
 
 function startCapturedProcess(definition: ProcessDefinition): CapturedProcess {
@@ -251,85 +240,6 @@ async function waitForEndpoint(
   );
 }
 
-function parseProcessEvents(running: CapturedProcess): readonly JsonRecord[] {
-  if (running.stderr.trim() !== '') {
-    throw new Error(processFailure(running));
-  }
-
-  const lines = running.stdout
-    .split(/\r?\n/u)
-    .map((line) => line.trim())
-    .filter((line) => line !== '');
-
-  if (lines.length !== 2) {
-    throw new Error(
-      `${running.name} باید دقیقاً دو رخداد ثبت کند؛ ` +
-        `تعداد: ${lines.length}\n${running.stdout}`,
-    );
-  }
-
-  return lines.map((line) => parseJsonRecord(line));
-}
-
-function validateWorker(running: CapturedProcess, exitCode: number): void {
-  if (exitCode !== 0) {
-    throw new Error(processFailure(running));
-  }
-
-  const events = parseProcessEvents(running);
-  const cycle = events.find((event) => event['event'] === 'cycle-completed');
-
-  const stopped = events.find((event) => event['event'] === 'worker-stopped');
-
-  if (
-    cycle?.['service'] !== 'orgawork-worker' ||
-    cycle['status'] !== 'completed' ||
-    cycle['sequence'] !== 1
-  ) {
-    throw new Error('رخداد چرخه پردازشگر معتبر نیست.');
-  }
-
-  if (stopped?.['reason'] !== 'run-once') {
-    throw new Error('رخداد توقف پردازشگر معتبر نیست.');
-  }
-}
-
-function validateScheduler(running: CapturedProcess, exitCode: number): void {
-  if (exitCode !== 0) {
-    throw new Error(processFailure(running));
-  }
-
-  const events = parseProcessEvents(running);
-  const runEvent = events.find((event) => event['event'] === 'schedule-run-completed');
-
-  const stopped = events.find((event) => event['event'] === 'scheduler-stopped');
-
-  if (
-    runEvent?.['service'] !== 'orgawork-scheduler' ||
-    runEvent['status'] !== 'completed' ||
-    runEvent['sequence'] !== 1
-  ) {
-    throw new Error('رخداد اجرای زمان‌بند معتبر نیست.');
-  }
-
-  if (stopped?.['reason'] !== 'run-once') {
-    throw new Error('رخداد توقف زمان‌بند معتبر نیست.');
-  }
-
-  const scheduledFor = runEvent['scheduledFor'];
-  const nextRunAt = runEvent['nextRunAt'];
-
-  if (typeof scheduledFor !== 'string' || typeof nextRunAt !== 'string') {
-    throw new Error('موعدهای زمان‌بند معتبر نیستند.');
-  }
-
-  const difference = new Date(nextRunAt).getTime() - new Date(scheduledFor).getTime();
-
-  if (difference !== 250) {
-    throw new Error(`اختلاف موعدهای زمان‌بند صحیح نیست: ${difference}`);
-  }
-}
-
 async function main(): Promise<void> {
   const host = '127.0.0.1';
 
@@ -417,8 +327,8 @@ async function main(): Promise<void> {
       }),
     ]);
 
-    validateWorker(worker, workerExitCode);
-    validateScheduler(scheduler, schedulerExitCode);
+    validateWorkerProcessOutput(worker, workerExitCode);
+    validateSchedulerProcessOutput(scheduler, schedulerExitCode);
 
     writeMessage('رابط کاربری در درگاه ۳۰۰۰ آماده و معتبر است.');
     writeMessage('رابط برنامه‌نویسی در درگاه ۳۰۰۱ آماده و معتبر است.');

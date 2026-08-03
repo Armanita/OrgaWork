@@ -17,7 +17,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
+    "prepare:quality": "pnpm build:foundation:direct",
+    "check": "pnpm format:check && pnpm prepare:quality && pnpm lint && pnpm typecheck && pnpm test",
     "build:apps": "turbo run build --filter=@workspace/web --filter=@workspace/api --filter=@workspace/worker --filter=@workspace/scheduler",
     "dev:apps": "turbo run dev --parallel --filter=@workspace/web --filter=@workspace/api --filter=@workspace/worker --filter=@workspace/scheduler",
     "start:apps": "pnpm build:apps && tsx tools/scripts/start-applications.ts",
@@ -40,7 +41,10 @@
     "ci:acceptance": "vitest run tools/checks/ci-contract.test.ts tools/checks/p1.8-acceptance.test.ts",
     "spike:p1.9": "tsx tools/spikes/p1.9-report.ts",
     "spike:p1.9:real": "tsx tools/spikes/p1.9-real-infrastructure.ts",
-    "ci:p1.9": "vitest run tools/spikes/p1.9-models.test.ts tools/spikes/p1.9-report.test.ts tools/checks/p1.9-acceptance.test.ts"
+    "ci:p1.9": "vitest run tools/spikes/p1.9-models.test.ts tools/spikes/p1.9-report.test.ts tools/checks/p1.9-acceptance.test.ts",
+    "accept:p1.10:audit": "tsx tools/acceptance/p1.10-foundation-audit.ts auto",
+    "accept:p1.10:audit:pre": "tsx tools/acceptance/p1.10-foundation-audit.ts pre",
+    "accept:p1.10:audit:closed": "tsx tools/acceptance/p1.10-foundation-audit.ts closed"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

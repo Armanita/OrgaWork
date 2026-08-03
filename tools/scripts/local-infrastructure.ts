@@ -51,7 +51,20 @@ function runDocker(
 
 function runStep(step: DockerCommandStep): void {
   writeMessage(`\n${step.description}`);
-  runDocker(step.arguments);
+  const expectsOutput = step.expectedOutput !== undefined;
+  const output = runDocker(step.arguments, {
+    captureOutput: expectsOutput,
+  });
+
+  if (expectsOutput && output !== step.expectedOutput) {
+    throw new Error(
+      `خروجی فرمان Docker معتبر نیست؛ مقدار مورد انتظار ${step.expectedOutput} و مقدار واقعی ${output} بود.`,
+    );
+  }
+
+  if (expectsOutput) {
+    writeMessage(`پایان موفق با خروجی کنترل‌شده: ${output}`);
+  }
 }
 
 function isContainerRunning(containerName: string): boolean {
