@@ -37,7 +37,10 @@
     "ci:architecture": "tsx tools/checks/architecture-policy.ts",
     "ci:security": "tsx tools/checks/repository-security.ts",
     "ci:report": "tsx tools/scripts/ci-report.ts",
-    "ci:acceptance": "vitest run tools/checks/ci-contract.test.ts tools/checks/p1.8-acceptance.test.ts"
+    "ci:acceptance": "vitest run tools/checks/ci-contract.test.ts tools/checks/p1.8-acceptance.test.ts",
+    "spike:p1.9": "tsx tools/spikes/p1.9-report.ts",
+    "spike:p1.9:real": "tsx tools/spikes/p1.9-real-infrastructure.ts",
+    "ci:p1.9": "vitest run tools/spikes/p1.9-models.test.ts tools/spikes/p1.9-report.test.ts tools/checks/p1.9-acceptance.test.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

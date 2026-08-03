@@ -5,6 +5,11 @@
   "compilerOptions": {
     "rootDir": "."
   },
-  "include": ["tools/checks/**/*.ts", "*.config.ts", "tools/scripts/**/*.ts"],
+  "include": [
+    "tools/checks/**/*.ts",
+    "*.config.ts",
+    "tools/scripts/**/*.ts",
+    "tools/spikes/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }
