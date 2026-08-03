@@ -21,7 +21,8 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "redis": "6.1.0"
+    "redis": "6.1.0",
+    "@workspace/observability": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "24.13.3",

@@ -295,6 +295,9 @@ importers:
 
   packages/database:
     dependencies:
+      '@workspace/observability':
+        specifier: workspace:*
+        version: link:../observability
       pg:
         specifier: 8.22.0
         version: 8.22.0
@@ -366,6 +369,9 @@ importers:
 
   packages/queue:
     dependencies:
+      '@workspace/observability':
+        specifier: workspace:*
+        version: link:../observability
       redis:
         specifier: 6.1.0
         version: 6.1.0

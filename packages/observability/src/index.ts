@@ -309,3 +309,5 @@ export function createStructuredLogger(options: StructuredLoggerOptions): Struct
     },
   };
 }
+
+export * from './operational.js';

@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "code": "DEPENDENCY_UNHEALTHY",
+      "severity": "critical",
+      "metric": "orgawork_dependency_health"
+    },
+    {
+      "code": "PROCESS_HEARTBEAT_STALE",
+      "severity": "warning",
+      "metric": "orgawork_process_heartbeat_timestamp_seconds"
+    },
+    {
+      "code": "API_ERROR_RATE_HIGH",
+      "severity": "warning",
+      "metric": "orgawork_api_requests_total"
+    }
+  ]
+}

@@ -324,3 +324,5 @@ export * from './database-roles.js';
 export * from './tenant-runtime.js';
 
 export * from './migration-integrity.js';
+
+export * from './observability.js';

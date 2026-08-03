@@ -3,15 +3,18 @@ import type { FastifyInstance, FastifyRequest } from 'fastify';
 import {
   createObservabilityContext,
   createStructuredLogger,
+  defaultMetricRegistry,
   enterObservabilityContext,
   formatTraceParent,
   type LogSink,
+  type MetricRegistry,
   type ObservabilityContext,
 } from '@workspace/observability';
 
 export interface ApiObservabilityOptions {
   readonly sink?: LogSink;
   readonly now?: () => number;
+  readonly metrics?: MetricRegistry;
 }
 
 interface RequestState {
@@ -36,6 +39,7 @@ export function registerApiObservability(
 ): void {
   const states = new WeakMap<FastifyRequest, RequestState>();
   const now = options.now ?? (() => performance.now());
+  const metrics = options.metrics ?? defaultMetricRegistry;
   const logger = createStructuredLogger({
     service: 'orgawork-api',
     ...(options.sink === undefined ? {} : { sink: options.sink }),
@@ -79,10 +83,14 @@ export function registerApiObservability(
       enterObservabilityContext(state.context);
     }
 
+    const durationMilliseconds = state === undefined ? 0 : Math.max(0, now() - state.startedAt);
+
+    metrics.recordApiRequest(request.method, request.url, reply.statusCode, durationMilliseconds);
+
     logger.info('request-completed', 'پردازش درخواست تکمیل شد', {
       ...requestAttributes(request),
       statusCode: reply.statusCode,
-      durationMilliseconds: state === undefined ? undefined : Math.max(0, now() - state.startedAt),
+      durationMilliseconds,
     });
     done();
   });

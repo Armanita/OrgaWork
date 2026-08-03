@@ -1,0 +1,26 @@
+{
+  "title": "OrgaWork Operational Health",
+  "version": 1,
+  "panels": [
+    {
+      "id": "api",
+      "metric": "orgawork_api_requests_total"
+    },
+    {
+      "id": "database",
+      "metric": "orgawork_database_operations_total"
+    },
+    {
+      "id": "queue",
+      "metric": "orgawork_queue_depth"
+    },
+    {
+      "id": "heartbeat",
+      "metric": "orgawork_process_heartbeat_timestamp_seconds"
+    },
+    {
+      "id": "dependencies",
+      "metric": "orgawork_dependency_health"
+    }
+  ]
+}

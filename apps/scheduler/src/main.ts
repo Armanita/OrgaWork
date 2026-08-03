@@ -1,6 +1,8 @@
 import {
   createObservabilityContext,
   createStructuredLogger,
+  defaultHeartbeatRegistry,
+  defaultMetricRegistry,
   runWithObservabilityContext,
 } from '@workspace/observability';
 
@@ -12,6 +14,7 @@ const logger = createStructuredLogger({
 });
 
 function writeError(error: unknown): void {
+  defaultMetricRegistry.recordProcessCycle('scheduler', 'failure', 0);
   logger.error('scheduler-failed', 'اجرای زمان‌بند ناموفق بود.', { error });
 }
 
@@ -39,6 +42,14 @@ async function main(): Promise<void> {
       signal: controller.signal,
       onRun: (report: SchedulerRunReport) => {
         runWithObservabilityContext(createObservabilityContext(), () => {
+          const completedAt = new Date(report.completedAt);
+          const duration = Math.max(
+            0,
+            completedAt.getTime() - new Date(report.startedAt).getTime(),
+          );
+          defaultHeartbeatRegistry.record(configuration.name, completedAt);
+          defaultMetricRegistry.recordProcessCycle('scheduler', 'success', duration);
+
           logger.info('schedule-run-completed', 'اجرای زمان‌بندی‌شده با موفقیت انجام شد.', {
             ...report,
             heartbeatAt: report.completedAt,
