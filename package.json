@@ -34,7 +34,7 @@
     "build:foundation:direct": "pnpm --filter @workspace/configuration build && pnpm --filter @workspace/contracts build && pnpm --filter @workspace/api-client build && pnpm --filter @workspace/observability build && pnpm --filter @workspace/database build && pnpm --filter @workspace/queue build && pnpm --filter @workspace/storage build",
     "build:apps:direct": "pnpm prepare:quality && pnpm --filter @workspace/api build && pnpm --filter @workspace/worker build && pnpm --filter @workspace/scheduler build && pnpm --filter @workspace/web build",
     "ci:contracts": "vitest run tools/checks/contract-drift.test.ts tools/checks/api-contract-compatibility.test.ts",
-    "ci:migrations": "vitest run packages/database/src/migrations.test.ts packages/database/src/migration-history.test.ts packages/database/src/migration-integrity.test.ts packages/database/src/database-roles.test.ts packages/database/src/tenant-runtime.test.ts",
+    "ci:migrations": "vitest run packages/database/src/migrations.test.ts packages/database/src/migration-history.test.ts packages/database/src/migration-integrity.test.ts packages/database/src/database-roles.test.ts packages/database/src/tenant-runtime.test.ts packages/database/src/identity-organization-schema.test.ts",
     "ci:architecture": "tsx tools/checks/architecture-policy.ts",
     "ci:security": "tsx tools/checks/repository-security.ts",
     "ci:report": "tsx tools/scripts/ci-report.ts",
@@ -51,7 +51,11 @@
     "build:domain:direct": "pnpm --filter @workspace/identity build && pnpm --filter @workspace/organizations build && pnpm --filter @workspace/teams build",
     "accept:p2.2:audit": "tsx tools/acceptance/p2.2-domain-model-audit.ts auto",
     "accept:p2.2:audit:pre": "tsx tools/acceptance/p2.2-domain-model-audit.ts pre",
-    "accept:p2.2:audit:closed": "tsx tools/acceptance/p2.2-domain-model-audit.ts closed"
+    "accept:p2.2:audit:closed": "tsx tools/acceptance/p2.2-domain-model-audit.ts closed",
+    "accept:p2.3:audit": "tsx tools/acceptance/p2.3-database-isolation-audit.ts auto",
+    "accept:p2.3:audit:pre": "tsx tools/acceptance/p2.3-database-isolation-audit.ts pre",
+    "accept:p2.3:audit:closed": "tsx tools/acceptance/p2.3-database-isolation-audit.ts closed",
+    "accept:p2.3:real": "tsx tools/acceptance/p2.3-real-postgresql.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
