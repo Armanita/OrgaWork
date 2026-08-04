@@ -1,6 +1,6 @@
 'use client';
 
-import { Building2, Button, Menu, X } from '@workspace/ui';
+import { Building2, Button, LoaderCircle, Menu, X } from '@workspace/ui';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
@@ -9,11 +9,15 @@ import { ThemeToggleControl } from '@/components/theme-toggle-control';
 
 export interface DashboardHeaderProps {
   readonly mobileOpen: boolean;
+  readonly organizationLoading: boolean;
+  readonly organizationName: string | undefined;
   readonly onToggleNavigation: () => void;
 }
 
 export function DashboardHeader({
   mobileOpen,
+  organizationLoading,
+  organizationName,
   onToggleNavigation,
 }: DashboardHeaderProps): React.ReactElement {
   const navigation = useTranslations('navigation');
@@ -38,7 +42,16 @@ export function DashboardHeader({
         <Building2 aria-hidden="true" />
         <div className="dashboard-header__organization">
           <span>{common('currentOrganization')}</span>
-          <strong>{common('sampleOrganization')}</strong>
+          <strong>
+            {organizationLoading ? (
+              <>
+                <LoaderCircle className="management-spin" aria-hidden="true" />
+                {common('organizationLoading')}
+              </>
+            ) : (
+              (organizationName ?? common('organizationUnavailable'))
+            )}
+          </strong>
         </div>
       </div>
 

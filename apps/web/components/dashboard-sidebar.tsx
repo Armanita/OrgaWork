@@ -1,6 +1,15 @@
 'use client';
 
-import { Badge, Button, LayoutDashboard, Network, ShieldCheck, Users, X } from '@workspace/ui';
+import {
+  Badge,
+  Button,
+  LayoutDashboard,
+  LoaderCircle,
+  Network,
+  ShieldCheck,
+  Users,
+  X,
+} from '@workspace/ui';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
@@ -34,12 +43,16 @@ const navigationItems = [
 
 export interface DashboardSidebarProps {
   readonly mobileOpen: boolean;
+  readonly organizationLoading: boolean;
+  readonly organizationName: string | undefined;
   readonly onClose: () => void;
   readonly onNavigate: () => void;
 }
 
 export function DashboardSidebar({
   mobileOpen,
+  organizationLoading,
+  organizationName,
   onClose,
   onNavigate,
 }: DashboardSidebarProps): React.ReactElement {
@@ -99,7 +112,16 @@ export function DashboardSidebar({
 
       <div className="dashboard-sidebar__footer">
         <span>{common('activeMembership')}</span>
-        <strong>{common('sampleOrganization')}</strong>
+        <strong>
+          {organizationLoading ? (
+            <>
+              <LoaderCircle className="management-spin" aria-hidden="true" />
+              {common('organizationLoading')}
+            </>
+          ) : (
+            (organizationName ?? common('organizationUnavailable'))
+          )}
+        </strong>
         <Badge variant="success">{common('status.active')}</Badge>
       </div>
     </aside>

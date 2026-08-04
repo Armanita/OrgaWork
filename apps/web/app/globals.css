@@ -1354,3 +1354,666 @@ button:disabled {
     transition-duration: 0.01ms !important;
   }
 }
+/* P2R.1.6 organization administration */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.management-page {
+  display: grid;
+  width: min(100%, 1320px);
+  gap: 24px;
+  margin-inline: auto;
+}
+
+.management-page__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.management-page__heading {
+  display: grid;
+  max-width: 760px;
+  gap: 8px;
+}
+
+.management-page__heading h1 {
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+}
+
+.management-page__heading > p:last-child {
+  margin: 0;
+  color: var(--muted-foreground);
+  line-height: 1.9;
+}
+
+.management-page__eyebrow {
+  margin: 0;
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.management-page__header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.management-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.management-metrics--compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.management-metric [data-slot='card-content'] {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+}
+
+.management-metric [data-slot='card-content'] > span {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--accent);
+  color: var(--primary);
+}
+
+.management-metric svg {
+  width: 21px;
+  height: 21px;
+}
+
+.management-metric strong {
+  display: block;
+  font-size: 1.45rem;
+  line-height: 1.2;
+}
+
+.management-metric p {
+  margin: 4px 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.82rem;
+}
+
+.management-card {
+  overflow: hidden;
+}
+
+.management-card [data-slot='card-header'] {
+  border-block-end: 1px solid var(--border);
+  padding: 22px 24px;
+}
+
+.management-card [data-slot='card-content'] {
+  padding: 24px;
+}
+
+.management-form-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.4fr) minmax(190px, 0.8fr) auto;
+  align-items: end;
+  gap: 14px;
+}
+
+.management-form-grid--team {
+  grid-template-columns: minmax(260px, 1fr) auto;
+}
+
+.field-group {
+  display: grid;
+  gap: 8px;
+}
+
+.field-group select,
+.management-filter select,
+.member-access select,
+.team-rename input {
+  min-height: 40px;
+  width: 100%;
+  border: 1px solid var(--input);
+  border-radius: 10px;
+  background: var(--background);
+  color: var(--foreground);
+  padding: 8px 12px;
+  outline: none;
+}
+
+.field-group select:focus-visible,
+.management-filter select:focus-visible,
+.member-access select:focus-visible,
+.team-rename input:focus-visible {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.management-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-block-start: 18px;
+  border: 1px solid color-mix(in oklab, var(--success) 32%, var(--border));
+  border-radius: 13px;
+  background: color-mix(in oklab, var(--success) 8%, var(--card));
+  color: var(--foreground);
+  padding: 14px 16px;
+}
+
+.management-notice > svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  color: var(--success);
+}
+
+.management-notice p {
+  margin: 4px 0;
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
+}
+
+.management-notice a {
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.management-page__error {
+  margin: 0;
+}
+
+.management-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-block-end: 18px;
+}
+
+.management-search {
+  position: relative;
+  display: block;
+  width: min(100%, 420px);
+}
+
+.management-search > svg {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 12px;
+  z-index: 1;
+  width: 17px;
+  height: 17px;
+  transform: translateY(-50%);
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+
+.management-search input {
+  padding-inline-start: 40px;
+}
+
+.management-filter {
+  display: grid;
+  min-width: 190px;
+  gap: 7px;
+  color: var(--muted-foreground);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.management-loading,
+.management-empty {
+  display: grid;
+  min-height: 190px;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  border: 1px dashed var(--border);
+  border-radius: 15px;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+.management-loading svg,
+.management-empty svg {
+  width: 30px;
+  height: 30px;
+}
+
+.management-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.management-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+}
+
+.management-table th,
+.management-table td {
+  border-block-end: 1px solid var(--border);
+  padding: 15px 16px;
+  text-align: start;
+  vertical-align: middle;
+  white-space: normal;
+}
+
+.management-table th {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.management-table tbody tr:last-child td {
+  border-block-end: 0;
+}
+
+.member-identity {
+  display: flex;
+  min-width: 220px;
+  align-items: center;
+  gap: 11px;
+}
+
+.member-identity > span {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.member-identity strong {
+  overflow-wrap: anywhere;
+}
+
+.member-role-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.member-access {
+  width: min(100%, 330px);
+}
+
+.member-access__summary {
+  display: inline-flex;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  gap: 7px;
+  border-radius: 9px;
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 7px 9px;
+  user-select: none;
+}
+
+.member-access__summary::-webkit-details-marker {
+  display: none;
+}
+
+.member-access__summary:hover {
+  background: var(--accent);
+}
+
+.member-access__summary svg {
+  width: 16px;
+  height: 16px;
+}
+
+.member-access__panel {
+  display: grid;
+  gap: 16px;
+  margin-block-start: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  padding: 14px;
+}
+
+.member-access__group {
+  display: grid;
+  min-width: 0;
+  gap: 10px;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.member-access__label,
+.member-access__group legend {
+  color: var(--muted-foreground);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.member-access__status-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.member-access__roles {
+  display: grid;
+  gap: 7px;
+}
+
+.member-access__roles label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+}
+
+.member-access__roles input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+}
+
+.member-access__validation {
+  margin: 0;
+  color: var(--destructive);
+  font-size: 0.78rem;
+}
+
+.team-management-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.team-management-card {
+  display: grid;
+  min-width: 0;
+  gap: 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  padding: 18px;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.team-management-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in oklab, var(--primary) 30%, var(--border));
+  box-shadow: var(--shadow);
+}
+
+.team-management-card__top,
+.team-management-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.team-management-card__icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--accent);
+  color: var(--primary);
+}
+
+.team-management-card__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.team-management-card__body {
+  min-width: 0;
+}
+
+.team-management-card__body h2 {
+  overflow: hidden;
+  margin: 0;
+  font-size: 1.05rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-management-card__body p,
+.team-management-card__footer {
+  margin: 6px 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.82rem;
+}
+
+.team-management-card__footer {
+  justify-content: flex-start;
+  border-block-start: 1px solid var(--border);
+  padding-block-start: 14px;
+}
+
+.team-management-card__footer svg {
+  width: 16px;
+  height: 16px;
+}
+
+.team-rename {
+  display: grid;
+  width: 100%;
+  gap: 9px;
+}
+
+.team-rename__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.invitation-acceptance__actions {
+  display: grid;
+  gap: 14px;
+}
+
+.invitation-acceptance__actions > p {
+  margin: 0;
+  color: var(--muted-foreground);
+  line-height: 1.8;
+}
+
+.management-spin {
+  animation: management-spin 800ms linear infinite;
+}
+
+@keyframes management-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1100px) {
+  .management-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .team-management-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .management-page__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .management-page__header-actions {
+    justify-content: flex-start;
+  }
+
+  .management-form-grid,
+  .management-form-grid--team {
+    grid-template-columns: 1fr;
+  }
+
+  .management-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .management-search,
+  .management-filter {
+    width: 100%;
+  }
+
+  .management-table-wrap {
+    overflow: visible;
+    border: 0;
+  }
+
+  .management-table {
+    min-width: 0;
+  }
+
+  .management-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .management-table,
+  .management-table tbody,
+  .management-table tr,
+  .management-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .management-table tbody {
+    display: grid;
+    gap: 12px;
+  }
+
+  .management-table tr {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
+  }
+
+  .management-table td {
+    display: grid;
+    grid-template-columns: minmax(105px, 0.42fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+    border-block-end: 1px solid var(--border);
+    padding: 13px 14px;
+  }
+
+  .management-table td::before {
+    content: attr(data-label);
+    color: var(--muted-foreground);
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+
+  .management-table td:last-child {
+    border-block-end: 0;
+  }
+
+  .member-access {
+    width: 100%;
+  }
+
+  .team-management-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .management-metrics,
+  .management-metrics--compact {
+    grid-template-columns: 1fr;
+  }
+
+  .management-card [data-slot='card-header'],
+  .management-card [data-slot='card-content'] {
+    padding-inline: 18px;
+  }
+
+  .management-table td {
+    grid-template-columns: 1fr;
+  }
+
+  .management-table td::before {
+    margin-block-end: -5px;
+  }
+
+  .member-access__status-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .management-spin {
+    animation-duration: 1.8s;
+  }
+
+  .team-management-card {
+    transition: none;
+  }
+
+  .team-management-card:hover {
+    transform: none;
+  }
+}
+.dashboard-header__organization strong,
+.dashboard-sidebar__footer strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dashboard-header__organization strong svg,
+.dashboard-sidebar__footer strong svg {
+  width: 14px;
+  height: 14px;
+}
