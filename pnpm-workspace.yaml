@@ -3,5 +3,6 @@ packages:
   - 'packages/*'
   - 'modules/*'
 allowBuilds:
+  argon2: true
   esbuild: true
   sharp: true
