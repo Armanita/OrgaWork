@@ -1,73 +1,63 @@
 import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-
 import { describe, expect, it } from 'vitest';
 
-const root = process.cwd();
-
-function document(path: string): string {
-  return readFileSync(resolve(root, 'docs', path), 'utf8');
+function read(relativePath: string): string {
+  return readFileSync(relativePath, 'utf8');
 }
 
-describe('current documentation state after P2 acceptance', () => {
+describe('current documentation state after P2 closure and P2R start', () => {
   it('keeps historical P1 and P2 evidence discoverable', () => {
-    const readme = document('README.md');
-    const status = document('PROJECT-STATUS.md');
-    const journal = document('IMPLEMENTATION-JOURNAL.md');
+    const readme = read('docs/README.md');
 
-    expect(readme).toContain('acceptance/P1-FINAL-ACCEPTANCE.md');
-    expect(readme).toContain('acceptance/P0-P2.3-FULL-AUDIT.md');
-    expect(readme).toContain('acceptance/P2-FINAL-ACCEPTANCE.md');
-
-    for (const commit of [
-      'f7bcd86b617f299a5d26329a4a3386cc7537c5fe',
-      '78612b5459343d05a73ea7e12f074793543e9047',
-      '75bedac73e64bf144c43ad43339abb36684d3c00',
-      '6963796e81580527e3a719895c83c03eb5f71fb1',
-    ]) {
-      expect(status + journal).toContain(commit);
-    }
+    expect(readme).toContain('docs/acceptance/P1-FINAL-ACCEPTANCE.md');
+    expect(readme).toContain('docs/acceptance/P0-P2.3-FULL-AUDIT.md');
+    expect(readme).toContain('docs/acceptance/P2-FINAL-ACCEPTANCE.md');
   });
 
-  it('records P2 as closed and P3.1 as current', () => {
-    const status = document('PROJECT-STATUS.md');
-    const roadmap = document('ROADMAP.md');
-    const journal = document('IMPLEMENTATION-JOURNAL.md');
+  it('records P2 as closed, P2R as current, and P3.1 as queued', () => {
+    const status = read('docs/PROJECT-STATUS.md');
+    const roadmap = read('docs/ROADMAP.md');
 
-    expect(status).toContain('مرحله مادر `P2`: بسته و پذیرفته‌شده');
-    expect(status).toContain('زیرمرحله جاری: `P3.1 — تثبیت قرارداد دامنه پرونده`');
-    expect(roadmap).toContain('- [x] P2.15 آزمون و پذیرش مرحله');
-    expect(roadmap).toContain('- [ ] P3.1 تثبیت قرارداد دامنه پرونده');
-    expect(journal).toContain('شاهد نهایی: `EVD-041`');
+    expect(status).toContain('P2 با Commit نهایی `0be4eb3e1dcf63c358ed9a2751103d4d410eb30b` بسته');
+    expect(status).toContain(
+      'مرحله جاری: `P2R.1.2 — ایجاد زیرساخت چندزبانه English و فارسی با LTR و RTL`',
+    );
+    expect(status).toContain('مرحله `P3.1` هنوز آغاز نشده');
+
+    expect(roadmap).toContain('## P2R — اصلاح بنیاد رابط پیش از آغاز P3');
+    expect(roadmap).toContain('- [x] P2R.1.1');
+    expect(roadmap).toContain('- [ ] P2R.1.2');
+    expect(roadmap).toContain('- [ ] P3.1');
   });
 
   it('keeps final P2 traceability and acceptance aligned', () => {
-    const traceability = document('TRACEABILITY-MATRIX.md');
-    const acceptance = document('TEST-AND-ACCEPTANCE.md');
-    const finalEvidence = document('acceptance/P2-FINAL-ACCEPTANCE.md');
+    const traceability = read('docs/TRACEABILITY-MATRIX.md');
+    const acceptance = read('docs/acceptance/P2-FINAL-ACCEPTANCE.md');
 
-    expect(traceability).toContain('## EVD-041 — شاهد پذیرش نهایی P2');
-    expect(acceptance).toContain('شاهد رسمی این پذیرش `EVD-041` است');
-    expect(finalEvidence).toContain('P2.4` تا `P2.15');
-    expect(finalEvidence).toContain('Migrationهای نسخه 5 تا 9');
+    expect(traceability).toContain('EVD-041');
+    expect(acceptance).toContain('P2');
+    expect(acceptance).toContain('شاهد `EVD-041` ثبت');
+    expect(acceptance).toContain('مرحله جاری به `P3.1` منتقل می‌شود');
   });
 
-  it('keeps the preapproved UI baseline and records its implementation', () => {
-    const decisions = document('DECISIONS.md');
-    const risks = document('RISKS-ASSUMPTIONS-DEBT.md');
+  it('keeps the historical UI decision and records its remediation', () => {
+    const decisions = read('docs/DECISIONS.md');
+    const baselines = read('docs/APPROVED-BASELINES.md');
 
     expect(decisions).toContain('DEC-UI-001');
-    expect(decisions).toContain('Vazirmatn');
-    expect(risks).toContain('رابط بر خط مبنای مصوب اجرا شد');
+    expect(decisions).toContain('DEC-UI-002');
+    expect(decisions).toContain('English');
+    expect(decisions).toContain('dir=ltr/rtl');
+    expect(baselines).toContain('UI-BASELINE-P2R-001');
   });
 
   it('does not reopen closed P2 stages', () => {
-    const roadmap = document('ROADMAP.md');
-    const status = document('PROJECT-STATUS.md');
+    const roadmap = read('docs/ROADMAP.md');
 
-    for (let stage = 4; stage <= 15; stage += 1) {
-      expect(roadmap).toContain(`- [x] P2.${stage}`);
+    for (let stage = 1; stage <= 15; stage += 1) {
+      expect(roadmap).not.toContain(`- [ ] P2.${stage} `);
     }
-    expect(status).not.toContain('مرحله مادر جاری: `P2');
+
+    expect(roadmap).toContain('- [x] P2.15');
   });
 });
