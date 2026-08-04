@@ -1,9 +1,11 @@
+import { ThemeProvider, TooltipProvider } from '@workspace/ui';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 
 import { LanguageSwitcher } from '@/components/language-switcher';
-import { getLocaleDirection, type AppLocale } from '@/i18n/config';
+import { ThemeToggleControl } from '@/components/theme-toggle-control';
+import { getLocaleDirection } from '@/i18n/config';
 
 import './globals.css';
 
@@ -24,15 +26,27 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>): Promise<React.ReactElement> {
-  const locale = (await getLocale()) as AppLocale;
+  const locale = await getLocale();
   const messages = await getMessages();
 
   return (
-    <html lang={locale} dir={getLocaleDirection(locale)}>
+    <html lang={locale} dir={getLocaleDirection(locale)} suppressHydrationWarning>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <LanguageSwitcher />
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <TooltipProvider>
+              <div className="app-controls">
+                <LanguageSwitcher />
+                <ThemeToggleControl />
+              </div>
+              {children}
+            </TooltipProvider>
+          </ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>

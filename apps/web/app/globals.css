@@ -1,19 +1,21 @@
 @import '@fontsource-variable/vazirmatn/wght.css';
 @import 'tailwindcss';
+@import '@workspace/ui/styles.css';
+@source '../../../packages/ui/src';
 
 :root {
   color-scheme: light;
-  --bg: #f5f7fb;
-  --surface: #fff;
-  --surface-soft: #f8fafc;
-  --text: #172033;
-  --muted: #687386;
-  --border: #e1e6ef;
-  --primary: #4f46e5;
-  --primary-dark: #3730a3;
-  --success: #15805f;
-  --warning: #a66300;
-  --shadow: 0 18px 50px rgb(40 48 74 / 8%);
+  --bg: var(--background);
+  --surface: var(--card);
+  --surface-soft: var(--muted);
+  --text: var(--foreground);
+  --primary-dark: var(--primary);
+  --shadow: 0 18px 50px color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+
+.dark {
+  color-scheme: dark;
+  --shadow: 0 20px 56px color-mix(in oklab, black 32%, transparent);
 }
 
 * {
@@ -21,14 +23,14 @@
 }
 
 html {
-  background: var(--bg);
+  background: var(--background);
 }
 
 body {
   min-height: 100vh;
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--background);
+  color: var(--foreground);
   font-family:
     Inter,
     ui-sans-serif,
@@ -66,28 +68,32 @@ button,
 .primary-button,
 button {
   background: var(--primary);
-  color: #fff;
+  color: var(--primary-foreground);
 }
 
 .secondary-button {
   border: 1px solid var(--border);
-  background: #fff;
-  color: var(--text);
+  background: var(--card);
+  color: var(--foreground);
 }
 
 :focus-visible {
-  outline: 3px solid #818cf8;
+  outline: 3px solid var(--ring);
   outline-offset: 3px;
 }
 
-.language-switcher {
+.app-controls {
   position: fixed;
   inset-block-start: 16px;
   inset-inline-end: 16px;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.language-switcher {
   min-width: 78px;
-  border: 1px solid rgb(255 255 255 / 35%);
-  box-shadow: 0 12px 30px rgb(40 48 74 / 14%);
 }
 
 .app-shell {
@@ -103,7 +109,7 @@ html[dir='rtl'] .app-shell {
 .sidebar {
   padding: 24px 18px;
   border-inline-end: 1px solid var(--border);
-  background: #fff;
+  background: var(--card);
 }
 
 .brand {
@@ -123,8 +129,8 @@ html[dir='rtl'] .app-shell {
   height: 44px;
   place-items: center;
   border-radius: 14px;
-  background: linear-gradient(145deg, var(--primary), #7c3aed);
-  color: #fff;
+  background: linear-gradient(145deg, var(--primary), var(--chart-2));
+  color: var(--primary-foreground);
   font-size: 1.4rem;
   font-weight: 800;
 }
@@ -135,7 +141,7 @@ html[dir='rtl'] .app-shell {
 
 .brand small,
 .muted {
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 
 nav {
@@ -147,13 +153,13 @@ nav {
 nav a {
   padding: 12px 14px;
   border-radius: 12px;
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 
 nav a.active,
 nav a:hover {
-  background: #eef2ff;
-  color: var(--primary-dark);
+  background: var(--accent);
+  color: var(--accent-foreground);
 }
 
 .workspace {
@@ -166,7 +172,7 @@ nav a:hover {
   justify-content: space-between;
   padding: 18px 118px 18px 32px;
   border-bottom: 1px solid var(--border);
-  background: #fff;
+  background: var(--card);
 }
 
 html[dir='rtl'] .topbar {
@@ -202,7 +208,7 @@ h2 {
 
 .lead {
   max-width: 720px;
-  color: var(--muted);
+  color: var(--muted-foreground);
   line-height: 2;
 }
 
@@ -230,7 +236,7 @@ h2 {
 }
 
 .metric-card span {
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 
 .metric-card strong {
@@ -302,6 +308,7 @@ h2 {
   border-radius: 12px;
   padding: 13px;
   background: var(--surface-soft);
+  color: var(--foreground);
 }
 
 .text-link {
@@ -335,7 +342,7 @@ h2 {
 }
 
 .organization-list span {
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 
 .management-header {
@@ -367,7 +374,7 @@ td {
 }
 
 th {
-  color: var(--muted);
+  color: var(--muted-foreground);
   font-weight: 600;
 }
 
@@ -378,12 +385,12 @@ th {
 }
 
 .badge.success {
-  background: #e9f8f2;
+  background: color-mix(in oklab, var(--success) 14%, transparent);
   color: var(--success);
 }
 
 .badge.warning {
-  background: #fff4df;
+  background: color-mix(in oklab, var(--warning) 15%, transparent);
   color: var(--warning);
 }
 
@@ -410,15 +417,15 @@ th {
   height: 46px;
   place-items: center;
   border-radius: 14px;
-  background: #eef2ff;
+  background: var(--accent);
   color: var(--primary);
   font-weight: 800;
 }
 
 .form-error {
   border-radius: 12px;
-  background: #fff0f0;
-  color: #a11;
+  background: color-mix(in oklab, var(--destructive) 12%, transparent);
+  color: var(--destructive);
   padding: 12px;
   line-height: 1.8;
 }
@@ -440,7 +447,8 @@ th {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 12px;
-  background: #fff;
+  background: var(--card);
+  color: var(--foreground);
 }
 
 button:disabled {

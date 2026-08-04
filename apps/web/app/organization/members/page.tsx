@@ -85,7 +85,7 @@ export default function MembersPage(): React.ReactElement {
       </header>
       <section className="panel management-form">
         <h2>{messages('inviteTitle')}</h2>
-        <form onSubmit={invite}>
+        <form onSubmit={(event) => void invite(event)}>
           <input name="email" type="email" placeholder={messages('emailPlaceholder')} required />
           <select name="roleKey" defaultValue="member" aria-label={messages('roleLabel')}>
             <option value="member">{common('roles.member')}</option>

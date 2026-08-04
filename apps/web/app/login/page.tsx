@@ -47,7 +47,7 @@ export default function LoginPage(): React.ReactElement {
         </div>
         <h1>{messages('title')}</h1>
         <p className="muted">{messages('description')}</p>
-        <form className="form-stack" onSubmit={submit}>
+        <form className="form-stack" onSubmit={(event) => void submit(event)}>
           <label>
             {messages('email')}
             <input name="email" type="email" autoComplete="email" required />

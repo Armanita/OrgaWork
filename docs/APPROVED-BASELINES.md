@@ -1339,3 +1339,40 @@ DRS باید مشخص کند آیا محصول و معماری برای شروع
 - زبان دوم محصول: `en`
 - Backend و امنیت P2: خارج از دامنه تغییر
 - شروع P3.1: پس از پذیرش P2R.1.8
+
+# UI-DESIGN-SYSTEM-P2R-001 — خط‌مبنای سیستم طراحی
+
+## وضعیت
+
+APPROVED
+
+## دامنه
+
+- بسته مستقل `@workspace/ui` در `packages/ui`
+- توکن‌های معنایی روشن و تیره
+- پشتیبانی از `LTR` و `RTL` با ویژگی‌های منطقی CSS
+- مؤلفه‌های پایه Button Card Input Label Separator Badge Tooltip
+- Theme Provider و Theme Toggle
+- آیکن‌های `lucide-react`
+- Primitiveهای دسترس‌پذیر `Radix`
+- مدیریت Variant با `class-variance-authority`
+- ادغام کلاس‌ها با `clsx` و `tailwind-merge`
+
+## قواعد
+
+- هیچ متن محصولی در بسته UI هاردکد نمی‌شود.
+- متن‌های قابل مشاهده توسط برنامه مصرف‌کننده و `next-intl` تأمین می‌شوند.
+- بسته UI به Application یا Domain Module وابسته نمی‌شود.
+- رنگ‌ها در مؤلفه‌ها از توکن‌های معنایی خوانده می‌شوند.
+- حالت تیره با کلاس `dark` روی عنصر ریشه فعال می‌شود.
+- کد الگوها فقط به‌صورت اقتباس کنترل‌شده از مراجع MIT استفاده می‌شود.
+- Dropdown و Sheet تا مرحله نیاز واقعی پوسته داشبورد وارد نمی‌شوند.
+
+## نسخه‌های ثابت
+
+- `radix-ui` برابر `1.6.0`
+- `lucide-react` برابر `1.28.0`
+- `next-themes` برابر `0.4.6`
+- `class-variance-authority` برابر `0.7.1`
+- `clsx` برابر `2.1.1`
+- `tailwind-merge` برابر `3.6.0`

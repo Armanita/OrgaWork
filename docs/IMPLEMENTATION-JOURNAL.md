@@ -1990,3 +1990,40 @@ P1.10 باید پذیرش نهایی کل P1 را انجام دهد. طراحی 
 - `P2R.1.2` بسته شد.
 - مرحله جاری به `P2R.1.3` منتقل شد.
 - `P3.1` آغاز نشد.
+
+# P2R.1.3 — سیستم طراحی و مؤلفه‌های پایه
+
+## پیاده‌سازی
+
+- جای‌نگهدار `packages/ui/.gitkeep` به Workspace واقعی `@workspace/ui` تبدیل شد.
+- بسته UI با Build TypeScript و Exportهای Source برای توسعه Next.js ایجاد شد.
+- توکن‌های معنایی روشن و تیره به‌صورت CSS Variables و Tailwind Theme ثبت شدند.
+- مؤلفه‌های Button Card Input Label Separator Badge Tooltip ایجاد شدند.
+- Theme Provider و Theme Toggle با `next-themes` ایجاد شدند.
+- Primitiveهای دسترس‌پذیر از `radix-ui` و آیکن‌ها از `lucide-react` استفاده می‌کنند.
+- هیچ متن محصولی در بسته UI هاردکد نشد.
+- برنامه Web وابستگی `@workspace/ui` و `transpilePackages` را ثبت کرد.
+- کلاس‌های بسته UI با دستور `@source` در Tailwind نسخه 4 قابل شناسایی شدند.
+- کنترل زبان و کنترل پوسته در Provider مشترک برنامه ادغام شدند.
+- امنیت نشست احراز هویت CSRF و Backend بدون تغییر باقی ماندند.
+- فرمان تاریخی `build:foundation:direct` بدون تغییر حفظ شد و ساخت بسته UI جداگانه انجام شد.
+- ممیزی نهایی P2 به‌صورت سازگار با گذشته هم `dir="rtl"` ثابت و هم جهت پویا بر پایه Locale را می‌پذیرد.
+
+## دروازه‌ها
+
+- آزمون مؤلفه‌ها و Utilityهای بسته UI
+- آزمون بنیاد سیستم طراحی
+- آزمون‌های مستندات و زیرساخت چندزبانه
+- آزمون‌های محفوظ P2
+- Typecheck و Build بسته UI
+- Lint بسته UI و برنامه Web
+- Typecheck و Production Build برنامه Web
+- Architecture Policy و Repository Security
+- مجموعه کامل آزمون‌ها
+- Formatting و Diff Integrity
+
+## خروجی
+
+- `P2R.1.3` بسته شد.
+- مرحله جاری به `P2R.1.4` منتقل شد.
+- `P3.1` آغاز نشد.

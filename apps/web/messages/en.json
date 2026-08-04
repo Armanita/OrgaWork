@@ -111,5 +111,9 @@
         "session": "An old user session was revoked"
       }
     }
+  },
+  "themeSwitcher": {
+    "toLight": "Use light theme",
+    "toDark": "Use dark theme"
   }
 }

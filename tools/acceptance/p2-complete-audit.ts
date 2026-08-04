@@ -145,12 +145,16 @@ export function inspectP2Complete(
     "'x-csrf-token'",
   ])
     marker(issues, api, expected, 'قرارداد API');
-  for (const expected of [
-    'dir="rtl"',
-    '@fontsource-variable/vazirmatn/wght.css',
-    'Vazirmatn Variable',
-  ])
+  for (const expected of ['@fontsource-variable/vazirmatn/wght.css', 'Vazirmatn Variable'])
     marker(issues, ui, expected, 'خط مبنای رابط');
+
+  const legacyFixedRtl = ui.includes('dir="rtl"');
+  const dynamicLocaleDirection =
+    ui.includes('dir={getLocaleDirection(locale)}') && ui.includes('getLocaleDirection');
+
+  if (!legacyFixedRtl && !dynamicLocaleDirection) {
+    issues.push('خط مبنای رابط: جهت صفحه');
+  }
   for (const expected of [
     'secret_hash text NOT NULL UNIQUE',
     'current_organization_id uuid NULL',

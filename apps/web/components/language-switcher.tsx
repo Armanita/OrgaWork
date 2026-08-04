@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@workspace/ui';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -39,14 +40,16 @@ export function LanguageSwitcher(): React.ReactElement {
   const ariaLabel = locale === 'en' ? t('switchToPersian') : t('switchToEnglish');
 
   return (
-    <button
+    <Button
       type="button"
+      variant="outline"
+      size="sm"
       className="language-switcher"
       onClick={() => void switchLocale()}
       disabled={submitting}
       aria-label={ariaLabel}
     >
       {label}
-    </button>
+    </Button>
   );
 }

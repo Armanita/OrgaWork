@@ -72,7 +72,7 @@ export default function TeamsPage(): React.ReactElement {
       </header>
       <section className="panel management-form">
         <h2>{messages('createTitle')}</h2>
-        <form onSubmit={createTeam}>
+        <form onSubmit={(event) => void createTeam(event)}>
           <input name="name" placeholder={messages('namePlaceholder')} required />
           <button type="submit">{messages('createAction')}</button>
         </form>
