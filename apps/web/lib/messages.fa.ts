@@ -17,16 +17,56 @@ export const userFacingMessages = {
     foundationItemsLabel: 'قابلیت‌های اصلی سامانه',
     readyStatus: 'مرحله پایه رابط کاربری آماده است',
   },
+  navigation: {
+    overview: 'نمای کلی',
+    members: 'اعضا و دعوت‌ها',
+    teams: 'تیم‌ها',
+    security: 'ورود و امنیت',
+  },
+  login: {
+    title: 'ورود به سامانه',
+    description: 'برای ادامه ایمیل و گذرواژه حساب سازمانی خود را وارد کنید.',
+    email: 'ایمیل',
+    password: 'گذرواژه',
+    submit: 'ورود',
+    forgot: 'بازیابی گذرواژه',
+  },
+  organization: {
+    title: 'انتخاب سازمان جاری',
+    description:
+      'سازمانی را انتخاب کنید که می‌خواهید پرونده‌ها اعضا تیم‌ها و دسترسی‌های آن را مدیریت کنید.',
+    switchAction: 'انتخاب سازمان',
+  },
+  members: {
+    title: 'مدیریت اعضا و دعوت‌ها',
+    invite: 'دعوت عضو جدید',
+  },
+  teams: {
+    title: 'مدیریت تیم‌ها',
+    create: 'ایجاد تیم جدید',
+  },
+  dashboard: {
+    eyebrow: 'مرکز مدیریت سازمان',
+    title: 'نمای کلی هویت و دسترسی',
+    description:
+      'وضعیت اعضا تیم‌ها نشست‌های فعال و تغییرات دسترسی سازمان جاری را در یک نگاه بررسی کنید.',
+    cards: [
+      ['اعضای فعال', '۱۲'],
+      ['دعوت‌های در انتظار', '۳'],
+      ['تیم‌های فعال', '۵'],
+      ['نشست‌های فعال', '۸'],
+    ],
+  },
 } as const;
 
 type MessageValue =
   | string
-  | readonly string[]
+  | readonly MessageValue[]
   | {
       readonly [key: string]: MessageValue;
     };
 
-function isStringArray(value: MessageValue): value is readonly string[] {
+function isMessageArray(value: MessageValue): value is readonly MessageValue[] {
   return Array.isArray(value);
 }
 
@@ -35,8 +75,14 @@ export function collectUserFacingTexts(value: MessageValue): readonly string[] {
     return [value];
   }
 
-  if (isStringArray(value)) {
-    return value;
+  if (isMessageArray(value)) {
+    const texts: string[] = [];
+
+    for (const nestedValue of value) {
+      texts.push(...collectUserFacingTexts(nestedValue));
+    }
+
+    return texts;
   }
 
   const texts: string[] = [];

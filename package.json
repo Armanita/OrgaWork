@@ -61,7 +61,7 @@
     "accept:p2.4:audit:pre": "tsx tools/acceptance/p2.4-password-security-audit.ts pre",
     "accept:p2.4:audit:closed": "tsx tools/acceptance/p2.4-password-security-audit.ts closed",
     "build:p2:modules": "pnpm --filter @workspace/security build && pnpm --filter @workspace/authentication build && pnpm --filter @workspace/organization-context build && pnpm --filter @workspace/authorization build && pnpm --filter @workspace/organization-administration build",
-    "test:p2:target": "vitest run packages/security/src/index.test.ts modules/authentication/src/index.test.ts modules/organization-context/src/index.test.ts modules/authorization/src/index.test.ts modules/organization-administration/src/index.test.ts apps/api/src/routes/identity-organization.test.ts apps/api/src/routes/organization-administration.test.ts packages/database/src/p2-session-authorization-schema.test.ts packages/database/src/p2-runtime-context.test.ts --testTimeout=30000",
+    "test:p2:target": "vitest run packages/security/src/index.test.ts modules/authentication/src/index.test.ts modules/organization-context/src/index.test.ts modules/authorization/src/index.test.ts modules/organization-administration/src/index.test.ts apps/api/src/routes/identity-organization.test.ts apps/api/src/routes/organization-administration.test.ts apps/web/lib/p2-identity-ui.test.ts packages/database/src/p2-session-authorization-schema.test.ts packages/database/src/p2-runtime-context.test.ts tools/acceptance/p2-negative-access.test.ts --testTimeout=30000",
     "ci:p2:migrations": "vitest run packages/database/src/password-credential-schema.test.ts packages/database/src/p2-session-authorization-schema.test.ts"
   },
   "devDependencies": {

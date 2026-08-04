@@ -154,6 +154,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@fontsource-variable/vazirmatn':
+        specifier: 5.2.8
+        version: 5.2.8
       '@workspace/configuration':
         specifier: workspace:*
         version: link:../../packages/configuration
@@ -999,6 +1002,9 @@ packages:
 
   '@fastify/rate-limit@11.1.0':
     resolution: {integrity: sha512-BeJ9tizLvmTXGD7deYU5G04OtHhwk5uHxbpEPVp09gKvUBIXmau/4Bshxhu9ci54MvVWfGjCEx4RzvsTntojwA==}
+
+  '@fontsource-variable/vazirmatn@5.2.8':
+    resolution: {integrity: sha512-2YzXfH4PNOeoZsBsgJgjbnm+IC2nonGyMLX3gXLm8FQrP+wpi1uGBIWYWlEzJ0lmntgdyAc3lRViHHfZWKvbog==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -2983,6 +2989,8 @@ snapshots:
       '@lukeed/ms': 2.0.2
       fastify-plugin: 6.0.0
       toad-cache: 3.7.4
+
+  '@fontsource-variable/vazirmatn@5.2.8': {}
 
   '@humanfs/core@0.19.2':
     dependencies:
