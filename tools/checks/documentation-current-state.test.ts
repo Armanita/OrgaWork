@@ -5,7 +5,7 @@ function read(relativePath: string): string {
   return readFileSync(relativePath, 'utf8');
 }
 
-describe('current documentation state after P2R.1.4', () => {
+describe('current documentation state after P2R.1.5', () => {
   it('keeps historical P1 and P2 evidence discoverable', () => {
     const readme = read('docs/README.md');
 
@@ -14,21 +14,18 @@ describe('current documentation state after P2R.1.4', () => {
     expect(readme).toContain('docs/acceptance/P2-FINAL-ACCEPTANCE.md');
   });
 
-  it('records P2 as closed, P2R.1.4 as closed, and P2R.1.5 as current', () => {
+  it('records P2 as closed, P2R.1.5 as closed, and P2R.1.6 as current', () => {
     const status = read('docs/PROJECT-STATUS.md');
     const roadmap = read('docs/ROADMAP.md');
 
     expect(status).toContain('P2 با Commit نهایی `0be4eb3e1dcf63c358ed9a2751103d4d410eb30b` بسته');
-    expect(status).toContain('مرحله بسته‌شده: `P2R.1.4 — ایجاد پوسته داشبورد نوار کناری و سربرگ`');
-    expect(status).toContain('مرحله جاری: `P2R.1.5 — بازطراحی صفحه ورود و انتخاب سازمان`');
+    expect(status).toContain('مرحله بسته‌شده: `P2R.1.5 — بازطراحی صفحه ورود و انتخاب سازمان`');
+    expect(status).toContain('مرحله جاری: `P2R.1.6 — بازطراحی مدیریت اعضا دعوت‌ها و تیم‌ها`');
     expect(status).toContain('مرحله `P3.1` هنوز آغاز نشده');
 
-    expect(roadmap).toContain('## P2R — اصلاح بنیاد رابط پیش از آغاز P3');
-    expect(roadmap).toContain('- [x] P2R.1.1');
-    expect(roadmap).toContain('- [x] P2R.1.2');
-    expect(roadmap).toContain('- [x] P2R.1.3');
     expect(roadmap).toContain('- [x] P2R.1.4');
-    expect(roadmap).toContain('- [ ] P2R.1.5');
+    expect(roadmap).toContain('- [x] P2R.1.5');
+    expect(roadmap).toContain('- [ ] P2R.1.6');
     expect(roadmap).toContain('- [ ] P3.1');
   });
 
@@ -42,17 +39,16 @@ describe('current documentation state after P2R.1.4', () => {
     expect(acceptance).toContain('مرحله جاری به `P3.1` منتقل می‌شود');
   });
 
-  it('records the remediation, design-system, and dashboard-shell baselines', () => {
-    const decisions = read('docs/DECISIONS.md');
+  it('records all remediation baselines through identity entry', () => {
     const baselines = read('docs/APPROVED-BASELINES.md');
     const journal = read('docs/IMPLEMENTATION-JOURNAL.md');
 
-    expect(decisions).toContain('DEC-UI-002');
     expect(baselines).toContain('UI-BASELINE-P2R-001');
     expect(baselines).toContain('UI-DESIGN-SYSTEM-P2R-001');
     expect(baselines).toContain('UI-DASHBOARD-SHELL-P2R-001');
-    expect(journal).toContain('# P2R.1.4 — پوسته واکنش‌گرای داشبورد');
-    expect(journal).toContain('`DashboardShell`');
+    expect(baselines).toContain('UI-IDENTITY-ENTRY-P2R-001');
+    expect(journal).toContain('# P2R.1.5 — ورود بازیابی و انتخاب سازمان');
+    expect(journal).toContain('`AuthPageShell`');
   });
 
   it('does not reopen closed P2 stages', () => {

@@ -45,7 +45,9 @@
       "membersLoadFailed": "خواندن اعضا ناموفق بود.",
       "invitationFailed": "ارسال دعوت ناموفق بود.",
       "teamsLoadFailed": "خواندن تیم‌ها ناموفق بود.",
-      "teamCreationFailed": "ایجاد تیم ناموفق بود."
+      "teamCreationFailed": "ایجاد تیم ناموفق بود.",
+      "passwordResetRequestFailed": "ثبت درخواست بازیابی گذرواژه ناموفق بود.",
+      "passwordResetConfirmFailed": "تغییر گذرواژه ناموفق بود."
     },
     "skipToContent": "رفتن به محتوای اصلی"
   },
@@ -56,14 +58,27 @@
     "password": "گذرواژه",
     "submit": "ورود",
     "submitting": "در حال ورود",
-    "forgot": "بازیابی گذرواژه"
+    "forgot": "بازیابی گذرواژه",
+    "eyebrow": "خوش آمدید",
+    "emailPlaceholder": "name@organization.com",
+    "passwordPlaceholder": "گذرواژه خود را وارد کنید",
+    "showPassword": "نمایش گذرواژه",
+    "hidePassword": "پنهان کردن گذرواژه",
+    "securityHint": "نشست شما در سرور ساخته می‌شود و راز نشست هیچ‌گاه در فضای ذخیره‌سازی مرورگر قرار نمی‌گیرد."
   },
   "organization": {
     "eyebrow": "فضای کاری",
     "title": "انتخاب سازمان جاری",
     "description": "سازمانی را انتخاب کنید که می‌خواهید پرونده‌ها اعضا تیم‌ها و دسترسی‌های آن را مدیریت کنید.",
     "switchAction": "انتخاب سازمان",
-    "empty": "سازمان فعالی برای این حساب پیدا نشد."
+    "empty": "سازمان فعالی برای این حساب پیدا نشد.",
+    "loading": "در حال دریافت سازمان‌های شما",
+    "accountLabel": "حساب واردشده",
+    "currentBadge": "سازمان جاری",
+    "membershipLabel": "عضویت فعال سازمانی",
+    "continueAction": "ادامه",
+    "selecting": "در حال تغییر سازمان",
+    "organizationCount": "{count} سازمان"
   },
   "members": {
     "title": "مدیریت اعضا و دعوت‌ها",
@@ -119,5 +134,42 @@
   "themeSwitcher": {
     "toLight": "استفاده از پوسته روشن",
     "toDark": "استفاده از پوسته تیره"
+  },
+  "authExperience": {
+    "eyebrow": "دسترسی امن سازمانی",
+    "title": "یک حساب برای همه سازمان‌های شما",
+    "description": "یک‌بار وارد شوید سازمان محل کار خود را انتخاب کنید و همه درخواست‌ها را با نشست و کنترل‌های دسترسی موجود اورگاوُرک ایمن نگه دارید.",
+    "features": {
+      "session": "نشست سمت سرور با کوکی محافظت‌شده",
+      "csrf": "محافظت CSRF هنگام تغییر سازمان",
+      "organization": "دسترسی و مجوزهای محدود به سازمان"
+    }
+  },
+  "passwordReset": {
+    "eyebrow": "بازیابی حساب",
+    "requestTitle": "بازیابی گذرواژه",
+    "requestDescription": "ایمیل سازمانی خود را وارد کنید. در صورت واجد شرایط بودن حساب درخواست بدون افشای وجود یا نبود حساب پذیرفته می‌شود.",
+    "email": "ایمیل",
+    "emailPlaceholder": "name@organization.com",
+    "requestAction": "درخواست بازیابی گذرواژه",
+    "requesting": "در حال ثبت درخواست",
+    "acceptedTitle": "درخواست بازیابی پذیرفته شد",
+    "acceptedDescription": "اگر مسیر ارسال بازیابی پیکربندی شده است دستورهای دریافت‌شده از همان مسیر را دنبال کنید.",
+    "developmentTokenLabel": "توکن بازیابی محیط توسعه",
+    "continueAction": "ادامه و تعیین گذرواژه جدید",
+    "backToLogin": "بازگشت به ورود",
+    "confirmTitle": "تعیین گذرواژه جدید",
+    "confirmDescription": "توکن بازیابی را وارد کنید و گذرواژه‌ای با حداقل ۱۵ نویسه انتخاب کنید.",
+    "token": "توکن بازیابی",
+    "tokenPlaceholder": "توکن بازیابی را وارد کنید",
+    "newPassword": "گذرواژه جدید",
+    "newPasswordPlaceholder": "حداقل ۱۵ نویسه",
+    "confirmPassword": "تکرار گذرواژه جدید",
+    "confirmPasswordPlaceholder": "گذرواژه جدید را دوباره وارد کنید",
+    "confirmAction": "تغییر گذرواژه",
+    "confirming": "در حال تغییر گذرواژه",
+    "successTitle": "گذرواژه تغییر کرد",
+    "successDescription": "گذرواژه با موفقیت تغییر کرد و اکنون می‌توانید با گذرواژه جدید وارد شوید.",
+    "passwordMismatch": "تکرار گذرواژه با گذرواژه جدید یکسان نیست."
   }
 }

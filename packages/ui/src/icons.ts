@@ -1,1 +1,16 @@
-export { Building2, LayoutDashboard, Menu, Network, ShieldCheck, Users, X } from 'lucide-react';
+export {
+  ArrowLeft,
+  Building2,
+  Check,
+  Eye,
+  EyeOff,
+  LayoutDashboard,
+  LoaderCircle,
+  LockKeyhole,
+  Mail,
+  Menu,
+  Network,
+  ShieldCheck,
+  Users,
+  X,
+} from 'lucide-react';

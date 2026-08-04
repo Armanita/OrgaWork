@@ -45,7 +45,9 @@
       "membersLoadFailed": "Members could not be loaded.",
       "invitationFailed": "The invitation could not be sent.",
       "teamsLoadFailed": "Teams could not be loaded.",
-      "teamCreationFailed": "The team could not be created."
+      "teamCreationFailed": "The team could not be created.",
+      "passwordResetRequestFailed": "The password reset request could not be submitted.",
+      "passwordResetConfirmFailed": "The password could not be changed."
     },
     "skipToContent": "Skip to main content"
   },
@@ -56,14 +58,27 @@
     "password": "Password",
     "submit": "Sign in",
     "submitting": "Signing in",
-    "forgot": "Reset password"
+    "forgot": "Reset password",
+    "eyebrow": "Welcome back",
+    "emailPlaceholder": "name@organization.com",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "securityHint": "Your session is created on the server and the secret is never stored in browser storage."
   },
   "organization": {
     "eyebrow": "Workspace",
     "title": "Select the current organization",
     "description": "Choose the organization whose cases, members, teams and permissions you want to manage.",
     "switchAction": "Select organization",
-    "empty": "No active organization was found for this account."
+    "empty": "No active organization was found for this account.",
+    "loading": "Loading your organizations",
+    "accountLabel": "Signed-in account",
+    "currentBadge": "Current",
+    "membershipLabel": "Active organization membership",
+    "continueAction": "Continue",
+    "selecting": "Switching organization",
+    "organizationCount": "{count, plural, one {# organization} other {# organizations}}"
   },
   "members": {
     "title": "Members and invitations",
@@ -119,5 +134,42 @@
   "themeSwitcher": {
     "toLight": "Use light theme",
     "toDark": "Use dark theme"
+  },
+  "authExperience": {
+    "eyebrow": "Secure organizational access",
+    "title": "One account for every organization",
+    "description": "Sign in once, choose the organization you are working in, and keep every request protected by the existing OrgaWork session and access controls.",
+    "features": {
+      "session": "Server-side session with protected cookies",
+      "csrf": "CSRF protection for organization changes",
+      "organization": "Organization-scoped access and permissions"
+    }
+  },
+  "passwordReset": {
+    "eyebrow": "Account recovery",
+    "requestTitle": "Reset your password",
+    "requestDescription": "Enter your organizational email. If the account is eligible, the recovery process will be accepted without revealing account existence.",
+    "email": "Email",
+    "emailPlaceholder": "name@organization.com",
+    "requestAction": "Request password reset",
+    "requesting": "Submitting request",
+    "acceptedTitle": "Recovery request accepted",
+    "acceptedDescription": "If recovery delivery is configured, follow the instructions sent through that channel.",
+    "developmentTokenLabel": "Development recovery token",
+    "continueAction": "Continue to set a new password",
+    "backToLogin": "Back to sign in",
+    "confirmTitle": "Set a new password",
+    "confirmDescription": "Enter the recovery token and choose a new password with at least 15 characters.",
+    "token": "Recovery token",
+    "tokenPlaceholder": "Paste the recovery token",
+    "newPassword": "New password",
+    "newPasswordPlaceholder": "At least 15 characters",
+    "confirmPassword": "Confirm new password",
+    "confirmPasswordPlaceholder": "Enter the new password again",
+    "confirmAction": "Change password",
+    "confirming": "Changing password",
+    "successTitle": "Password changed",
+    "successDescription": "Your password was changed successfully. You can now sign in with the new password.",
+    "passwordMismatch": "The password confirmation does not match."
   }
 }

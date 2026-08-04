@@ -14,5 +14,20 @@ export { Separator } from './components/separator';
 export { ThemeProvider, type ThemeProviderProps } from './components/theme-provider';
 export { ThemeToggle, type ThemeToggleProps } from './components/theme-toggle';
 export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './components/tooltip';
-export { Building2, LayoutDashboard, Menu, Network, ShieldCheck, Users, X } from './icons';
+export {
+  ArrowLeft,
+  Building2,
+  Check,
+  Eye,
+  EyeOff,
+  LayoutDashboard,
+  LoaderCircle,
+  LockKeyhole,
+  Mail,
+  Menu,
+  Network,
+  ShieldCheck,
+  Users,
+  X,
+} from './icons';
 export { cn } from './lib/cn';
