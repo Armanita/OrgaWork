@@ -15,7 +15,10 @@
     "overview": "نمای کلی",
     "members": "اعضا و دعوت‌ها",
     "teams": "تیم‌ها",
-    "security": "ورود و امنیت"
+    "security": "ورود و امنیت",
+    "primaryLabel": "ناوبری اصلی",
+    "openMenu": "باز کردن فهرست ناوبری",
+    "closeMenu": "بستن فهرست ناوبری"
   },
   "common": {
     "currentOrganization": "سازمان جاری",
@@ -43,7 +46,8 @@
       "invitationFailed": "ارسال دعوت ناموفق بود.",
       "teamsLoadFailed": "خواندن تیم‌ها ناموفق بود.",
       "teamCreationFailed": "ایجاد تیم ناموفق بود."
-    }
+    },
+    "skipToContent": "رفتن به محتوای اصلی"
   },
   "login": {
     "title": "ورود به اورگاوُرک",

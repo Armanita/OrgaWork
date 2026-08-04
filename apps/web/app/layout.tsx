@@ -3,8 +3,7 @@ import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 
-import { LanguageSwitcher } from '@/components/language-switcher';
-import { ThemeToggleControl } from '@/components/theme-toggle-control';
+import { ApplicationFrame } from '@/components/application-frame';
 import { getLocaleDirection } from '@/i18n/config';
 
 import './globals.css';
@@ -40,11 +39,7 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <TooltipProvider>
-              <div className="app-controls">
-                <LanguageSwitcher />
-                <ThemeToggleControl />
-              </div>
-              {children}
+              <ApplicationFrame>{children}</ApplicationFrame>
             </TooltipProvider>
           </ThemeProvider>
         </NextIntlClientProvider>

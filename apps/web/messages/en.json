@@ -15,7 +15,10 @@
     "overview": "Overview",
     "members": "Members and invitations",
     "teams": "Teams",
-    "security": "Sign in and security"
+    "security": "Sign in and security",
+    "primaryLabel": "Primary navigation",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu"
   },
   "common": {
     "currentOrganization": "Current organization",
@@ -43,7 +46,8 @@
       "invitationFailed": "The invitation could not be sent.",
       "teamsLoadFailed": "Teams could not be loaded.",
       "teamCreationFailed": "The team could not be created."
-    }
+    },
+    "skipToContent": "Skip to main content"
   },
   "login": {
     "title": "Sign in to OrgaWork",
