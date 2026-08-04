@@ -15,6 +15,7 @@ import {
   normalizePageRequest,
   normalizeSortSpec,
   contractOperations,
+  identityOrganizationOperations,
   parseHealthResponse,
   parseReadinessResponse,
 } from './index.js';
@@ -184,5 +185,12 @@ describe('operational HTTP contracts', () => {
         timestamp: 'secret=value',
       }),
     ).toThrow(TypeError);
+  });
+
+  it('exposes stable identity and organization operation paths', () => {
+    expect(identityOrganizationOperations.login.path).toBe('/v1/auth/login');
+    expect(identityOrganizationOperations.currentOrganization.path).toBe(
+      '/v1/auth/current-organization',
+    );
   });
 });

@@ -1,3 +1,5 @@
+import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
+
 import argon2 from 'argon2';
 
 import type { Brand } from '@workspace/contracts';
@@ -134,3 +136,69 @@ export async function verifyPassword(
 }
 
 export const createPasswordHash = assertArgon2idPasswordHash;
+
+export const securityTokenBytes = 32 as const;
+
+export interface PasswordHasher {
+  hash(password: string): Promise<string>;
+  verify(encodedHash: string, password: string): Promise<boolean>;
+  needsRehash(encodedHash: string): boolean;
+}
+
+export interface PasswordCompromiseChecker {
+  isCompromised(password: string): Promise<boolean>;
+}
+
+export const defaultPasswordCompromiseChecker: PasswordCompromiseChecker = {
+  isCompromised: async (password: string): Promise<boolean> => {
+    try {
+      assertPasswordPolicy(password);
+      return false;
+    } catch (error: unknown) {
+      return error instanceof PasswordSecurityError && error.code === 'PASSWORD_COMPROMISED';
+    }
+  },
+};
+
+export function createArgon2idPasswordHasher(): PasswordHasher {
+  return {
+    hash: async (password: string): Promise<string> => hashPassword(password),
+    verify: async (encodedHash: string, password: string): Promise<boolean> =>
+      (await verifyPassword(encodedHash, password)).verified,
+    needsRehash: (encodedHash: string): boolean => {
+      try {
+        return argon2.needsRehash(encodedHash, selectedArgon2idProfile);
+      } catch {
+        return true;
+      }
+    },
+  };
+}
+
+export function generateSecurityToken(bytes: number = securityTokenBytes): string {
+  if (!Number.isSafeInteger(bytes) || bytes < securityTokenBytes || bytes > 128) {
+    throw new RangeError('طول Token امنیتی معتبر نیست.');
+  }
+
+  return randomBytes(bytes).toString('base64url');
+}
+
+export function hashSecurityToken(token: string): string {
+  return createHash('sha256').update(token, 'utf8').digest('hex');
+}
+
+function hashForComparison(value: string): Buffer {
+  return createHash('sha256').update(value, 'utf8').digest();
+}
+
+export function timingSafeTextEqual(left: string, right: string): boolean {
+  return timingSafeEqual(hashForComparison(left), hashForComparison(right));
+}
+
+export function verifySecurityToken(token: string, expectedHash: string): boolean {
+  if (!/^[0-9a-f]{64}$/u.test(expectedHash)) {
+    return false;
+  }
+
+  return timingSafeTextEqual(hashSecurityToken(token), expectedHash);
+}

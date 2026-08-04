@@ -12,6 +12,8 @@ export type MembershipId = Brand<string, 'MembershipId'>;
 export type TeamId = Brand<string, 'TeamId'>;
 export type TeamMembershipId = Brand<string, 'TeamMembershipId'>;
 export type SessionId = Brand<string, 'SessionId'>;
+export type InvitationId = Brand<string, 'InvitationId'>;
+export type PermissionId = Brand<string, 'PermissionId'>;
 export type RequestId = Brand<string, 'RequestId'>;
 export type CorrelationId = Brand<string, 'CorrelationId'>;
 export type UtcTimestamp = Brand<string, 'UtcTimestamp'>;
@@ -53,6 +55,10 @@ export function createTeamMembershipId(value: string): TeamMembershipId {
 
 export function createSessionId(value: string): SessionId {
   return createIdentifier<'SessionId'>(value, 'نشست');
+}
+
+export function createInvitationId(value: string): InvitationId {
+  return createIdentifier<'InvitationId'>(value, 'دعوت');
 }
 
 export function createRequestId(value: string): RequestId {
@@ -106,6 +112,24 @@ export const apiErrorCodes = [
   'RATE_LIMITED',
   'SERVICE_UNAVAILABLE',
   'INTERNAL_ERROR',
+  'AUTH_INVALID_CREDENTIALS',
+  'AUTH_ACCOUNT_DISABLED',
+  'AUTH_SESSION_REQUIRED',
+  'AUTH_SESSION_EXPIRED',
+  'AUTH_SESSION_REVOKED',
+  'AUTH_CSRF_INVALID',
+  'AUTH_PASSWORD_POLICY_FAILED',
+  'AUTH_PASSWORD_RESET_INVALID',
+  'ORGANIZATION_CONTEXT_REQUIRED',
+  'ORGANIZATION_MEMBERSHIP_REQUIRED',
+  'ORGANIZATION_MEMBERSHIP_INACTIVE',
+  'ORGANIZATION_SWITCH_FORBIDDEN',
+  'AUTHORIZATION_DENIED',
+  'INVITATION_INVALID',
+  'INVITATION_EXPIRED',
+  'INVITATION_REVOKED',
+  'MEMBERSHIP_STATE_CONFLICT',
+  'TEAM_ORGANIZATION_MISMATCH',
 ] as const;
 
 export type ApiErrorCode = (typeof apiErrorCodes)[number];
@@ -341,3 +365,75 @@ export function parseReadinessResponse(value: unknown): ReadinessResponse {
     timestamp: parseOperationalResponse(value, 'ready'),
   };
 }
+
+export interface AuthenticationSessionData {
+  readonly id: SessionId;
+  readonly userId: UserId;
+  readonly email: string;
+  readonly status: 'active';
+  readonly sessionRevision: number;
+  readonly currentOrganizationId: OrganizationId | null;
+  readonly csrfToken: string;
+  readonly idleExpiresAt: UtcTimestamp;
+  readonly absoluteExpiresAt: UtcTimestamp;
+}
+
+export interface OrganizationSummaryData {
+  readonly id: OrganizationId;
+  readonly name: string;
+  readonly membershipId: MembershipId;
+  readonly membershipStatus: 'active';
+}
+
+export const identityOrganizationOperations = {
+  login: { operationId: 'login', method: 'POST', path: '/v1/auth/login' },
+  logout: { operationId: 'logout', method: 'POST', path: '/v1/auth/logout' },
+  logoutAll: { operationId: 'logoutAll', method: 'POST', path: '/v1/auth/logout-all' },
+  session: { operationId: 'getSession', method: 'GET', path: '/v1/auth/session' },
+  passwordResetRequest: {
+    operationId: 'requestPasswordReset',
+    method: 'POST',
+    path: '/v1/auth/password-reset/request',
+  },
+  passwordResetConfirm: {
+    operationId: 'confirmPasswordReset',
+    method: 'POST',
+    path: '/v1/auth/password-reset/confirm',
+  },
+  organizations: { operationId: 'listOrganizations', method: 'GET', path: '/v1/organizations' },
+  currentOrganization: {
+    operationId: 'switchCurrentOrganization',
+    method: 'POST',
+    path: '/v1/auth/current-organization',
+  },
+  memberships: {
+    operationId: 'listOrganizationMemberships',
+    method: 'GET',
+    path: '/v1/organizations/{organizationId}/memberships',
+  },
+  updateMembership: {
+    operationId: 'updateMembership',
+    method: 'PATCH',
+    path: '/v1/organizations/{organizationId}/memberships/{membershipId}',
+  },
+  replaceMembershipRoles: {
+    operationId: 'replaceMembershipRoles',
+    method: 'PATCH',
+    path: '/v1/organizations/{organizationId}/memberships/{membershipId}/roles',
+  },
+  invitations: {
+    operationId: 'createInvitation',
+    method: 'POST',
+    path: '/v1/organizations/{organizationId}/invitations',
+  },
+  teams: {
+    operationId: 'listOrganizationTeams',
+    method: 'GET',
+    path: '/v1/organizations/{organizationId}/teams',
+  },
+  createTeam: {
+    operationId: 'createTeam',
+    method: 'POST',
+    path: '/v1/organizations/{organizationId}/teams',
+  },
+} as const;

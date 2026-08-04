@@ -5,6 +5,7 @@ import type { PostgreSqlAccess, PostgreSqlQueryExecutor } from './index.js';
 
 export type TenantRuntimeErrorCode =
   | 'INVALID_ORGANIZATION_ID'
+  | 'INVALID_USER_ID'
   | 'TENANT_CONTEXT_UNAVAILABLE'
   | 'TENANT_CONTEXT_MISMATCH'
   | 'TENANT_TRANSACTION_FAILED';
@@ -21,6 +22,7 @@ export class TenantRuntimeError extends Error {
 
 const tenantRuntimeMessages: Readonly<Record<TenantRuntimeErrorCode, string>> = {
   INVALID_ORGANIZATION_ID: 'شناسه سازمان برای زمینه تراکنش معتبر نیست.',
+  INVALID_USER_ID: 'شناسه کاربر برای زمینه تراکنش معتبر نیست.',
   TENANT_CONTEXT_UNAVAILABLE: 'خواندن زمینه سازمان جاری ناموفق بود.',
   TENANT_CONTEXT_MISMATCH: 'زمینه سازمان جاری با تراکنش مورد انتظار سازگار نیست.',
   TENANT_TRANSACTION_FAILED: 'اجرای تراکنش سازمانی ناموفق بود.',
@@ -45,6 +47,55 @@ export function normalizeOrganizationId(value: string): string {
   }
 
   return normalized;
+}
+
+export function normalizeUserId(value: string): string {
+  const normalized = value.trim().toLowerCase();
+
+  if (!organizationIdPattern.test(normalized)) {
+    throw createTenantRuntimeError('INVALID_USER_ID');
+  }
+
+  return normalized;
+}
+
+export async function withRuntimeTransaction<Result>(
+  access: PostgreSqlAccess,
+  operation: (transaction: PostgreSqlQueryExecutor) => Promise<Result>,
+): Promise<Result> {
+  try {
+    return await access.transaction(async (transaction) => {
+      await transaction.query(`SET LOCAL ROLE ${databaseRoleNames.runtime}`);
+      return operation(transaction);
+    });
+  } catch {
+    throw createTenantRuntimeError('TENANT_TRANSACTION_FAILED');
+  }
+}
+
+export async function withUserTransaction<Result>(
+  access: PostgreSqlAccess,
+  userId: string,
+  operation: (transaction: PostgreSqlQueryExecutor, normalizedUserId: string) => Promise<Result>,
+): Promise<Result> {
+  const normalizedUserId = normalizeUserId(userId);
+
+  try {
+    return await access.transaction(async (transaction) => {
+      await transaction.query(`SET LOCAL ROLE ${databaseRoleNames.runtime}`);
+      await transaction.query("SELECT set_config('orgawork.user_id', $1, true)", [
+        normalizedUserId,
+      ]);
+
+      return operation(transaction, normalizedUserId);
+    });
+  } catch (error: unknown) {
+    if (error instanceof TenantRuntimeError && error.code === 'INVALID_USER_ID') {
+      throw error;
+    }
+
+    throw createTenantRuntimeError('TENANT_TRANSACTION_FAILED');
+  }
 }
 
 export async function readCurrentOrganizationId(

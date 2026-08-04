@@ -48,6 +48,696 @@
           }
         }
       }
+    },
+    "/v1/auth/login": {
+      "post": {
+        "operationId": "login",
+        "summary": "ورود امن",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/logout": {
+      "post": {
+        "operationId": "logout",
+        "summary": "خروج",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/logout-all": {
+      "post": {
+        "operationId": "logoutAll",
+        "summary": "خروج از همه نشست‌ها",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/session": {
+      "get": {
+        "operationId": "getSession",
+        "summary": "مشاهده نشست جاری",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/password-reset/request": {
+      "post": {
+        "operationId": "requestPasswordReset",
+        "summary": "درخواست بازیابی گذرواژه",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/password-reset/confirm": {
+      "post": {
+        "operationId": "confirmPasswordReset",
+        "summary": "تأیید بازیابی گذرواژه",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations": {
+      "get": {
+        "operationId": "listOrganizations",
+        "summary": "فهرست سازمان‌های فعال",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/current-organization": {
+      "post": {
+        "operationId": "switchCurrentOrganization",
+        "summary": "تغییر سازمان جاری",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/invitations": {
+      "post": {
+        "operationId": "createInvitation",
+        "summary": "ایجاد دعوت",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/invitations/{token}/accept": {
+      "post": {
+        "operationId": "acceptInvitation",
+        "summary": "پذیرش دعوت",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/invitations/{invitationId}": {
+      "delete": {
+        "operationId": "revokeInvitation",
+        "summary": "لغو دعوت",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/memberships/{membershipId}": {
+      "patch": {
+        "operationId": "updateMembership",
+        "summary": "تغییر وضعیت عضویت",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/teams": {
+      "post": {
+        "operationId": "createTeam",
+        "summary": "ایجاد تیم",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listOrganizationTeams",
+        "summary": "فهرست تیم‌های سازمان",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/teams/{teamId}": {
+      "patch": {
+        "operationId": "updateTeam",
+        "summary": "ویرایش تیم",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/teams/{teamId}/members": {
+      "post": {
+        "operationId": "addTeamMember",
+        "summary": "افزودن عضو تیم",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/teams/{teamId}/members/{membershipId}": {
+      "delete": {
+        "operationId": "removeTeamMember",
+        "summary": "حذف عضو تیم",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/memberships/{membershipId}/roles": {
+      "patch": {
+        "operationId": "replaceMembershipRoles",
+        "summary": "تغییر نقش‌های عضویت",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/memberships": {
+      "get": {
+        "operationId": "listOrganizationMemberships",
+        "summary": "فهرست اعضای سازمان",
+        "responses": {
+          "200": {
+            "description": "عملیات موفق بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست معتبر نیست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "نشست معتبر لازم است",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -190,7 +880,25 @@
                   "CONFLICT",
                   "RATE_LIMITED",
                   "SERVICE_UNAVAILABLE",
-                  "INTERNAL_ERROR"
+                  "INTERNAL_ERROR",
+                  "AUTH_INVALID_CREDENTIALS",
+                  "AUTH_ACCOUNT_DISABLED",
+                  "AUTH_SESSION_REQUIRED",
+                  "AUTH_SESSION_EXPIRED",
+                  "AUTH_SESSION_REVOKED",
+                  "AUTH_CSRF_INVALID",
+                  "AUTH_PASSWORD_POLICY_FAILED",
+                  "AUTH_PASSWORD_RESET_INVALID",
+                  "ORGANIZATION_CONTEXT_REQUIRED",
+                  "ORGANIZATION_MEMBERSHIP_REQUIRED",
+                  "ORGANIZATION_MEMBERSHIP_INACTIVE",
+                  "ORGANIZATION_SWITCH_FORBIDDEN",
+                  "AUTHORIZATION_DENIED",
+                  "INVITATION_INVALID",
+                  "INVITATION_EXPIRED",
+                  "INVITATION_REVOKED",
+                  "MEMBERSHIP_STATE_CONFLICT",
+                  "TEAM_ORGANIZATION_MISMATCH"
                 ]
               },
               "message": {

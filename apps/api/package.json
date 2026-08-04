@@ -17,7 +17,15 @@
     "@workspace/queue": "workspace:*",
     "@workspace/storage": "workspace:*",
     "fastify": "5.10.0",
-    "@workspace/observability": "workspace:*"
+    "@workspace/observability": "workspace:*",
+    "@fastify/cookie": "11.1.0",
+    "@fastify/rate-limit": "11.1.0",
+    "@workspace/contracts": "workspace:*",
+    "@workspace/security": "workspace:*",
+    "@workspace/authentication": "workspace:*",
+    "@workspace/organization-context": "workspace:*",
+    "@workspace/authorization": "workspace:*",
+    "@workspace/organization-administration": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "24.13.3",
