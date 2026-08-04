@@ -1,29 +1,33 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-import { collectUserFacingTexts, userFacingMessages } from './messages.fa.js';
+describe('P2 identity UI security preserved by P2R i18n', () => {
+  it('uses request-scoped locale resolution and dynamic document direction', () => {
+    const layout = readFileSync('apps/web/app/layout.tsx', 'utf8');
+    const requestConfig = readFileSync('apps/web/i18n/request.ts', 'utf8');
+    const localeConfig = readFileSync('apps/web/i18n/config.ts', 'utf8');
 
-describe('P2 Persian identity UI', () => {
-  it('keeps all declared user-facing messages Persian', () => {
-    for (const value of collectUserFacingTexts(userFacingMessages)) {
-      expect(value).not.toMatch(/[A-Za-z]{3,}/u);
-    }
+    expect(layout).toContain('getLocaleDirection(locale)');
+    expect(layout).toContain('NextIntlClientProvider');
+    expect(requestConfig).toContain('localeCookieName');
+    expect(localeConfig).toContain("developmentDefaultLocale: AppLocale = 'en'");
+    expect(localeConfig).toContain("finalProductDefaultLocale: AppLocale = 'fa'");
   });
 
-  it('uses RTL and the locally installed Vazirmatn package', () => {
-    const layout = readFileSync('apps/web/app/layout.tsx', 'utf8');
+  it('keeps the locally installed Vazirmatn package for Persian rendering', () => {
     const styles = readFileSync('apps/web/app/globals.css', 'utf8');
 
-    expect(layout).toContain('dir="rtl"');
     expect(styles).toContain("@import '@fontsource-variable/vazirmatn/wght.css';");
-    expect(styles).toMatch(/font-family:\s*['"]Vazirmatn Variable['"]/u);
+    expect(styles).toContain("html[lang='fa'] body");
+    expect(styles).toContain("'Vazirmatn Variable'");
   });
 
-  it('does not store session secrets in browser storage', () => {
+  it('does not store session secrets or locale preferences in browser storage', () => {
     const files = [
       'apps/web/app/page.tsx',
       'apps/web/app/login/page.tsx',
       'apps/web/app/organization/page.tsx',
+      'apps/web/components/language-switcher.tsx',
     ];
 
     for (const file of files) {

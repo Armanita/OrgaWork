@@ -1,0 +1,115 @@
+{
+  "application": {
+    "name": "اورگاوُرک",
+    "description": "سامانه مدیریت پرونده‌ها اقدامات پیگیری‌ها یادآورها و گزارش‌های سازمانی",
+    "tagline": "سامانه پیگیری سازمانی",
+    "brandMark": "ا"
+  },
+  "languageSwitcher": {
+    "toEnglish": "English",
+    "toPersian": "فارسی",
+    "switchToEnglish": "تغییر زبان رابط به انگلیسی",
+    "switchToPersian": "تغییر زبان رابط به فارسی"
+  },
+  "navigation": {
+    "overview": "نمای کلی",
+    "members": "اعضا و دعوت‌ها",
+    "teams": "تیم‌ها",
+    "security": "ورود و امنیت"
+  },
+  "common": {
+    "currentOrganization": "سازمان جاری",
+    "sampleOrganization": "سازمان نمونه",
+    "changeOrganization": "تغییر سازمان",
+    "backToOverview": "بازگشت به نمای کلی",
+    "activeMembership": "عضویت فعال",
+    "noRole": "بدون نقش",
+    "roles": {
+      "member": "عضو",
+      "manager": "مدیر",
+      "organization_admin": "مدیر سازمان"
+    },
+    "status": {
+      "active": "فعال",
+      "invited": "دعوت‌شده",
+      "suspended": "تعلیق‌شده",
+      "revoked": "لغوشده"
+    },
+    "errors": {
+      "loginFailed": "ورود ناموفق بود.",
+      "organizationsLoadFailed": "خواندن سازمان‌ها ناموفق بود.",
+      "organizationSwitchFailed": "تغییر سازمان ناموفق بود.",
+      "membersLoadFailed": "خواندن اعضا ناموفق بود.",
+      "invitationFailed": "ارسال دعوت ناموفق بود.",
+      "teamsLoadFailed": "خواندن تیم‌ها ناموفق بود.",
+      "teamCreationFailed": "ایجاد تیم ناموفق بود."
+    }
+  },
+  "login": {
+    "title": "ورود به اورگاوُرک",
+    "description": "برای ادامه ایمیل و گذرواژه حساب سازمانی خود را وارد کنید.",
+    "email": "ایمیل",
+    "password": "گذرواژه",
+    "submit": "ورود",
+    "submitting": "در حال ورود",
+    "forgot": "بازیابی گذرواژه"
+  },
+  "organization": {
+    "eyebrow": "فضای کاری",
+    "title": "انتخاب سازمان جاری",
+    "description": "سازمانی را انتخاب کنید که می‌خواهید پرونده‌ها اعضا تیم‌ها و دسترسی‌های آن را مدیریت کنید.",
+    "switchAction": "انتخاب سازمان",
+    "empty": "سازمان فعالی برای این حساب پیدا نشد."
+  },
+  "members": {
+    "title": "مدیریت اعضا و دعوت‌ها",
+    "inviteTitle": "دعوت عضو جدید",
+    "emailPlaceholder": "ایمیل عضو",
+    "roleLabel": "نقش",
+    "sendInvitation": "ارسال دعوت",
+    "columns": {
+      "email": "ایمیل",
+      "role": "نقش",
+      "status": "وضعیت"
+    }
+  },
+  "teams": {
+    "title": "مدیریت تیم‌ها",
+    "createTitle": "ایجاد تیم جدید",
+    "namePlaceholder": "نام تیم",
+    "createAction": "ایجاد تیم",
+    "memberCount": "{count} عضو"
+  },
+  "dashboard": {
+    "eyebrow": "مرکز مدیریت سازمان",
+    "title": "نمای کلی هویت و دسترسی",
+    "description": "وضعیت اعضا تیم‌ها نشست‌های فعال و تغییرات دسترسی سازمان جاری را در یک نگاه بررسی کنید.",
+    "cards": {
+      "activeMembers": {
+        "label": "اعضای فعال",
+        "value": "۱۲"
+      },
+      "pendingInvitations": {
+        "label": "دعوت‌های در انتظار",
+        "value": "۳"
+      },
+      "activeTeams": {
+        "label": "تیم‌های فعال",
+        "value": "۵"
+      },
+      "activeSessions": {
+        "label": "نشست‌های فعال",
+        "value": "۸"
+      }
+    },
+    "recentActivity": {
+      "title": "فعالیت‌های اخیر",
+      "description": "آخرین تغییرات عضویت تیم و دسترسی‌ها",
+      "items": {
+        "invitation": "دعوت عضو جدید برای بررسی ارسال شد",
+        "role": "نقش مدیر تیم فروش به‌روزرسانی شد",
+        "session": "نشست قدیمی کاربر لغو شد"
+      }
+    }
+  }
+}

@@ -5,7 +5,7 @@ function read(relativePath: string): string {
   return readFileSync(relativePath, 'utf8');
 }
 
-describe('current documentation state after P2 closure and P2R start', () => {
+describe('current documentation state after P2R.1.2', () => {
   it('keeps historical P1 and P2 evidence discoverable', () => {
     const readme = read('docs/README.md');
 
@@ -14,19 +14,21 @@ describe('current documentation state after P2 closure and P2R start', () => {
     expect(readme).toContain('docs/acceptance/P2-FINAL-ACCEPTANCE.md');
   });
 
-  it('records P2 as closed, P2R as current, and P3.1 as queued', () => {
+  it('records P2 as closed, P2R.1.2 as closed, and P2R.1.3 as current', () => {
     const status = read('docs/PROJECT-STATUS.md');
     const roadmap = read('docs/ROADMAP.md');
 
     expect(status).toContain('P2 با Commit نهایی `0be4eb3e1dcf63c358ed9a2751103d4d410eb30b` بسته');
     expect(status).toContain(
-      'مرحله جاری: `P2R.1.2 — ایجاد زیرساخت چندزبانه English و فارسی با LTR و RTL`',
+      'مرحله بسته‌شده: `P2R.1.2 — ایجاد زیرساخت چندزبانه English و فارسی با LTR و RTL`',
     );
+    expect(status).toContain('مرحله جاری: `P2R.1.3 — ایجاد سیستم طراحی و مؤلفه‌های پایه`');
     expect(status).toContain('مرحله `P3.1` هنوز آغاز نشده');
 
     expect(roadmap).toContain('## P2R — اصلاح بنیاد رابط پیش از آغاز P3');
     expect(roadmap).toContain('- [x] P2R.1.1');
-    expect(roadmap).toContain('- [ ] P2R.1.2');
+    expect(roadmap).toContain('- [x] P2R.1.2');
+    expect(roadmap).toContain('- [ ] P2R.1.3');
     expect(roadmap).toContain('- [ ] P3.1');
   });
 
@@ -40,15 +42,16 @@ describe('current documentation state after P2 closure and P2R start', () => {
     expect(acceptance).toContain('مرحله جاری به `P3.1` منتقل می‌شود');
   });
 
-  it('keeps the historical UI decision and records its remediation', () => {
+  it('keeps the UI remediation decisions and bilingual baseline visible', () => {
     const decisions = read('docs/DECISIONS.md');
     const baselines = read('docs/APPROVED-BASELINES.md');
+    const journal = read('docs/IMPLEMENTATION-JOURNAL.md');
 
     expect(decisions).toContain('DEC-UI-001');
     expect(decisions).toContain('DEC-UI-002');
-    expect(decisions).toContain('English');
-    expect(decisions).toContain('dir=ltr/rtl');
     expect(baselines).toContain('UI-BASELINE-P2R-001');
+    expect(journal).toContain('# P2R.1.2 — ایجاد زیرساخت چندزبانه و جهت پویا');
+    expect(journal).toContain('`next-intl` نسخه ثابت `4.13.4`');
   });
 
   it('does not reopen closed P2 stages', () => {

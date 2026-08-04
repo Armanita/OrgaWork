@@ -1,21 +1,40 @@
 import type { Metadata } from 'next';
-import { userFacingMessages } from '@/lib/messages.fa';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages, getTranslations } from 'next-intl/server';
+
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { getLocaleDirection, type AppLocale } from '@/i18n/config';
+
 import './globals.css';
-export const metadata: Metadata = {
-  title: {
-    default: userFacingMessages.application.name,
-    template: `%s | ${userFacingMessages.application.name}`,
-  },
-  description: userFacingMessages.application.description,
-};
-export default function RootLayout({
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('application');
+
+  return {
+    title: {
+      default: t('name'),
+      template: `%s | ${t('name')}`,
+    },
+    description: t('description'),
+  };
+}
+
+export default async function RootLayout({
   children,
-}: {
-  readonly children: React.ReactNode;
-}): React.ReactElement {
+}: Readonly<{
+  children: React.ReactNode;
+}>): Promise<React.ReactElement> {
+  const locale = (await getLocale()) as AppLocale;
+  const messages = await getMessages();
+
   return (
-    <html lang="fa" dir="rtl">
-      <body>{children}</body>
+    <html lang={locale} dir={getLocaleDirection(locale)}>
+      <body>
+        <NextIntlClientProvider messages={messages}>
+          <LanguageSwitcher />
+          {children}
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }

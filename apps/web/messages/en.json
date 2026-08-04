@@ -1,0 +1,115 @@
+{
+  "application": {
+    "name": "OrgaWork",
+    "description": "Organizational case, action, follow-up, reminder and reporting workspace",
+    "tagline": "Organizational follow-up workspace",
+    "brandMark": "O"
+  },
+  "languageSwitcher": {
+    "toEnglish": "English",
+    "toPersian": "فارسی",
+    "switchToEnglish": "Switch interface language to English",
+    "switchToPersian": "Switch interface language to Persian"
+  },
+  "navigation": {
+    "overview": "Overview",
+    "members": "Members and invitations",
+    "teams": "Teams",
+    "security": "Sign in and security"
+  },
+  "common": {
+    "currentOrganization": "Current organization",
+    "sampleOrganization": "Sample organization",
+    "changeOrganization": "Change organization",
+    "backToOverview": "Back to overview",
+    "activeMembership": "Active membership",
+    "noRole": "No role",
+    "roles": {
+      "member": "Member",
+      "manager": "Manager",
+      "organization_admin": "Organization administrator"
+    },
+    "status": {
+      "active": "Active",
+      "invited": "Invited",
+      "suspended": "Suspended",
+      "revoked": "Revoked"
+    },
+    "errors": {
+      "loginFailed": "Sign in failed.",
+      "organizationsLoadFailed": "Organizations could not be loaded.",
+      "organizationSwitchFailed": "The current organization could not be changed.",
+      "membersLoadFailed": "Members could not be loaded.",
+      "invitationFailed": "The invitation could not be sent.",
+      "teamsLoadFailed": "Teams could not be loaded.",
+      "teamCreationFailed": "The team could not be created."
+    }
+  },
+  "login": {
+    "title": "Sign in to OrgaWork",
+    "description": "Enter your organizational account email and password to continue.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in",
+    "forgot": "Reset password"
+  },
+  "organization": {
+    "eyebrow": "Workspace",
+    "title": "Select the current organization",
+    "description": "Choose the organization whose cases, members, teams and permissions you want to manage.",
+    "switchAction": "Select organization",
+    "empty": "No active organization was found for this account."
+  },
+  "members": {
+    "title": "Members and invitations",
+    "inviteTitle": "Invite a new member",
+    "emailPlaceholder": "Member email",
+    "roleLabel": "Role",
+    "sendInvitation": "Send invitation",
+    "columns": {
+      "email": "Email",
+      "role": "Role",
+      "status": "Status"
+    }
+  },
+  "teams": {
+    "title": "Teams",
+    "createTitle": "Create a new team",
+    "namePlaceholder": "Team name",
+    "createAction": "Create team",
+    "memberCount": "{count, plural, one {# member} other {# members}}"
+  },
+  "dashboard": {
+    "eyebrow": "Organization administration",
+    "title": "Identity and access overview",
+    "description": "Review active members, teams, sessions and access changes for the current organization.",
+    "cards": {
+      "activeMembers": {
+        "label": "Active members",
+        "value": "12"
+      },
+      "pendingInvitations": {
+        "label": "Pending invitations",
+        "value": "3"
+      },
+      "activeTeams": {
+        "label": "Active teams",
+        "value": "5"
+      },
+      "activeSessions": {
+        "label": "Active sessions",
+        "value": "8"
+      }
+    },
+    "recentActivity": {
+      "title": "Recent activity",
+      "description": "Latest membership, team and access updates",
+      "items": {
+        "invitation": "A new member invitation was sent for review",
+        "role": "The sales team manager role was updated",
+        "session": "An old user session was revoked"
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 @import '@fontsource-variable/vazirmatn/wght.css';
 @import 'tailwindcss';
+
 :root {
   color-scheme: light;
   --bg: #f5f7fb;
@@ -14,29 +15,45 @@
   --warning: #a66300;
   --shadow: 0 18px 50px rgb(40 48 74 / 8%);
 }
+
 * {
   box-sizing: border-box;
 }
+
 html {
-  direction: rtl;
   background: var(--bg);
 }
+
 body {
   min-height: 100vh;
   margin: 0;
   background: var(--bg);
   color: var(--text);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+}
+
+html[lang='fa'] body {
   font-family: 'Vazirmatn Variable', Tahoma, sans-serif;
 }
+
 button,
 input,
 select {
   font: inherit;
 }
+
 a {
   color: inherit;
   text-decoration: none;
 }
+
 button,
 .primary-button,
 .secondary-button {
@@ -45,39 +62,61 @@ button,
   padding: 11px 18px;
   cursor: pointer;
 }
+
 .primary-button,
 button {
   background: var(--primary);
   color: #fff;
 }
+
 .secondary-button {
   border: 1px solid var(--border);
   background: #fff;
   color: var(--text);
 }
+
 :focus-visible {
   outline: 3px solid #818cf8;
   outline-offset: 3px;
 }
+
+.language-switcher {
+  position: fixed;
+  inset-block-start: 16px;
+  inset-inline-end: 16px;
+  z-index: 100;
+  min-width: 78px;
+  border: 1px solid rgb(255 255 255 / 35%);
+  box-shadow: 0 12px 30px rgb(40 48 74 / 14%);
+}
+
 .app-shell {
   display: grid;
   min-height: 100vh;
   grid-template-columns: 260px 1fr;
 }
+
+html[dir='rtl'] .app-shell {
+  grid-template-columns: 260px 1fr;
+}
+
 .sidebar {
   padding: 24px 18px;
-  border-left: 1px solid var(--border);
+  border-inline-end: 1px solid var(--border);
   background: #fff;
 }
+
 .brand {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
 .brand.centered {
   justify-content: center;
   margin-bottom: 30px;
 }
+
 .brand-mark {
   display: grid;
   width: 44px;
@@ -89,72 +128,91 @@ button {
   font-size: 1.4rem;
   font-weight: 800;
 }
+
 .brand div {
   display: grid;
 }
+
 .brand small,
 .muted {
   color: var(--muted);
 }
+
 nav {
   display: grid;
   gap: 8px;
   margin-top: 36px;
 }
+
 nav a {
   padding: 12px 14px;
   border-radius: 12px;
   color: var(--muted);
 }
+
 nav a.active,
 nav a:hover {
   background: #eef2ff;
   color: var(--primary-dark);
 }
+
 .workspace {
   min-width: 0;
 }
+
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 32px;
+  padding: 18px 118px 18px 32px;
   border-bottom: 1px solid var(--border);
   background: #fff;
 }
+
+html[dir='rtl'] .topbar {
+  padding: 18px 32px 18px 118px;
+}
+
 .topbar > div {
   display: grid;
 }
+
 .content,
 .management-shell {
-  padding: 36px;
   max-width: 1280px;
   margin: auto;
+  padding: 36px;
 }
+
 .eyebrow {
   margin: 0 0 8px;
   color: var(--primary);
   font-weight: 700;
 }
+
 h1 {
   margin: 0;
   font-size: clamp(1.9rem, 4vw, 3rem);
   line-height: 1.35;
 }
+
 h2 {
   margin: 0;
 }
+
 .lead {
   max-width: 720px;
   color: var(--muted);
   line-height: 2;
 }
+
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
   margin: 30px 0;
 }
+
 .metric-card,
 .panel,
 .wide-card,
@@ -164,20 +222,25 @@ h2 {
   background: var(--surface);
   box-shadow: var(--shadow);
 }
+
 .metric-card {
   display: grid;
   gap: 12px;
   padding: 22px;
 }
+
 .metric-card span {
   color: var(--muted);
 }
+
 .metric-card strong {
   font-size: 1.8rem;
 }
+
 .panel {
   padding: 24px;
 }
+
 .activity-list {
   display: grid;
   gap: 16px;
@@ -185,17 +248,20 @@ h2 {
   padding: 0;
   list-style: none;
 }
+
 .activity-list li {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
 .activity-dot {
   width: 9px;
   height: 9px;
   border-radius: 50%;
   background: var(--primary);
 }
+
 .auth-shell,
 .center-shell {
   display: grid;
@@ -203,27 +269,33 @@ h2 {
   place-items: center;
   padding: 20px;
 }
+
 .auth-card {
   width: min(100%, 460px);
   padding: 34px;
 }
+
 .auth-card h1 {
   text-align: center;
   font-size: 2rem;
 }
+
 .auth-card > p {
   text-align: center;
 }
+
 .form-stack {
   display: grid;
   gap: 18px;
   margin: 28px 0;
 }
+
 .form-stack label {
   display: grid;
   gap: 8px;
   font-weight: 600;
 }
+
 .form-stack input {
   width: 100%;
   border: 1px solid var(--border);
@@ -231,20 +303,24 @@ h2 {
   padding: 13px;
   background: var(--surface-soft);
 }
+
 .text-link {
   display: block;
   text-align: center;
   color: var(--primary);
 }
+
 .wide-card {
   width: min(100%, 780px);
   padding: 36px;
 }
+
 .organization-list {
   display: grid;
   gap: 14px;
   margin-top: 28px;
 }
+
 .organization-list article {
   display: flex;
   align-items: center;
@@ -253,66 +329,81 @@ h2 {
   border: 1px solid var(--border);
   border-radius: 15px;
 }
+
 .organization-list article div {
   display: grid;
 }
+
 .organization-list span {
   color: var(--muted);
 }
+
 .management-header {
   display: flex;
   align-items: end;
   justify-content: space-between;
   margin-bottom: 24px;
 }
+
 .management-header a {
   color: var(--primary);
 }
+
 .table-wrap {
   overflow: auto;
 }
+
 table {
   width: 100%;
   border-collapse: collapse;
-  text-align: right;
+  text-align: start;
 }
+
 th,
 td {
   padding: 15px;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
+
 th {
   color: var(--muted);
   font-weight: 600;
 }
+
 .badge {
   display: inline-flex;
   border-radius: 999px;
   padding: 5px 10px;
 }
+
 .badge.success {
   background: #e9f8f2;
   color: var(--success);
 }
+
 .badge.warning {
   background: #fff4df;
   color: var(--warning);
 }
+
 .ghost-button {
   padding: 7px 12px;
   background: transparent;
   color: var(--primary);
 }
+
 .team-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
+
 .team-card {
   display: grid;
   gap: 12px;
 }
+
 .team-icon {
   display: grid;
   width: 46px;
@@ -323,54 +414,7 @@ th {
   color: var(--primary);
   font-weight: 800;
 }
-@media (max-width: 900px) {
-  .app-shell {
-    grid-template-columns: 1fr;
-  }
-  .sidebar {
-    display: none;
-  }
-  .metric-grid,
-  .team-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 600px) {
-  .content,
-  .management-shell {
-    padding: 18px;
-  }
-  .topbar {
-    padding: 14px 18px;
-  }
-  .metric-grid,
-  .team-grid {
-    grid-template-columns: 1fr;
-  }
-  .management-header {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .wide-card,
-  .auth-card {
-    padding: 24px;
-  }
-  .organization-list article {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 14px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
+
 .form-error {
   border-radius: 12px;
   background: #fff0f0;
@@ -378,15 +422,18 @@ th {
   padding: 12px;
   line-height: 1.8;
 }
+
 .management-form {
   margin-bottom: 20px;
 }
+
 .management-form form {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 16px;
 }
+
 .management-form input,
 .management-form select {
   min-width: 220px;
@@ -395,7 +442,67 @@ th {
   padding: 12px;
   background: #fff;
 }
+
 button:disabled {
   cursor: not-allowed;
   opacity: 0.65;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .metric-grid,
+  .team-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .content,
+  .management-shell {
+    padding: 18px;
+  }
+
+  .topbar,
+  html[dir='rtl'] .topbar {
+    padding: 70px 18px 14px;
+  }
+
+  .metric-grid,
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .management-header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .wide-card,
+  .auth-card {
+    padding: 24px;
+  }
+
+  .organization-list article {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

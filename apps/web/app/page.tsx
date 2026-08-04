@@ -1,66 +1,69 @@
 import Link from 'next/link';
-import { userFacingMessages } from '@/lib/messages.fa';
-export default function HomePage(): React.ReactElement {
-  const m = userFacingMessages.dashboard;
+import { getTranslations } from 'next-intl/server';
+
+export default async function HomePage(): Promise<React.ReactElement> {
+  const application = await getTranslations('application');
+  const navigation = await getTranslations('navigation');
+  const common = await getTranslations('common');
+  const dashboard = await getTranslations('dashboard');
+
+  const cards = ['activeMembers', 'pendingInvitations', 'activeTeams', 'activeSessions'] as const;
+
+  const activityItems = ['invitation', 'role', 'session'] as const;
+
   return (
     <main className="app-shell">
       <aside className="sidebar">
         <div className="brand">
-          <span className="brand-mark">ا</span>
+          <span className="brand-mark">{application('brandMark')}</span>
           <div>
-            <strong>اورگاوُرک</strong>
-            <small>سامانه پیگیری سازمانی</small>
+            <strong>{application('name')}</strong>
+            <small>{application('tagline')}</small>
           </div>
         </div>
         <nav>
           <Link className="active" href="/">
-            {userFacingMessages.navigation.overview}
+            {navigation('overview')}
           </Link>
-          <Link href="/organization/members">{userFacingMessages.navigation.members}</Link>
-          <Link href="/organization/teams">{userFacingMessages.navigation.teams}</Link>
-          <Link href="/login">{userFacingMessages.navigation.security}</Link>
+          <Link href="/organization/members">{navigation('members')}</Link>
+          <Link href="/organization/teams">{navigation('teams')}</Link>
+          <Link href="/login">{navigation('security')}</Link>
         </nav>
       </aside>
       <section className="workspace">
         <header className="topbar">
           <div>
-            <span className="muted">سازمان جاری</span>
-            <strong>سازمان نمونه</strong>
+            <span className="muted">{common('currentOrganization')}</span>
+            <strong>{common('sampleOrganization')}</strong>
           </div>
           <Link className="secondary-button" href="/organization">
-            تغییر سازمان
+            {common('changeOrganization')}
           </Link>
         </header>
         <div className="content">
-          <p className="eyebrow">{m.eyebrow}</p>
-          <h1>{m.title}</h1>
-          <p className="lead">{m.description}</p>
+          <p className="eyebrow">{dashboard('eyebrow')}</p>
+          <h1>{dashboard('title')}</h1>
+          <p className="lead">{dashboard('description')}</p>
           <div className="metric-grid">
-            {m.cards.map(([label, value]) => (
-              <article className="metric-card" key={label}>
-                <span>{label}</span>
-                <strong>{value}</strong>
+            {cards.map((card) => (
+              <article className="metric-card" key={card}>
+                <span>{dashboard(`cards.${card}.label`)}</span>
+                <strong>{dashboard(`cards.${card}.value`)}</strong>
               </article>
             ))}
           </div>
           <section className="panel">
             <div>
-              <h2>فعالیت‌های اخیر</h2>
-              <p className="muted">آخرین تغییرات عضویت تیم و دسترسی‌ها</p>
+              <h2>{dashboard('recentActivity.title')}</h2>
+              <p className="muted">{dashboard('recentActivity.description')}</p>
             </div>
             <ul className="activity-list">
-              <li>
-                <span className="activity-dot" />
-                دعوت عضو جدید برای بررسی ارسال شد
-              </li>
-              <li>
-                <span className="activity-dot" />
-                نقش مدیر تیم فروش به‌روزرسانی شد
-              </li>
-              <li>
-                <span className="activity-dot" />
-                نشست قدیمی کاربر لغو شد
-              </li>
+              {activityItems.map((item) => (
+                <li key={item}>
+                  <span className="activity-dot" />
+                  {dashboard(`recentActivity.items.${item}`)}
+                </li>
+              ))}
             </ul>
           </section>
         </div>

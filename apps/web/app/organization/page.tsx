@@ -1,9 +1,9 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 import { identityRequest, type WebSession } from '@/lib/identity-api';
-import { userFacingMessages } from '@/lib/messages.fa';
 
 interface OrganizationRow {
   readonly id: string;
@@ -13,7 +13,9 @@ interface OrganizationRow {
 }
 
 export default function OrganizationPage(): React.ReactElement {
-  const messages = userFacingMessages.organization;
+  const messages = useTranslations('organization');
+  const common = useTranslations('common');
+  const errors = useTranslations('common.errors');
   const [session, setSession] = useState<WebSession>();
   const [organizations, setOrganizations] = useState<readonly OrganizationRow[]>([]);
   const [error, setError] = useState('');
@@ -28,13 +30,14 @@ export default function OrganizationPage(): React.ReactElement {
         setSession(sessionData.session);
         setOrganizations(organizationData.organizations);
       } catch (caught: unknown) {
-        setError(caught instanceof Error ? caught.message : 'خواندن سازمان‌ها ناموفق بود.');
+        setError(caught instanceof Error ? caught.message : errors('organizationsLoadFailed'));
       }
     })();
-  }, []);
+  }, [errors]);
 
   async function selectOrganization(organizationId: string): Promise<void> {
     if (session === undefined) return;
+
     try {
       await identityRequest('auth/current-organization', {
         method: 'POST',
@@ -43,16 +46,16 @@ export default function OrganizationPage(): React.ReactElement {
       });
       window.location.assign('/');
     } catch (caught: unknown) {
-      setError(caught instanceof Error ? caught.message : 'تغییر سازمان ناموفق بود.');
+      setError(caught instanceof Error ? caught.message : errors('organizationSwitchFailed'));
     }
   }
 
   return (
     <main className="center-shell">
       <section className="wide-card">
-        <p className="eyebrow">فضای کاری</p>
-        <h1>{messages.title}</h1>
-        <p className="lead">{messages.description}</p>
+        <p className="eyebrow">{messages('eyebrow')}</p>
+        <h1>{messages('title')}</h1>
+        <p className="lead">{messages('description')}</p>
         {error === '' ? null : (
           <p className="form-error" role="alert">
             {error}
@@ -63,15 +66,15 @@ export default function OrganizationPage(): React.ReactElement {
             <article key={organization.id}>
               <div>
                 <strong>{organization.name}</strong>
-                <span>عضویت فعال</span>
+                <span>{common('activeMembership')}</span>
               </div>
               <button type="button" onClick={() => void selectOrganization(organization.id)}>
-                {messages.switchAction}
+                {messages('switchAction')}
               </button>
             </article>
           ))}
           {organizations.length === 0 && error === '' ? (
-            <p className="muted">سازمان فعالی برای این حساب پیدا نشد.</p>
+            <p className="muted">{messages('empty')}</p>
           ) : null}
         </div>
       </section>
