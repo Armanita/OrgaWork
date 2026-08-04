@@ -70,6 +70,7 @@ describe('الگوی امن محیط محلی', () => {
       'MINIO_CONSOLE_PORT',
       'MINIO_ROOT_USER',
       'MINIO_BUCKET',
+      'ORGAWORK_API_INTERNAL_URL',
     ]);
   });
 
@@ -95,6 +96,7 @@ describe('الگوی امن محیط محلی', () => {
       MINIO_CONSOLE_PORT: '9001',
       MINIO_ROOT_USER: 'orgawork-minio',
       MINIO_BUCKET: 'orgawork-files',
+      ORGAWORK_API_INTERNAL_URL: 'http://127.0.0.1:3001',
     });
 
     for (const [key, value] of entries) {

@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+
 import { describe, expect, it } from 'vitest';
 
 const repositoryRoot = resolve(import.meta.dirname, '../..');
@@ -8,7 +9,7 @@ function document(relativePath: string): string {
   return readFileSync(resolve(repositoryRoot, 'docs', relativePath), 'utf8');
 }
 
-describe('preapproved P2.13 UI design baseline', () => {
+describe('preapproved and completed P2.13 UI design baseline', () => {
   it('records the frozen references and Persian font', () => {
     const decisions = document('DECISIONS.md');
 
@@ -19,7 +20,7 @@ describe('preapproved P2.13 UI design baseline', () => {
     expect(decisions).toContain('Vazirmatn');
   });
 
-  it('removes only the repeated approval stop after P2.12', () => {
+  it('preserves the decision that repeated approval was unnecessary', () => {
     const status = document('PROJECT-STATUS.md');
     const roadmap = document('ROADMAP.md');
     const risks = document('RISKS-ASSUMPTIONS-DEBT.md');
@@ -30,25 +31,24 @@ describe('preapproved P2.13 UI design baseline', () => {
     expect(roadmap).toContain(
       'پس از بسته‌شدن `P2.12` اجرای این ردیف بدون توقف برای تأیید دوباره طراحی آغاز می‌شود',
     );
-    expect(risks).toContain('توقف تأیید دوباره در مرز P2.13 با `DEC-UI-001` حذف شده است');
+    expect(risks).toContain('ریسک تأیید دوباره طراحی P2.13');
   });
 
-  it('preserves the early UI implementation boundary', () => {
+  it('records that the early implementation boundary was respected', () => {
     const decisions = document('DECISIONS.md');
     const acceptance = document('TEST-AND-ACCEPTANCE.md');
+    const roadmap = document('ROADMAP.md');
 
     expect(decisions).toContain('طراحی واقعی رابط پیش از بسته‌شدن `P2.12`');
     expect(acceptance).toContain('`P2.13` فقط پس از بسته‌شدن و ثبت شاهد `P2.12` آغاز می‌شود');
     expect(acceptance).toContain('شکست این کنترل‌ها توقف فنی برای رفع مشکل است');
+    expect(roadmap).toContain('- [x] P2.13 ایجاد رابط فارسی ورود و مدیریت سازمان');
   });
 
   it('keeps template backend logic outside OrgaWork', () => {
     const decisions = document('DECISIONS.md');
-    const traceability = document('TRACEABILITY-MATRIX.md');
 
     expect(decisions).toContain('منطق احراز هویت، مجوزدهی، چندسازمانی، پایگاه داده، صورتحساب');
-    expect(traceability).toContain(
-      'انتقال منطق احراز هویت مجوز چندسازمانی داده و Backend قالب‌ها: ممنوع',
-    );
+    expect(decisions).toContain('Backend قالب‌ها وارد OrgaWork نمی‌شود');
   });
 });

@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { inspectP24PasswordSecurity } from './p2.4-password-security-audit.js';
 
 describe('P2.4 password security acceptance', () => {
-  it('accepts the technical implementation before stage closure', () => {
+  it('accepts the technical implementation after stage closure', () => {
     const report = inspectP24PasswordSecurity(
       process.cwd(),
-      'pre',
+      'closed',
       new Date('2026-08-04T08:00:00.000Z'),
     );
 
@@ -15,7 +15,7 @@ describe('P2.4 password security acceptance', () => {
     expect(report.argon2MemoryMiB).toBe(32);
     expect(report.argon2TimeCost).toBe(3);
     expect(report.argon2Parallelism).toBe(1);
-    expect(report.evidenceCount).toBe(34);
+    expect(report.evidenceCount).toBe(35);
   }, 30_000);
 
   it('keeps session and CSRF persistence outside P2.4', async () => {

@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 
 import {
   databaseRoleNames,
+  normalizeUserId,
   withOrganizationTransaction,
   type PostgreSqlAccess,
   type PostgreSqlQueryExecutor,
@@ -118,11 +119,15 @@ export interface OrganizationAdministrationRepository {
   }): Promise<boolean>;
 }
 
-async function setInvitationTokenContext(
+async function setInvitationAcceptanceContext(
   transaction: PostgreSqlQueryExecutor,
   tokenHash: string,
+  userId: string,
 ): Promise<void> {
+  const normalizedUserId = normalizeUserId(userId);
+
   await transaction.query(`SET LOCAL ROLE ${databaseRoleNames.runtime}`);
+  await transaction.query("SELECT set_config('orgawork.user_id', $1, true)", [normalizedUserId]);
   await transaction.query("SELECT set_config('orgawork.invitation_token_hash', $1, true)", [
     tokenHash,
   ]);
@@ -247,8 +252,8 @@ export function createPostgreSqlOrganizationAdministrationRepository(
       }),
     acceptInvitation: async (input) =>
       access.transaction(async (transaction) => {
-        await setInvitationTokenContext(transaction, input.tokenHash);
-        const invitationResult = await transaction.query(
+        await setInvitationAcceptanceContext(transaction, input.tokenHash, input.userId);
+        const invitationCandidateResult = await transaction.query(
           `SELECT
              invitation.id::text AS invitation_id,
              invitation.organization_id::text AS organization_id,
@@ -261,11 +266,10 @@ export function createPostgreSqlOrganizationAdministrationRepository(
             AND user_row.status = 'active'
           WHERE invitation.token_hash = $1
             AND invitation.status = 'active'
-            AND invitation.expires_at > $3
-          FOR UPDATE OF invitation`,
+            AND invitation.expires_at > $3`,
           [input.tokenHash, input.userId, input.now],
         );
-        const invitation = invitationResult.rows[0] as
+        const invitationCandidate = invitationCandidateResult.rows[0] as
           | {
               readonly invitation_id: string;
               readonly organization_id: string;
@@ -273,13 +277,40 @@ export function createPostgreSqlOrganizationAdministrationRepository(
               readonly role_key: OrganizationRoleKey;
             }
           | undefined;
-        if (invitation === undefined) {
+        if (invitationCandidate === undefined) {
           return undefined;
         }
 
         await transaction.query("SELECT set_config('orgawork.organization_id', $1, true)", [
-          invitation.organization_id,
+          invitationCandidate.organization_id,
         ]);
+
+        const lockedInvitationResult = await transaction.query(
+          `SELECT invitation.id
+             FROM public.orgawork_invitations AS invitation
+             JOIN public.orgawork_users AS user_row
+               ON user_row.id = $4
+              AND user_row.email = invitation.email_normalized
+              AND user_row.status = 'active'
+            WHERE invitation.id = $1
+              AND invitation.organization_id = $2
+              AND invitation.token_hash = $3
+              AND invitation.status = 'active'
+              AND invitation.expires_at > $5
+            FOR UPDATE OF invitation`,
+          [
+            invitationCandidate.invitation_id,
+            invitationCandidate.organization_id,
+            input.tokenHash,
+            input.userId,
+            input.now,
+          ],
+        );
+        if ((lockedInvitationResult.rowCount ?? 0) !== 1) {
+          return undefined;
+        }
+
+        const invitation = invitationCandidate;
 
         const existingMembership = await transaction.query(
           `SELECT id::text AS id, status

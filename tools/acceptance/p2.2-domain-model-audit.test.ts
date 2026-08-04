@@ -38,7 +38,7 @@ describe('P2.2 domain model acceptance', () => {
     const status = readFileSync('docs/PROJECT-STATUS.md', 'utf8');
 
     expect(roadmap).toContain('- [x] P2.2 ایجاد مدل کاربر، سازمان، عضویت و تیم');
-    expect(roadmap).toContain('- [ ] P2.13 ایجاد رابط فارسی ورود و مدیریت سازمان');
+    expect(roadmap).toMatch(/^- \[[ x]\] P2\.13 ایجاد رابط فارسی ورود و مدیریت سازمان/mu);
     expect(status).toContain('طراحی واقعی رابط کاربری هنوز آغاز نشده است.');
   });
 });

@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+
 import { describe, expect, it } from 'vitest';
 import {
   createOrganizationAdministrationService,
@@ -29,5 +31,34 @@ describe('organization administration', () => {
       invitationPolicy.lifetimeMilliseconds,
     );
     expect(captured?.tokenHash).toMatch(/^[0-9a-f]{64}$/u);
+  });
+  it('binds invitation acceptance to user, token, and organization before locking', () => {
+    const source = readFileSync(new URL('./index.ts', import.meta.url), 'utf8');
+    const userContextIndex = source.indexOf("set_config('orgawork.user_id'");
+    const tokenContextIndex = source.indexOf("set_config('orgawork.invitation_token_hash'");
+    const candidateQueryIndex = source.indexOf(
+      'const invitationCandidateResult = await transaction.query',
+    );
+    const organizationContextIndex = source.indexOf(
+      "set_config('orgawork.organization_id'",
+      candidateQueryIndex,
+    );
+    const lockQueryIndex = source.indexOf(
+      'const lockedInvitationResult = await transaction.query',
+      organizationContextIndex,
+    );
+    const forUpdateIndex = source.indexOf('FOR UPDATE OF invitation', lockQueryIndex);
+
+    expect(source).toContain('normalizeUserId(userId)');
+    expect(userContextIndex).toBeGreaterThan(-1);
+    expect(tokenContextIndex).toBeGreaterThan(userContextIndex);
+    expect(source).toContain(
+      'setInvitationAcceptanceContext(transaction, input.tokenHash, input.userId)',
+    );
+    expect(candidateQueryIndex).toBeGreaterThan(tokenContextIndex);
+    expect(organizationContextIndex).toBeGreaterThan(candidateQueryIndex);
+    expect(lockQueryIndex).toBeGreaterThan(organizationContextIndex);
+    expect(forUpdateIndex).toBeGreaterThan(lockQueryIndex);
+    expect(source.slice(candidateQueryIndex, organizationContextIndex)).not.toContain('FOR UPDATE');
   });
 });
