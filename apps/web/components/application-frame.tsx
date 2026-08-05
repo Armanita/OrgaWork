@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 
 import { LanguageSwitcher } from '@/components/language-switcher';
@@ -19,6 +20,7 @@ export function ApplicationFrame({
   children: React.ReactNode;
 }>): React.ReactElement {
   const pathname = usePathname();
+  const common = useTranslations('common');
 
   if (isDashboardRoute(pathname)) {
     return <>{children}</>;
@@ -26,11 +28,16 @@ export function ApplicationFrame({
 
   return (
     <>
+      <a className="skip-link" href="#standalone-content">
+        {common('skipToContent')}
+      </a>
       <div className="standalone-controls">
         <LanguageSwitcher />
         <ThemeToggleControl />
       </div>
-      {children}
+      <div id="standalone-content" tabIndex={-1}>
+        {children}
+      </div>
     </>
   );
 }

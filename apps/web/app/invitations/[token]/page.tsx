@@ -6,7 +6,6 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
   LoaderCircle,
   MailPlus,
   ShieldCheck,
@@ -74,7 +73,9 @@ export default function InvitationAcceptancePage(): React.ReactElement {
             {accepted ? <ShieldCheck aria-hidden="true" /> : <MailPlus aria-hidden="true" />}
           </span>
           <p className="auth-form-card__eyebrow">{messages('eyebrow')}</p>
-          <CardTitle>{accepted ? messages('acceptedTitle') : messages('title')}</CardTitle>
+          <h1 className="invitation-acceptance__title">
+            {accepted ? messages('acceptedTitle') : messages('title')}
+          </h1>
           <CardDescription>
             {accepted ? messages('acceptedDescription') : messages('description')}
           </CardDescription>

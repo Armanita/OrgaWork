@@ -5,7 +5,7 @@ function read(relativePath: string): string {
   return readFileSync(relativePath, 'utf8');
 }
 
-describe('current documentation state after P2R.1.6', () => {
+describe('current documentation state after P2R.1.7', () => {
   it('keeps historical P1 and P2 evidence discoverable', () => {
     const readme = read('docs/README.md');
 
@@ -14,20 +14,22 @@ describe('current documentation state after P2R.1.6', () => {
     expect(readme).toContain('docs/acceptance/P2-FINAL-ACCEPTANCE.md');
   });
 
-  it('records P2 as closed, P2R.1.6 as closed, and P2R.1.7 as current', () => {
+  it('records P2 as closed, P2R.1.7 as closed, and P2R.1.8 as current', () => {
     const status = read('docs/PROJECT-STATUS.md');
     const roadmap = read('docs/ROADMAP.md');
 
     expect(status).toContain('P2 با Commit نهایی `0be4eb3e1dcf63c358ed9a2751103d4d410eb30b` بسته');
-    expect(status).toContain('مرحله بسته‌شده: `P2R.1.6 — بازطراحی مدیریت اعضا دعوت‌ها و تیم‌ها`');
     expect(status).toContain(
-      'مرحله جاری: `P2R.1.7 — آزمون دسترس‌پذیری واکنش‌گرایی Theme و جهت صفحه`',
+      'مرحله بسته‌شده: `P2R.1.7 — آزمون دسترس‌پذیری واکنش‌گرایی Theme و جهت صفحه`',
+    );
+    expect(status).toContain(
+      'مرحله جاری: `P2R.1.8 — ساخت تولیدی بازگشت کامل آزمون‌ها و پذیرش اصلاح رابط`',
     );
     expect(status).toContain('مرحله `P3.1` هنوز آغاز نشده');
 
-    expect(roadmap).toContain('- [x] P2R.1.5');
     expect(roadmap).toContain('- [x] P2R.1.6');
-    expect(roadmap).toContain('- [ ] P2R.1.7');
+    expect(roadmap).toContain('- [x] P2R.1.7');
+    expect(roadmap).toContain('- [ ] P2R.1.8');
     expect(roadmap).toContain('- [ ] P3.1');
   });
 
@@ -41,7 +43,7 @@ describe('current documentation state after P2R.1.6', () => {
     expect(acceptance).toContain('مرحله جاری به `P3.1` منتقل می‌شود');
   });
 
-  it('records all remediation baselines through organization administration', () => {
+  it('records remediation baselines through accessibility browser gates', () => {
     const baselines = read('docs/APPROVED-BASELINES.md');
     const journal = read('docs/IMPLEMENTATION-JOURNAL.md');
 
@@ -50,9 +52,10 @@ describe('current documentation state after P2R.1.6', () => {
     expect(baselines).toContain('UI-DASHBOARD-SHELL-P2R-001');
     expect(baselines).toContain('UI-IDENTITY-ENTRY-P2R-001');
     expect(baselines).toContain('UI-ORGANIZATION-ADMIN-P2R-001');
-    expect(journal).toContain('# P2R.1.6 — اعضا دعوت‌ها و تیم‌ها');
-    expect(journal).toContain('`MemberAccessEditor`');
-    expect(journal).toContain('`TeamRenameForm`');
+    expect(baselines).toContain('UI-ACCESSIBILITY-P2R-001');
+    expect(journal).toContain('# P2R.1.7 — دسترس‌پذیری واکنش‌گرایی Theme و جهت صفحه');
+    expect(journal).toContain('`@axe-core/playwright`');
+    expect(journal).toContain('`channel: chrome`');
   });
 
   it('does not reopen closed P2 stages', () => {

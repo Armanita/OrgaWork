@@ -66,10 +66,13 @@
     "accept:p2:audit": "tsx tools/acceptance/p2-complete-audit.ts auto",
     "accept:p2:audit:pre": "tsx tools/acceptance/p2-complete-audit.ts pre",
     "accept:p2:audit:closed": "tsx tools/acceptance/p2-complete-audit.ts closed",
-    "accept:p2:real": "tsx tools/acceptance/p2-real-postgresql.ts"
+    "accept:p2:real": "tsx tools/acceptance/p2-real-postgresql.ts",
+    "test:p2r:browser": "playwright test --config playwright.config.ts"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.12.1",
     "@eslint/js": "10.0.1",
+    "@playwright/test": "1.62.1",
     "@types/node": "24.13.3",
     "@vitest/coverage-v8": "4.1.10",
     "@workspace/eslint-config": "workspace:*",

@@ -42,6 +42,7 @@ const navigationItems = [
 ] as const;
 
 export interface DashboardSidebarProps {
+  readonly closeButtonRef: React.Ref<HTMLButtonElement>;
   readonly mobileOpen: boolean;
   readonly organizationLoading: boolean;
   readonly organizationName: string | undefined;
@@ -50,6 +51,7 @@ export interface DashboardSidebarProps {
 }
 
 export function DashboardSidebar({
+  closeButtonRef,
   mobileOpen,
   organizationLoading,
   organizationName,
@@ -78,6 +80,7 @@ export function DashboardSidebar({
         </Link>
 
         <Button
+          ref={closeButtonRef}
           type="button"
           variant="ghost"
           size="icon"
@@ -112,7 +115,7 @@ export function DashboardSidebar({
 
       <div className="dashboard-sidebar__footer">
         <span>{common('activeMembership')}</span>
-        <strong>
+        <strong aria-live="polite">
           {organizationLoading ? (
             <>
               <LoaderCircle className="management-spin" aria-hidden="true" />

@@ -8,6 +8,7 @@ import { LanguageSwitcher } from '@/components/language-switcher';
 import { ThemeToggleControl } from '@/components/theme-toggle-control';
 
 export interface DashboardHeaderProps {
+  readonly menuButtonRef: React.Ref<HTMLButtonElement>;
   readonly mobileOpen: boolean;
   readonly organizationLoading: boolean;
   readonly organizationName: string | undefined;
@@ -15,6 +16,7 @@ export interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({
+  menuButtonRef,
   mobileOpen,
   organizationLoading,
   organizationName,
@@ -27,6 +29,7 @@ export function DashboardHeader({
     <header className="dashboard-header">
       <div className="dashboard-header__identity">
         <Button
+          ref={menuButtonRef}
           type="button"
           variant="outline"
           size="icon"
@@ -42,7 +45,7 @@ export function DashboardHeader({
         <Building2 aria-hidden="true" />
         <div className="dashboard-header__organization">
           <span>{common('currentOrganization')}</span>
-          <strong>
+          <strong aria-live="polite">
             {organizationLoading ? (
               <>
                 <LoaderCircle className="management-spin" aria-hidden="true" />

@@ -1481,3 +1481,19 @@ APPROVED
 - چیدمان صفحات مدیریت و نقش‌ها: `Studio Admin`
 - الگوی فرم‌ها و کارت‌های واکنش‌گرا: `TailAdmin Next.js`
 - مجوز هر سه مرجع: `MIT`
+
+## UI-ACCESSIBILITY-P2R-001
+
+- وضعیت: `APPROVED`
+- مرحله: `P2R.1.7`
+- دامنه: آزمون مرورگر واقعی دسترس‌پذیری واکنش‌گرایی Theme و جهت صفحه
+- مرورگر مرجع: Google Chrome نصب‌شده روی سیستم با `channel: chrome`
+- موتور دسترس‌پذیری: `@axe-core/playwright`
+- سطح کنترل: `WCAG 2.0 A/AA` و `WCAG 2.1 A/AA`
+- زبان‌ها: English و فارسی
+- جهت‌ها: `LTR` و `RTL`
+- پوسته‌ها: روشن و تیره
+- نماها: دسکتاپ و موبایل
+- کنترل‌های الزامی: نبود سرریز افقی، لینک پرش قابل استفاده، مدیریت تمرکز منوی موبایل و احترام به `prefers-reduced-motion`
+- مرز امنیتی: Backend، قراردادهای P2، Migrationها، نشست و CSRF تغییر نمی‌کنند
+- خروجی‌های موقت Playwright فقط در `node_modules/.cache/orgawork-playwright` نگهداری می‌شوند

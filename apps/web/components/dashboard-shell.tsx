@@ -22,8 +22,15 @@ export function DashboardShell({
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [organizationName, setOrganizationName] = React.useState<string>();
   const [organizationLoading, setOrganizationLoading] = React.useState(true);
+  const menuButtonRef = React.useRef<HTMLButtonElement>(null);
+  const sidebarCloseButtonRef = React.useRef<HTMLButtonElement>(null);
 
   const closeMobileNavigation = React.useCallback(() => {
+    setMobileOpen(false);
+    window.requestAnimationFrame(() => menuButtonRef.current?.focus());
+  }, []);
+
+  const closeAfterNavigation = React.useCallback(() => {
     setMobileOpen(false);
   }, []);
 
@@ -88,6 +95,20 @@ export function DashboardShell({
       return;
     }
 
+    const animationFrame = window.requestAnimationFrame(() => {
+      sidebarCloseButtonRef.current?.focus();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, [mobileOpen]);
+
+  React.useEffect(() => {
+    if (!mobileOpen) {
+      return;
+    }
+
     const previousOverflow = document.body.style.overflow;
 
     function closeOnEscape(event: KeyboardEvent): void {
@@ -112,10 +133,11 @@ export function DashboardShell({
       </a>
 
       <DashboardSidebar
+        closeButtonRef={sidebarCloseButtonRef}
         mobileOpen={mobileOpen}
         organizationLoading={organizationLoading}
         organizationName={organizationName}
-        onNavigate={closeMobileNavigation}
+        onNavigate={closeAfterNavigation}
         onClose={closeMobileNavigation}
       />
 
@@ -130,12 +152,13 @@ export function DashboardShell({
 
       <div className="dashboard-workspace">
         <DashboardHeader
+          menuButtonRef={menuButtonRef}
           mobileOpen={mobileOpen}
           organizationLoading={organizationLoading}
           organizationName={organizationName}
           onToggleNavigation={toggleMobileNavigation}
         />
-        <main id="dashboard-content" className="dashboard-content">
+        <main id="dashboard-content" className="dashboard-content" tabIndex={-1}>
           {children}
         </main>
       </div>
