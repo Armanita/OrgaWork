@@ -2,9 +2,18 @@ import { describe, expect, it } from 'vitest';
 
 import {
   contractVersion,
+  continuationKinds,
+  currentWorkKinds,
+  createActionItemId,
   createApiError,
   createApiSuccess,
+  createCaseAssignmentId,
+  createCaseId,
   createCorrelationId,
+  createDecisionRequestId,
+  createDecisionResponseId,
+  createFollowUpStateId,
+  createIdempotencyKey,
   createOrganizationId,
   createPageInfo,
   createRequestId,
@@ -26,6 +35,12 @@ const identifiers = {
   session: '33333333-3333-4333-8333-333333333333',
   request: '44444444-4444-4444-8444-444444444444',
   correlation: '55555555-5555-4555-8555-555555555555',
+  case: '66666666-6666-4666-8666-666666666666',
+  assignment: '77777777-7777-4777-8777-777777777777',
+  action: '88888888-8888-4888-8888-888888888888',
+  followUpState: '99999999-9999-4999-8999-999999999999',
+  decisionRequest: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+  decisionResponse: 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
 } as const;
 
 function responseMeta() {
@@ -130,6 +145,34 @@ describe('shared contract foundations', () => {
       organizationId: identifiers.organization,
       requestId: identifiers.request,
     });
+  });
+
+  it('creates stable identifiers for the P34 contract', () => {
+    expect(createCaseId(identifiers.case)).toBe(identifiers.case);
+    expect(createCaseAssignmentId(identifiers.assignment)).toBe(identifiers.assignment);
+    expect(createActionItemId(identifiers.action)).toBe(identifiers.action);
+    expect(createFollowUpStateId(identifiers.followUpState)).toBe(identifiers.followUpState);
+    expect(createDecisionRequestId(identifiers.decisionRequest)).toBe(identifiers.decisionRequest);
+    expect(createDecisionResponseId(identifiers.decisionResponse)).toBe(
+      identifiers.decisionResponse,
+    );
+  });
+
+  it('validates idempotency keys without exposing secrets', () => {
+    expect(createIdempotencyKey('case:create:request-0001')).toBe('case:create:request-0001');
+    expect(() => createIdempotencyKey('short')).toThrow(TypeError);
+  });
+
+  it('keeps current work and terminal continuations explicitly separated', () => {
+    expect(currentWorkKinds).toEqual([
+      'action',
+      'internal_wait',
+      'external_wait',
+      'blocked',
+      'paused',
+      'decision_request',
+    ]);
+    expect(continuationKinds).toEqual([...currentWorkKinds, 'resolved', 'cancelled']);
   });
 });
 

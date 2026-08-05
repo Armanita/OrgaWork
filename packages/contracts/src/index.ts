@@ -14,6 +14,13 @@ export type TeamMembershipId = Brand<string, 'TeamMembershipId'>;
 export type SessionId = Brand<string, 'SessionId'>;
 export type InvitationId = Brand<string, 'InvitationId'>;
 export type PermissionId = Brand<string, 'PermissionId'>;
+export type CaseId = Brand<string, 'CaseId'>;
+export type CaseAssignmentId = Brand<string, 'CaseAssignmentId'>;
+export type ActionItemId = Brand<string, 'ActionItemId'>;
+export type FollowUpStateId = Brand<string, 'FollowUpStateId'>;
+export type DecisionRequestId = Brand<string, 'DecisionRequestId'>;
+export type DecisionResponseId = Brand<string, 'DecisionResponseId'>;
+export type IdempotencyKey = Brand<string, 'IdempotencyKey'>;
 export type RequestId = Brand<string, 'RequestId'>;
 export type CorrelationId = Brand<string, 'CorrelationId'>;
 export type UtcTimestamp = Brand<string, 'UtcTimestamp'>;
@@ -22,6 +29,7 @@ const identifierPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
 const utcTimestampPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/u;
 const fieldPattern = /^[a-z][a-zA-Z0-9_.]{0,63}$/u;
+const idempotencyKeyPattern = /^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$/u;
 
 function createIdentifier<Name extends string>(value: string, label: string): Brand<string, Name> {
   const normalized = value.trim().toLowerCase();
@@ -59,6 +67,40 @@ export function createSessionId(value: string): SessionId {
 
 export function createInvitationId(value: string): InvitationId {
   return createIdentifier<'InvitationId'>(value, 'دعوت');
+}
+
+export function createCaseId(value: string): CaseId {
+  return createIdentifier<'CaseId'>(value, 'پرونده');
+}
+
+export function createCaseAssignmentId(value: string): CaseAssignmentId {
+  return createIdentifier<'CaseAssignmentId'>(value, 'مسئولیت پرونده');
+}
+
+export function createActionItemId(value: string): ActionItemId {
+  return createIdentifier<'ActionItemId'>(value, 'اقدام');
+}
+
+export function createFollowUpStateId(value: string): FollowUpStateId {
+  return createIdentifier<'FollowUpStateId'>(value, 'وضعیت پیگیری');
+}
+
+export function createDecisionRequestId(value: string): DecisionRequestId {
+  return createIdentifier<'DecisionRequestId'>(value, 'درخواست تصمیم');
+}
+
+export function createDecisionResponseId(value: string): DecisionResponseId {
+  return createIdentifier<'DecisionResponseId'>(value, 'پاسخ تصمیم');
+}
+
+export function createIdempotencyKey(value: string): IdempotencyKey {
+  const normalized = value.trim();
+
+  if (!idempotencyKeyPattern.test(normalized)) {
+    throw new TypeError('کلید عدم تکرار معتبر نیست.');
+  }
+
+  return normalized as IdempotencyKey;
 }
 
 export function createRequestId(value: string): RequestId {
@@ -130,6 +172,17 @@ export const apiErrorCodes = [
   'INVITATION_REVOKED',
   'MEMBERSHIP_STATE_CONFLICT',
   'TEAM_ORGANIZATION_MISMATCH',
+  'CASE_STATE_CONFLICT',
+  'CASE_CURRENT_WORK_REQUIRED',
+  'CASE_PRIMARY_ASSIGNMENT_REQUIRED',
+  'ASSIGNMENT_STATE_CONFLICT',
+  'ASSIGNMENT_PRIMARY_CONFLICT',
+  'ACTION_STATE_CONFLICT',
+  'ACTION_CONTINUATION_REQUIRED',
+  'FOLLOWUP_STATE_CONFLICT',
+  'FOLLOWUP_TRANSITION_INVALID',
+  'DECISION_STATE_CONFLICT',
+  'DECISION_VERSION_CONFLICT',
 ] as const;
 
 export type ApiErrorCode = (typeof apiErrorCodes)[number];
@@ -282,6 +335,53 @@ export function normalizeFilterSpec(input: FilterSpec): FilterSpec {
     operator: input.operator,
     value: input.value,
   };
+}
+
+export const currentWorkKinds = [
+  'action',
+  'internal_wait',
+  'external_wait',
+  'blocked',
+  'paused',
+  'decision_request',
+] as const;
+export type CurrentWorkKind = (typeof currentWorkKinds)[number];
+
+export interface ActionCurrentWorkReference {
+  readonly kind: 'action';
+  readonly id: ActionItemId;
+}
+
+export interface FollowUpStateCurrentWorkReference {
+  readonly kind: 'internal_wait' | 'external_wait' | 'blocked' | 'paused';
+  readonly id: FollowUpStateId;
+}
+
+export interface DecisionCurrentWorkReference {
+  readonly kind: 'decision_request';
+  readonly id: DecisionRequestId;
+}
+
+export type CurrentWorkReference =
+  ActionCurrentWorkReference | FollowUpStateCurrentWorkReference | DecisionCurrentWorkReference;
+
+export const continuationKinds = [...currentWorkKinds, 'resolved', 'cancelled'] as const;
+export type ContinuationKind = (typeof continuationKinds)[number];
+
+export interface ResolvedContinuation {
+  readonly kind: 'resolved';
+}
+
+export interface CancelledContinuation {
+  readonly kind: 'cancelled';
+  readonly reason: string;
+}
+
+export type Continuation = CurrentWorkReference | ResolvedContinuation | CancelledContinuation;
+
+export interface OutcomeAndContinuation {
+  readonly outcome: string;
+  readonly continuation: Continuation;
 }
 
 export interface SessionOrganizationContext {

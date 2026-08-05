@@ -2191,3 +2191,35 @@ P1.10 باید پذیرش نهایی کل P1 را انجام دهد. طراحی 
 - `P3.1` در این Commit آغاز نشد.
 - آغاز `P3.1` به گام جداگانه بعدی منتقل شد.
 - Tag جدید ایجاد نشد.
+
+# P34.C1 — قرارداد مشترک P3.1 و P4.1
+
+## دامنه
+
+- قرارداد Aggregate پرونده در `modules/cases` تثبیت شد.
+- قرارداد چرخه مسئولیت و مسئولیت اصلی فعال یکتا در `modules/assignments` تثبیت شد.
+- قرارداد اقدام اصلی و فرعی و ثبت اتمی نتیجه و ادامه در `modules/actions` تثبیت شد.
+- قرارداد انتظار داخلی و خارجی، مانع، توقف موقت، ماشین انتقال و تصمیم نسخه‌دار در `modules/followup-state` تثبیت شد.
+- شناسه‌ها و انواع مشترک P34 در `packages/contracts` افزوده شدند.
+- سند `docs/contracts/P3.1-P4.1-CASE-FOLLOWUP-CONTRACT.md` منبع قرارداد این Checkpoint است.
+
+## مرز
+
+- هیچ Migration یا جدول پایگاه داده ایجاد نشد.
+- هیچ Route اجرایی API، رابط کاربری، Worker یا Scheduler تغییر نکرد.
+- P5 وارد بسته P34 نشد.
+
+## دروازه‌ها
+
+- آزمون‌های متمرکز پنج Workspace قرارداد
+- TypeScript، Lint و Build متمرکز
+- Architecture Policy و Repository Security
+- Contract Drift
+- Formatting و Diff Integrity
+- Commit واقعی و Worktree پاک
+
+## خروجی
+
+- `P3.1` و `P4.1` در یک Checkpoint مشترک ولی با مالکیت مستقل تثبیت شدند.
+- مرحله مجاز بعدی `P34.C2 — مدل داده، Migration و جداسازی` است.
+- Migration بعدی باید از `0010` آغاز شود.
