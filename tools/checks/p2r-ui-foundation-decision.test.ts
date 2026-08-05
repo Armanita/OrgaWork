@@ -44,11 +44,13 @@ describe('P2R UI remediation foundation decision', () => {
     );
   });
 
-  it('blocks P3.1 until the remediation acceptance is closed', () => {
+  it('keeps P3.1 separate after the remediation acceptance is closed', () => {
     const roadmap = read('docs/ROADMAP.md');
     const status = read('docs/PROJECT-STATUS.md');
 
-    expect(roadmap).toContain('P3.1 تا بسته‌شدن P2R.1.8 آغاز نمی‌شود');
-    expect(status).toContain('تا پذیرش `P2R.1.8` در صف باقی می‌ماند');
+    expect(roadmap).toContain(
+      'P2R.1.8 بسته و پذیرفته شده است؛ آغاز P3.1 باید در Commit جداگانه انجام شود.',
+    );
+    expect(status).toContain('مرحله `P3.1` در این Commit آغاز نشد و برای شروع جداگانه آماده است.');
   });
 });

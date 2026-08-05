@@ -1,0 +1,8 @@
+{
+  "extends": "../../packages/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["./p2r-accessibility-responsive.pw.ts"]
+}

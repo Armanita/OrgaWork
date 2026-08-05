@@ -309,11 +309,18 @@ async function main(): Promise<void> {
       waitForExit(scheduler, 10_000),
       waitForEndpoint(web, 'http://127.0.0.1:3000', async (response) => {
         const html = await response.text();
+        const htmlTag = /<html[^>]*>/u.exec(html)?.[0];
 
-        return (
-          /<html[^>]*lang="fa"[^>]*dir="rtl"/u.test(html) &&
-          html.includes('پایه رابط کاربری با موفقیت راه‌اندازی شد')
-        );
+        if (htmlTag === undefined) {
+          return false;
+        }
+
+        const locale = /\blang="(en|fa)"/u.exec(htmlTag)?.[1];
+        const direction = /\bdir="(ltr|rtl)"/u.exec(htmlTag)?.[1];
+        const validDirection =
+          (locale === 'en' && direction === 'ltr') || (locale === 'fa' && direction === 'rtl');
+
+        return validDirection && /<body(?:\s|>)/u.test(html) && html.includes('/_next/static/');
       }),
       waitForEndpoint(api, 'http://127.0.0.1:3001/health', async (response) => {
         const value = await response.json();

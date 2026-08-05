@@ -296,11 +296,14 @@ test.describe('P2R.1.7 browser accessibility and presentation gates', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await openRoute(context, page, '/organization/members', 'en', 'light');
 
+    const organizationName = page.locator('.dashboard-header__organization strong');
     const menuButton = page.locator(
       '.dashboard-header__menu-button[aria-controls="dashboard-sidebar"]',
     );
     const closeButton = page.locator('.dashboard-sidebar__close');
 
+    await expect(organizationName).toContainText('OrgaWork Browser Audit');
+    await expect(menuButton).toHaveAttribute('aria-expanded', 'false');
     await menuButton.click();
     await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
     await expect(closeButton).toBeFocused();

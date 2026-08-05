@@ -1,3 +1,4 @@
+/* global URL, console, process */
 import { createServer } from 'node:http';
 
 const host = '127.0.0.1';
