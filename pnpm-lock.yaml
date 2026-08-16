@@ -59,12 +59,18 @@ importers:
       '@fastify/rate-limit':
         specifier: 11.1.0
         version: 11.1.0
+      '@workspace/assignments':
+        specifier: workspace:*
+        version: link:../../modules/assignments
       '@workspace/authentication':
         specifier: workspace:*
         version: link:../../modules/authentication
       '@workspace/authorization':
         specifier: workspace:*
         version: link:../../modules/authorization
+      '@workspace/cases':
+        specifier: workspace:*
+        version: link:../../modules/cases
       '@workspace/configuration':
         specifier: workspace:*
         version: link:../../packages/configuration
@@ -376,9 +382,15 @@ importers:
 
   modules/cases:
     dependencies:
+      '@workspace/assignments':
+        specifier: workspace:*
+        version: link:../assignments
       '@workspace/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@workspace/database':
+        specifier: workspace:*
+        version: link:../../packages/database
     devDependencies:
       '@types/node':
         specifier: 24.13.3

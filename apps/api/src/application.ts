@@ -19,6 +19,7 @@ import {
   createOrganizationAdministrationRoutes,
   type OrganizationAdministrationRouteOptions,
 } from './routes/organization-administration.js';
+import { createCasesRoutes, type CasesRouteOptions } from './routes/cases.js';
 
 export interface ApplicationOptions {
   readonly logger?: boolean;
@@ -26,6 +27,7 @@ export interface ApplicationOptions {
   readonly operationalHealthDependencies?: readonly DependencyHealthCheck[];
   readonly identityOrganization?: IdentityOrganizationRouteOptions;
   readonly organizationAdministration?: OrganizationAdministrationRouteOptions;
+  readonly cases?: CasesRouteOptions;
 }
 
 export function buildApplication(options: ApplicationOptions = {}): FastifyInstance {
@@ -49,6 +51,9 @@ export function buildApplication(options: ApplicationOptions = {}): FastifyInsta
     application.register(
       createOrganizationAdministrationRoutes(options.organizationAdministration),
     );
+  }
+  if (options.cases !== undefined) {
+    application.register(createCasesRoutes(options.cases));
   }
   application.register(readinessRoute);
 
