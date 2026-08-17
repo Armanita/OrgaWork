@@ -12,9 +12,15 @@ const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
 const vitestConfiguration = readFileSync('vitest.ci.config.ts', 'utf8');
 
 describe('continuous integration contract', () => {
-  it('uses frozen lockfile installation on Linux and Windows', () => {
+  it('uses the pnpm 11 standalone setup path with an explicit frozen install', () => {
     expect(workflow).toContain('ubuntu-latest');
     expect(workflow).toContain('windows-latest');
+    expect(workflow).toContain('pnpm/setup@c9883cc79df532ad1a7b81bf9ab944ceb090d65c # v2.0.0');
+    expect(workflow).toContain('runtime: node@24');
+    expect(workflow).toContain('cache: true');
+    expect(workflow).toContain('install: false');
+    expect(workflow).not.toContain('pnpm/action-setup');
+    expect(workflow).not.toContain('actions/setup-node');
     expect(workflow).toContain('pnpm install --frozen-lockfile');
     expect(workflow).not.toContain('--no-frozen-lockfile');
     expect(workflow).not.toContain('frozen-lockfile=false');

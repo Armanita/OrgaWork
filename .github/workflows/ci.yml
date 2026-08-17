@@ -31,16 +31,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Setup pnpm and Node.js
+        uses: pnpm/setup@c9883cc79df532ad1a7b81bf9ab944ceb090d65c # v2.0.0
         with:
-          version: 11.17.0
-          run_install: false
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          cache: pnpm
+          runtime: node@24
+          cache: true
+          install: false
       - name: Install with frozen lockfile
         run: pnpm install --frozen-lockfile
       - name: Unified quality verification
@@ -82,14 +78,11 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/setup@c9883cc79df532ad1a7b81bf9ab944ceb090d65c # v2.0.0
         with:
-          version: 11.17.0
-          run_install: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          cache: pnpm
+          runtime: node@24
+          cache: true
+          install: false
       - run: pnpm install --frozen-lockfile
       - name: Unified contracts and migrations verification
         run: pnpm verify:ci -- --suite contracts --continue
@@ -113,14 +106,11 @@ jobs:
           - windows-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/setup@c9883cc79df532ad1a7b81bf9ab944ceb090d65c # v2.0.0
         with:
-          version: 11.17.0
-          run_install: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          cache: pnpm
+          runtime: node@24
+          cache: true
+          install: false
       - run: pnpm install --frozen-lockfile
       - name: Unified architecture verification
         run: pnpm verify:ci -- --suite architecture --continue
@@ -138,14 +128,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/setup@c9883cc79df532ad1a7b81bf9ab944ceb090d65c # v2.0.0
         with:
-          version: 11.17.0
-          run_install: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          cache: pnpm
+          runtime: node@24
+          cache: true
+          install: false
       - run: pnpm install --frozen-lockfile
       - name: Unified application build verification
         run: pnpm verify:ci -- --suite build --continue
@@ -163,14 +150,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/setup@c9883cc79df532ad1a7b81bf9ab944ceb090d65c # v2.0.0
         with:
-          version: 11.17.0
-          run_install: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          cache: pnpm
+          runtime: node@24
+          cache: true
+          install: false
       - run: pnpm install --frozen-lockfile
       - name: Unified dependency audit verification
         run: pnpm verify:ci -- --suite audit --continue
