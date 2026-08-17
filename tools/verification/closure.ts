@@ -169,7 +169,7 @@ function updateTrustRoadmap(
     `- Acceptance tag target: \`${stage.documentation.acceptanceTag}\``,
     '- این Closure هیچ checkbox محصولی را تغییر نمی‌دهد.',
     '',
-  ].join('\\n');
+  ].join('\n');
 }
 
 function updateTrustProjectStatus(
@@ -204,7 +204,7 @@ function updateTrustProjectStatus(
     `- Acceptance tag target: \`${stage.documentation.acceptanceTag}\``,
     `- ادامه محصول: \`${nextTitle}\``,
     '',
-  ].join('\\n');
+  ].join('\n');
 }
 
 function updateRoadmap(roadmap: string, stage: StageDefinition): string {

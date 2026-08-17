@@ -1,6 +1,6 @@
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
@@ -10,12 +10,12 @@ import { getStageDefinition } from './stages.js';
 
 function write(root: string, relative: string, body: string): void {
   const full = join(root, relative);
-  mkdirSync(join(full, '..'), { recursive: true });
+  mkdirSync(dirname(full), { recursive: true });
   writeFileSync(full, body, 'utf8');
 }
 
 describe('Stage 00 trust bootstrap closure', () => {
-  it('records the trust baseline without closing or replacing a product roadmap item', () => {
+  it('records a readable trust baseline without changing product acceptance semantics', () => {
     const root = mkdtempSync(join(tmpdir(), 'orgawork-stage00-'));
     const stage = getStageDefinition('STAGE-00');
     const technicalCommit = '1111111111111111111111111111111111111111';
@@ -26,7 +26,7 @@ describe('Stage 00 trust bootstrap closure', () => {
         root,
         'docs/PROJECT-STATUS.md',
         [
-          '# Project Status',
+          '# وضعیت پروژه',
           '- فاز جاری کلان: `P3 — پرونده، مسئولیت و اقدام`',
           '- مرحله مادر جاری: `P3 — پرونده، مسئولیت و اقدام`',
           '- زیرمرحله جاری: `P3.1 — تثبیت قرارداد دامنه پرونده`',
@@ -38,7 +38,7 @@ describe('Stage 00 trust bootstrap closure', () => {
         root,
         'docs/ROADMAP.md',
         [
-          '# Roadmap',
+          '# نقشه راه',
           '- مرحله جاری: `P3 — پرونده، مسئولیت و اقدام`',
           '- [x] P3.1 تثبیت قرارداد دامنه پرونده',
           '- [ ] P3.2 پیاده‌سازی ایجاد پرونده توسط کاربر',
@@ -77,9 +77,14 @@ describe('Stage 00 trust bootstrap closure', () => {
       const roadmap = readFileSync(join(root, 'docs/ROADMAP.md'), 'utf8');
 
       expect(status).toContain('- زیرمرحله جاری: `P3.2 — پیاده‌سازی ایجاد پرونده توسط کاربر`');
-      expect(status).toContain('<!-- ORGAWORK:TRUST-BASELINE:STAGE-00 -->');
+      expect(status).toContain('\n<!-- ORGAWORK:TRUST-BASELINE:STAGE-00 -->\n');
+      expect(status).not.toContain('\\n<!-- ORGAWORK:TRUST-BASELINE:STAGE-00 -->');
+      expect(status).toContain('- آخرین زیرمرحله بسته‌شده: `P3.1 — تثبیت قرارداد دامنه پرونده`');
+
+      expect(roadmap).toContain('- [x] P3.1 تثبیت قرارداد دامنه پرونده');
       expect(roadmap).toContain('- [ ] P3.2 پیاده‌سازی ایجاد پرونده توسط کاربر');
-      expect(roadmap).toContain('<!-- ORGAWORK:TRUST-BASELINE:STAGE-00 -->');
+      expect(roadmap).toContain('\n<!-- ORGAWORK:TRUST-BASELINE:STAGE-00 -->\n');
+      expect(roadmap).not.toContain('\\n<!-- ORGAWORK:TRUST-BASELINE:STAGE-00 -->');
       expect(roadmap).not.toContain('- [x] Stage 00');
     } finally {
       rmSync(root, { recursive: true, force: true });
