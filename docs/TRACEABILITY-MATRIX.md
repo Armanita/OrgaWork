@@ -1759,3 +1759,13 @@ Commit و Tagهای شناخته‌شده ثبت شده‌اند. برای P1.1 
 
 | `VERIFICATION-SYSTEM-001` | Session/Agent جدید بتواند روش بررسی و ادامه پروژه را فقط از Repository بازسازی کند | `docs/VERIFICATION-SYSTEM.md`، `docs/CONTINUATION-PROTOCOL.md` | `tools/checks/verification-system-documentation.test.ts` | پیاده‌سازی در 00F-B |
 | `SECURITY-DEPS-001` | صفر High در Production dependency audit | Next Patch + pnpm-workspace.yaml scoped overrides | `pnpm audit --prod --audit-level=high` و Clean-runner Full | پیاده‌سازی در 00F-B |
+
+# دفتر اختتام استاندارد مراحل
+
+<!-- ORGAWORK:STAGE-CLOSURE-LEDGER:START -->
+
+| مرحله    | شاهد    | Commit فنی                                 | Tag پذیرش                            | گزارش پذیرش                              | وضعیت        |
+| -------- | ------- | ------------------------------------------ | ------------------------------------ | ---------------------------------------- | ------------ |
+| STAGE-00 | EVD-043 | `4b858c5b87b330ad46feb9018c9e7a7b45d1311d` | `stage-00-trust-baseline-acceptance` | `docs/acceptance/STAGE-00-ACCEPTANCE.md` | آماده انتشار |
+
+<!-- ORGAWORK:STAGE-CLOSURE-LEDGER:END -->

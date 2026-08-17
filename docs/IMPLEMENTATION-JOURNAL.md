@@ -2270,3 +2270,32 @@ P1.10 باید پذیرش نهایی کل P1 را انجام دهد. طراحی 
 - Advisoryهای High تولید با Patch مستقیم Next و overrideهای محدود Transitive رفع شدند.
 - `docs/VERIFICATION-SYSTEM.md` و Contract test آن به‌عنوان راهنمای دائمی Session/Agent جدید اضافه شد.
 - معیار نهایی این مرحله، Full verification روی temporary clean worktree با Frozen lockfile است.
+
+<!-- ORGAWORK:CLOSURE:STAGE-00 -->
+
+# Stage 00 — خط‌مبنای اعتماد و Verification مخزن — اختتام استاندارد
+
+## شواهد
+
+- شناسه شاهد: `EVD-043`
+- Commit فنی پذیرفته‌شده: `4b858c5b87b330ad46feb9018c9e7a7b45d1311d`
+- گزارش Verification: profile=`stage`، stage=`STAGE-00`، result=`PASS`
+- زمان پایان Verification: `2026-08-17T22:15:21.820Z`
+
+## بازبینی مستندات
+
+- به‌روزرسانی الزامی: `docs/PROJECT-STATUS.md`
+- به‌روزرسانی الزامی: `docs/ROADMAP.md`
+- به‌روزرسانی الزامی: `docs/IMPLEMENTATION-JOURNAL.md`
+- به‌روزرسانی الزامی: `docs/TRACEABILITY-MATRIX.md`
+- بازبینی الزامی: `docs/TEST-AND-ACCEPTANCE.md`
+- بازبینی الزامی: `docs/RISKS-ASSUMPTIONS-DEBT.md`
+- بازبینی الزامی: `docs/DECISIONS.md`
+- بازبینی الزامی: `docs/VERIFICATION-SYSTEM.md`
+- بازبینی الزامی: `docs/CONTINUATION-PROTOCOL.md`
+
+## نتیجه
+
+- زیرمرحله `STAGE-00` برای اختتام آماده و مستند شد.
+- Tag پذیرش هدف: `stage-00-trust-baseline-acceptance`
+- مرحله بعد: `P3.2 — پیاده‌سازی ایجاد پرونده توسط کاربر`

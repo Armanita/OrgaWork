@@ -570,3 +570,12 @@
 8. نتیجه واقعی ثبت و سپس ردیف بسته شود.
 
 هیچ ردیفی صرفاً بر اساس حافظه گفت‌وگو، شباهت به پروژه آرشیوی یا حدس فنی آغاز نمی‌شود.
+
+<!-- ORGAWORK:TRUST-BASELINE:STAGE-00 -->
+
+## خط‌مبنای اعتماد Repository
+
+- وضعیت: `ACCEPTED` برای `Stage 00 — خط‌مبنای اعتماد و Verification مخزن`
+- Technical commit: `4b858c5b87b330ad46feb9018c9e7a7b45d1311d`
+- Acceptance tag target: `stage-00-trust-baseline-acceptance`
+- این Closure هیچ checkbox محصولی را تغییر نمی‌دهد.
