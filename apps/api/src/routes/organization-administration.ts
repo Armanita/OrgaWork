@@ -185,7 +185,7 @@ export function createOrganizationAdministrationRoutes(
       } catch (e) {
         return fail(
           reply,
-          e instanceof AuthenticationError ? (e.code as ApiErrorCode) : 'AUTHORIZATION_DENIED',
+          e instanceof AuthenticationError ? e.code : 'AUTHORIZATION_DENIED',
           e instanceof Error ? e.message : 'درخواست نامعتبر است.',
           now(),
         );
@@ -201,7 +201,7 @@ export function createOrganizationAdministrationRoutes(
         } catch (e) {
           return fail(
             reply,
-            e instanceof AuthenticationError ? (e.code as ApiErrorCode) : 'INVITATION_INVALID',
+            e instanceof AuthenticationError ? e.code : 'INVITATION_INVALID',
             e instanceof Error ? e.message : 'دعوت معتبر نیست.',
             now(),
           );

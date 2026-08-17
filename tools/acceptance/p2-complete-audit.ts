@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { inspectArchitecture } from '../checks/architecture-policy.js';
 import { inspectRepositorySecurity } from '../checks/repository-security.js';
+import { isAtOrBeyondMajorStage, roadmapCurrentStage } from '../verification/project-state.js';
 import { inspectP23DatabaseIsolation } from './p2.3-database-isolation-audit.js';
 
 export type P2AuditMode = 'auto' | 'pre' | 'closed';
@@ -188,7 +189,10 @@ export function inspectP2Complete(
   if (mode === 'closed') {
     for (let stage = 4; stage <= 15; stage += 1)
       marker(issues, roadmap, `- [x] P2.${stage} `, `وضعیت P2.${stage}`);
-    marker(issues, roadmap, '- مرحله جاری: `P3.1 تثبیت قرارداد دامنه پرونده`', 'مرحله بعدی');
+    const currentStage = roadmapCurrentStage(roadmap);
+    if (currentStage === undefined || !isAtOrBeyondMajorStage(currentStage, 3)) {
+      issues.push(`مرحله بعدی باید P3 یا بعد از آن باشد: ${String(currentStage)}`);
+    }
     marker(issues, status, '- فاز جاری کلان: `P3 — پرونده، مسئولیت و اقدام`', 'وضعیت کلان');
     marker(issues, status, '- مرحله مادر `P2`: بسته و پذیرفته‌شده', 'پذیرش P2');
     marker(issues, decisions, 'DEC-P2-001', 'تصمیم نهایی P2');

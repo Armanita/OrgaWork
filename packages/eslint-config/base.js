@@ -40,6 +40,12 @@ const baseConfig = tseslint.config(
       '@typescript-eslint/no-misused-promises': 'error',
     },
   },
+  {
+    files: ['**/*.test.{ts,tsx,mts,cts}'],
+    rules: {
+      '@typescript-eslint/require-await': 'off',
+    },
+  },
   eslintConfigPrettier,
 );
 

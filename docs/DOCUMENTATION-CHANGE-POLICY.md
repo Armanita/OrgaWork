@@ -1327,3 +1327,31 @@ Tag:
 هر تغییر مستنداتی باید به واقعیت، تصمیم، آزمون و شاهد متصل باشد.
 
 اگر کد و سند درباره وضعیت پروژه دو روایت متفاوت دارند، پروژه هنوز در وضعیت قابل پذیرش نیست.
+
+<!-- ORGAWORK:AUTOMATED-STAGE-CLOSURE-POLICY:START -->
+
+# پیوست جاری — سیاست اختتام خودکار Stage
+
+برای جلوگیری از فراموش‌شدن اسناد در پایان Stage، اختتام استاندارد باید از `tools/verification/closure.ts` انجام شود.
+
+در `stage:close:prepare` حداقل این اسناد به‌روزرسانی یا تولید می‌شوند:
+
+- `PROJECT-STATUS.md`
+- `ROADMAP.md`
+- `IMPLEMENTATION-JOURNAL.md`
+- `TRACEABILITY-MATRIX.md`
+- `docs/acceptance/<STAGE_ID>-ACCEPTANCE.md`
+
+همچنین `TEST-AND-ACCEPTANCE.md`، `RISKS-ASSUMPTIONS-DEBT.md` و `DECISIONS.md` جزو اسناد بازبینی الزامی Closure هستند.
+
+Acceptance Report تولیدشده دارای Header تولید خودکار است و نباید دستی برای دورزدن دروازه پذیرش ساخته شود.
+
+تغییر Stage بدون عبور از Closure Guard، Technical Commit معتبر، Verification PASS، Evidence، Closure Commit و Tag پذیرش نباید «بسته‌شده» ثبت شود.
+
+<!-- ORGAWORK:AUTOMATED-STAGE-CLOSURE-POLICY:END -->
+
+<!-- ORGAWORK:DOC-POLICY:VERIFICATION-SYSTEM -->
+
+## Verification documentation contract
+
+`docs/VERIFICATION-SYSTEM.md` سند Policy/Runbook مرکزی است. هر تغییر در Runner، Gate Registry، Stage Closure، Publication، Test classification یا Timeout policy باید همزمان این سند و تست `tools/checks/verification-system-documentation.test.ts` را بررسی کند.

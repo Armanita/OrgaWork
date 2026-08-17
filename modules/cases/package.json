@@ -21,9 +21,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@workspace/assignments": "workspace:*",
-    "@workspace/contracts": "workspace:*",
-    "@workspace/database": "workspace:*"
+    "@workspace/contracts": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "24.13.3",

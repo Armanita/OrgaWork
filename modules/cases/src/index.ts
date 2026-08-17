@@ -287,5 +287,3 @@ export function reopenCase(
 export function continuationFromCurrentWork(currentWork: CurrentWorkReference): Continuation {
   return currentWork;
 }
-
-export * from './repository.js';

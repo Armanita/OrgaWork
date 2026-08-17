@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import { hashSecurityToken } from '@workspace/security';
 
 import {
-  AuthenticationError,
   authenticationPolicy,
   createAuthenticationService,
   type AuthenticationRepository,

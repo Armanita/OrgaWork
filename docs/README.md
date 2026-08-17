@@ -961,3 +961,9 @@ Tagهای مرتبط:
 ## وضعیت جاری پس از پذیرش P2
 
 مرحله مادر هویت، سازمان و مجوزدهی (`P2`) و مسیر اصلاح بنیاد رابط (`P2R`) بسته و پذیرفته شده‌اند. مرحله جاری رسمی `P3.1` است، اما آغاز پیاده‌سازی آن باید در Commit جداگانه انجام شود. برای جزئیات فنی و شواهد، `PROJECT-STATUS.md`، `ROADMAP.md`، `docs/acceptance/P1-FINAL-ACCEPTANCE.md`، `docs/acceptance/P0-P2.3-FULL-AUDIT.md`، `docs/acceptance/P2-FINAL-ACCEPTANCE.md` و `docs/acceptance/P2R-FINAL-ACCEPTANCE.md` مطالعه شوند.
+
+<!-- ORGAWORK:DOCS:VERIFICATION-SYSTEM -->
+
+## Verification and continuation
+
+برای شروع یا ادامه توسعه در Session جدید، ابتدا `docs/CONTINUATION-PROTOCOL.md` و سپس `docs/VERIFICATION-SYSTEM.md` را بخوانید.

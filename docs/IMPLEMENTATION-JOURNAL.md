@@ -2225,3 +2225,48 @@ P1.10 باید پذیرش نهایی کل P1 را انجام دهد. طراحی 
 - Migration بعدی باید از `0010` آغاز شود.
 
 > **Clarification تاریخی (پسین):** checkpoint `P34.C1` یک رویداد تاریخی است و برای مدل اجرایی مرحله‌ای پروژه به دو مالکیت مستقل تفکیک شد: بخش `P3.1` → مالکیت **P3** (وضعیت: پذیرفته‌شده)، بخش `P4.1` → مالکیت **P4** (وضعیت: تا پایان کامل P3 مسدود). `P34` دیگر مدل اجرایی فعلی پروژه نیست و ترتیب رسمی از این پس `P2 → P3 → P4 → P5 → ...` است. ارجاعات `P34.C2`/`P34.C3` و شماره Migration `0010` در این بخش صرفاً یادداشت آن زمان هستند و در برنامه‌ریزی آینده بازنگری خواهند شد.
+
+<!-- ORGAWORK:STAGE-00F-A-VERIFICATION-INFRASTRUCTURE:START -->
+
+# Stage 00F-A — تثبیت Verification و Stage Closure
+
+## مسئله
+
+در بازبینی Stage 00 مشخص شد انتخاب و اجرای مستقیم Scriptهای متعدد تاریخی باعث تکرار تست نامرتبط، اختلاف Local و CI، شکست Assertionهای قدیمی و اتلاف زمان می‌شود. همچنین پایان Stage مسیر اجباری واحدی برای به‌روزرسانی Status، Roadmap، Journal، Traceability و Acceptance Report نداشت.
+
+## اقدام
+
+- ایجاد Gate Registry مرکزی؛
+- ایجاد Stage Registry؛
+- ایجاد پروفایل‌های `fast`, `stage`, `full`, `infra` و Suiteهای داخلی CI؛
+- ایجاد گزارش Verification ساختاریافته؛
+- ایجاد Closure Guard و تولید مستندات اختتام؛
+- ایجاد Publication Guard برای Closure Commit، Acceptance Tag و Atomic Push؛
+- اتصال GitHub Actions به Runner مرکزی با حفظ نام Checkهای Branch Protection؛
+- ثبت گردش جدید در Runbook، Test Policy، Continuation Protocol و Documentation Policy.
+
+## مرز
+
+این اصلاح زیرساخت آزمون و تحویل است و به‌تنهایی Stage محصول P3.2 را آغاز یا قبول نمی‌کند. P3.2 تا تعریف و PASS شدن Stage-specific evidence gate خود قابل اختتام نیست.
+
+<!-- ORGAWORK:STAGE-00F-A-VERIFICATION-INFRASTRUCTURE:END -->
+
+<!-- ORGAWORK:00F-A4:HISTORICAL-CURRENT-STATE -->
+
+# 00F-A4 — Historical Acceptance / Current-State
+
+- parser مشترک Stage اضافه شد.
+- P1.10 از YAML command-order به Registry مرکزی منتقل شد.
+- P2 Final فقط انتقال معنایی به P3 یا بعد از آن را الزام می‌کند.
+- P2R تاریخچه خود را حفظ می‌کند ولی وضعیت فعلی مستقل بررسی می‌شود.
+- Timeout policy مرکزی: Unit 5s، Acceptance/CI 30s، Publication 60s.
+
+<!-- ORGAWORK:00F-B:REAL-FAILURE-REMEDIATION -->
+
+## 00F-B — رفع Failureهای واقعی
+
+- Formatting Roadmap اصلاح شد.
+- ۵۸ خطای ESLint با Policy test-only برای `require-await` و اصلاح خطاهای واقعی Production/Test برطرف شد.
+- Advisoryهای High تولید با Patch مستقیم Next و overrideهای محدود Transitive رفع شدند.
+- `docs/VERIFICATION-SYSTEM.md` و Contract test آن به‌عنوان راهنمای دائمی Session/Agent جدید اضافه شد.
+- معیار نهایی این مرحله، Full verification روی temporary clean worktree با Frozen lockfile است.

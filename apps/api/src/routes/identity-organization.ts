@@ -125,10 +125,9 @@ function sendError(
   return reply.code(status(code)).send(body);
 }
 function mapError(error: unknown): { code: ApiErrorCode; message: string } {
-  if (error instanceof AuthenticationError)
-    return { code: error.code as ApiErrorCode, message: error.message };
+  if (error instanceof AuthenticationError) return { code: error.code, message: error.message };
   if (error instanceof OrganizationContextError)
-    return { code: error.code as ApiErrorCode, message: error.message };
+    return { code: error.code, message: error.message };
   return { code: 'SERVICE_UNAVAILABLE', message: 'خدمت هویت و سازمان در دسترس نیست.' };
 }
 function sessionData(value: AuthenticationSessionView): AuthenticationSessionData {

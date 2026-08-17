@@ -1,12 +1,21 @@
 import { readFileSync } from 'node:fs';
+
 import { describe, expect, it } from 'vitest';
+
+import {
+  isAtOrBeyondMajorStage,
+  roadmapCurrentStage,
+  roadmapStageChecked,
+  roadmapStageOpen,
+  statusCurrentSubstage,
+} from '../verification/project-state.js';
 
 function read(relativePath: string): string {
   return readFileSync(relativePath, 'utf8');
 }
 
-describe('current documentation state after P2R.1.8', () => {
-  it('keeps historical and remediation acceptance evidence discoverable', () => {
+describe('documentation state contract', () => {
+  it('keeps historical P1/P2/P2R acceptance evidence discoverable', () => {
     const readme = read('docs/README.md');
 
     expect(readme).toContain('docs/acceptance/P1-FINAL-ACCEPTANCE.md');
@@ -15,20 +24,38 @@ describe('current documentation state after P2R.1.8', () => {
     expect(readme).toContain('docs/acceptance/P2R-FINAL-ACCEPTANCE.md');
   });
 
-  it('records P2R.1.8 and the remediation path as closed without starting P3.1', () => {
-    const status = read('docs/PROJECT-STATUS.md');
+  it('preserves the historical P2R-to-P3 boundary in historical evidence', () => {
     const roadmap = read('docs/ROADMAP.md');
-
-    expect(status).toContain(
-      'مرحله بسته‌شده: `P2R.1.8 — ساخت تولیدی بازگشت کامل آزمون‌ها و پذیرش اصلاح رابط`',
-    );
-    expect(status).toContain('مسیر اصلاحی `P2R` بسته و پذیرفته شد');
-    expect(status).toContain('مرحله `P3.1` در این Commit آغاز نشد و برای شروع جداگانه آماده است');
+    const journal = read('docs/IMPLEMENTATION-JOURNAL.md');
+    const acceptance = read('docs/acceptance/P2R-FINAL-ACCEPTANCE.md');
 
     expect(roadmap).toContain('- [x] P2R.1.7');
     expect(roadmap).toContain('- [x] P2R.1.8');
-    expect(roadmap).toContain('- [ ] P3.1');
-    expect(roadmap).toContain('آغاز P3.1 باید در Commit جداگانه انجام شود');
+    expect(roadmap).toContain(
+      'P2R.1.8 بسته و پذیرفته شده است؛ آغاز P3.1 باید در Commit جداگانه انجام شود.',
+    );
+    expect(journal).toContain('`P3.1` در این Commit آغاز نشد');
+    expect(acceptance).toContain('P2R.1.8');
+    expect(acceptance).toContain('شاهد: `EVD-042`');
+  });
+
+  it('reads the current P3 state without rewriting P2R history', () => {
+    const roadmap = read('docs/ROADMAP.md');
+    const status = read('docs/PROJECT-STATUS.md');
+    const currentRoadmapStage = roadmapCurrentStage(roadmap);
+    const currentStatusStage = statusCurrentSubstage(status);
+
+    expect(currentRoadmapStage).toBeDefined();
+    expect(currentStatusStage).toBeDefined();
+    expect(isAtOrBeyondMajorStage(currentRoadmapStage ?? '', 3)).toBe(true);
+    expect(isAtOrBeyondMajorStage(currentStatusStage ?? '', 3)).toBe(true);
+
+    expect(roadmapStageChecked(roadmap, 'P3.1')).toBe(true);
+    expect(roadmapStageOpen(roadmap, 'P3.2')).toBe(true);
+    expect(status).toContain(
+      'P3.1 — تثبیت قرارداد دامنه پرونده` (accepted در commit تاریخی `a743f5c`)',
+    );
+    expect(status).toContain('زیرمرحله‌های `P3.2` به بعد اجرا نشده‌اند.');
   });
 
   it('aligns final P2R acceptance and traceability evidence', () => {
@@ -44,30 +71,19 @@ describe('current documentation state after P2R.1.8', () => {
     expect(acceptance).toContain('en/ltr');
     expect(acceptance).toContain('fa/rtl');
     expect(acceptance).toContain('Checkpoint');
-
     expect(traceability).toContain('EVD-042');
     expect(traceability).toContain('UI-P2R-FINAL-ACCEPTANCE-001');
   });
 
-  it('records the final remediation baseline and journal transition', () => {
-    const baselines = read('docs/APPROVED-BASELINES.md');
-    const journal = read('docs/IMPLEMENTATION-JOURNAL.md');
-
-    expect(baselines).toContain('UI-ACCESSIBILITY-P2R-001');
-    expect(baselines).toContain('UI-P2R-FINAL-ACCEPTANCE-001');
-    expect(journal).toContain('# P2R.1.8 — ساخت تولیدی بازگشت کامل آزمون‌ها و پذیرش اصلاح رابط');
-    expect(journal).toContain('`turbo run build --force`');
-    expect(journal).toContain('`P3.1` در این Commit آغاز نشد');
-  });
-
-  it('does not reopen closed P2 stages or begin P3.1 implementation', () => {
+  it('does not reopen closed P2 stages when the project advances', () => {
     const roadmap = read('docs/ROADMAP.md');
 
     for (let stage = 1; stage <= 15; stage += 1) {
       expect(roadmap).not.toContain(`- [ ] P2.${stage} `);
     }
 
-    expect(roadmap).toContain('- [x] P2.15');
-    expect(roadmap).toContain('- [ ] P3.1');
+    expect(roadmapStageChecked(roadmap, 'P2.15')).toBe(true);
+    expect(roadmapStageChecked(roadmap, 'P3.1')).toBe(true);
+    expect(roadmapStageOpen(roadmap, 'P3.2')).toBe(true);
   });
 });

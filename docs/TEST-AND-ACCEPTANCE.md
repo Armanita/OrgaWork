@@ -1914,3 +1914,55 @@ Tag پذیرش:
 7. ممیزی بسته‌شده P2 و فضای کاری پاک
 
 شاهد رسمی این پذیرش `EVD-041` است.
+
+<!-- ORGAWORK:UNIFIED-VERIFICATION-POLICY:START -->
+
+# پیوست جاری — سیاست Orchestration آزمون و پذیرش
+
+اصل چندلایه و سخت‌گیرانه آزمون تغییر نکرده است؛ تغییر فقط در Orchestration است تا Suite متناسب با ریسک اجرا شود و تست‌های نامرتبط باعث اتلاف زمان نشوند.
+
+## پروفایل‌های رسمی
+
+- `fast`: برای بازخورد توسعه و فقط دامنه تغییر.
+- `stage`: برای پذیرش زیرمرحله و بر اساس Gate Registry همان Stage.
+- `full`: برای پذیرش کلان، تغییر Foundation/CI و ممیزی جامع.
+- `infra`: برای تغییرهای Migration، RLS، معماری و امنیت زیرساخت.
+- `ci`: پروفایل داخلی برای Suiteهای موازی GitHub Actions؛ تعریف Gateها همچنان در یک Registry مرکزی است.
+
+GitHub Actions نباید منطق Gate را دوباره در YAML تعریف کند؛ Workflow فقط Suite نام‌دار Runner را فراخوانی می‌کند.
+
+## شاهد معتبر اختتام
+
+اختتام زیرمرحله فقط وقتی مجاز است که:
+
+- آخرین گزارش `verify:stage` برابر PASS باشد؛
+- گزارش متعلق به همان Stage و همان Technical Commit باشد؛
+- Verification روی Worktree پاک اجرا شده باشد؛
+- Stage-specific closure evidence gate در Registry تعریف و PASS شده باشد؛
+- مستندات Closure تولید و بازبینی شده باشند؛
+- Closure Commit و Tag پذیرش ایجاد شوند؛
+- Push شاخه و Tag به‌صورت Atomic موفق باشد؛
+- Remote و Worktree پاک پس از Push تأیید شوند.
+
+این Orchestration کاهش معیار آزمون نیست؛ Suiteهای واقعی، آزمون منفی، Integration، Migration/RLS و Smoke همچنان باید در Gate مناسب Stage ثبت شوند.
+
+<!-- ORGAWORK:UNIFIED-VERIFICATION-POLICY:END -->
+
+<!-- ORGAWORK:TEST-STATE-SEPARATION:A4 -->
+
+## تفکیک پذیرش تاریخی از وضعیت جاری
+
+- Historical Acceptance فقط شواهد زمان بسته‌شدن Stage را بررسی می‌کند و وضعیت جاری را منجمد نمی‌کند.
+- Current-State Invariants وضعیت امروز Roadmap و Project Status را با شناسه Stage، نه عنوان متنی، بررسی می‌کنند.
+- P1.10 ترتیب Type Declaration پیش از Lint را از Registry مرکزی `ciSuiteGateIds` بررسی می‌کند، نه از متن YAML.
+- Timeout مرکزی: Unit=5s، Acceptance/CI=30s و Publication=60s.
+- `vitest.acceptance.config.ts` و `vitest.ci.config.ts` از policy مرکزی استفاده می‌کنند.
+
+<!-- ORGAWORK:00F-B:SECURITY-QUALITY-CLOSURE -->
+
+## 00F-B quality and dependency closure
+
+- `require-await` فقط برای فایل‌های Test غیرفعال است؛ Production همچنان Rule سختگیرانه را حفظ می‌کند.
+- High production dependency audit باید صفر باشد.
+- Next.js فقط تا Patch امن 16.2.11 بالا برده شد و Transitiveهای آسیب‌پذیر با override محدود به Range آسیب‌پذیر در `pnpm-workspace.yaml` بسته شدند.
+- Clean-runner از Snapshot دقیق Staged index و `pnpm install --frozen-lockfile` استفاده می‌کند.

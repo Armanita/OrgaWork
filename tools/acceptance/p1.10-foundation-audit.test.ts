@@ -51,6 +51,7 @@ describe('P1.10 foundation acceptance audit', () => {
     expect(isPostFoundationStage('P2.1 تثبیت قرارداد')).toBe(true);
     expect(isPostFoundationStage('P2.2 ایجاد مدل دامنه')).toBe(true);
     expect(isPostFoundationStage('P3.1 آغاز قابلیت‌ها')).toBe(true);
+    expect(isPostFoundationStage('P3 — پرونده، مسئولیت و اقدام')).toBe(true);
     expect(isPostFoundationStage('P12.1 پذیرش نهایی')).toBe(true);
     expect(isPostFoundationStage('P1.10 پذیرش بنیاد')).toBe(false);
     expect(isPostFoundationStage('invalid')).toBe(false);

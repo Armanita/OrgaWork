@@ -10,7 +10,8 @@
     "*.config.ts",
     "tools/scripts/**/*.ts",
     "tools/spikes/**/*.ts",
-    "tools/acceptance/**/*.ts"
+    "tools/acceptance/**/*.ts",
+    "tools/verification/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

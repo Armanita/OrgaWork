@@ -1314,3 +1314,48 @@ Log فنی نباید شامل:
 - بدون حدس به مرحله بعد برسد.
 
 هرجا این سند جزئیات کافی ندارد، ابتدا وضعیت واقعی مخزن بررسی و سپس سند به‌روزرسانی می‌شود.
+
+<!-- ORGAWORK:UNIFIED-VERIFICATION-WORKFLOW:START -->
+
+# پیوست جاری — گردش یکپارچه Verification و اختتام Stage
+
+از این پس فرمان‌های پراکنده آزمون، Build و پذیرش برای کار روزمره مستقیماً انتخاب نمی‌شوند. منبع اجرای استاندارد `tools/verification` است.
+
+## پروفایل‌های توسعه
+
+```text
+pnpm verify:fast
+pnpm verify:stage -- --stage <STAGE_ID>
+pnpm verify:full
+pnpm verify:infra
+```
+
+- `verify:fast`: بازخورد سریع روی فایل‌های تغییرکرده، تست‌های مرتبط و کنترل معماری/امنیت مرتبط.
+- `verify:stage`: فقط Gateهای ثبت‌شده همان Stage در `tools/verification/stages.ts`.
+- `verify:full`: ممیزی کامل مخزن برای نقاط پذیرش مهم.
+- `verify:infra`: Migration، معماری و امنیت زیرساختی.
+- `verify:ci`: پروفایل داخلی GitHub Actions است و کاربر معمولاً آن را مستقیم اجرا نمی‌کند.
+
+## قاعده اختتام Stage
+
+ترتیب استاندارد اختتام:
+
+1. تغییرات فنی Stage کامل می‌شوند.
+2. Technical Commit ایجاد می‌شود و Worktree پاک است.
+3. `pnpm verify:stage -- --stage <STAGE_ID>` روی همان Commit اجرا و PASS می‌شود.
+4. `pnpm stage:close:prepare -- --stage <STAGE_ID> --evidence <EVIDENCE_ID>` مستندات الزامی و Acceptance Report را تولید و Stage می‌کند.
+5. Diff مستندات بررسی می‌شود.
+6. `pnpm stage:close:publish -- --stage <STAGE_ID> --evidence <EVIDENCE_ID>` Closure Commit و Tag پذیرش را ایجاد و به‌صورت Atomic به `origin/main` Push می‌کند.
+7. Remote main، Tag و Worktree پاک دوباره کنترل می‌شوند.
+
+Closure برای Stageای که Stage-specific evidence gate ثبت‌شده ندارد مجاز نیست.
+
+گزارش Verification محلی داخل `.git/orgawork/verification` نگهداری می‌شود تا Worktree کثیف نشود. در CI گزارش در `artifacts/verification` قرار می‌گیرد.
+
+<!-- ORGAWORK:UNIFIED-VERIFICATION-WORKFLOW:END -->
+
+<!-- ORGAWORK:RUNBOOK:VERIFICATION-SYSTEM -->
+
+## Verification system
+
+تعریف کامل روش انتخاب Gate، Acceptance، Closure، Publication و Clean-runner در `docs/VERIFICATION-SYSTEM.md` نگهداری می‌شود. Runbook نباید تعریف موازی و متناقضی از این چرخه ایجاد کند.

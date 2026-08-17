@@ -2,6 +2,8 @@ import { readFileSync } from 'node:fs';
 
 import { describe, expect, it } from 'vitest';
 
+import { ciSuiteGateIds, fullGateIds } from '../verification/gates.js';
+
 const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
 const branchProtection = readFileSync('.github/BRANCH-PROTECTION.md', 'utf8');
 const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
@@ -18,8 +20,19 @@ describe('continuous integration contract', () => {
     expect(workflow).not.toContain('frozen-lockfile=false');
   });
 
-  it('contains all required quality and architecture gates', () => {
-    for (const command of [
+  it('routes CI gates through the centralized verification runner', () => {
+    for (const suite of [
+      'quality',
+      'quality-coverage',
+      'contracts',
+      'architecture',
+      'build',
+      'audit',
+    ]) {
+      expect(workflow).toContain(`--suite ${suite}`);
+    }
+
+    for (const directCommand of [
       'pnpm prepare:quality',
       'pnpm format:check',
       'pnpm lint',
@@ -33,54 +46,66 @@ describe('continuous integration contract', () => {
       'pnpm build:apps:direct',
       'pnpm audit --prod --audit-level=high',
     ]) {
-      expect(workflow).toContain(command);
+      expect(workflow).not.toContain(directCommand);
     }
   });
 
-  it('stores JUnit coverage and CI summary artifacts', () => {
+  it('keeps all required gates in centralized CI suites and full verification', () => {
+    expect(ciSuiteGateIds.contracts).toEqual([
+      'prepare-quality',
+      'build-p2-modules',
+      'contracts',
+      'migrations',
+    ]);
+    expect(ciSuiteGateIds.build).toEqual(['prepare-quality', 'build-p2-modules', 'build-apps']);
+
+    for (const gate of [
+      'format-all',
+      'lint-all',
+      'typecheck-all',
+      'coverage-ci',
+      'contracts',
+      'migrations',
+      'architecture',
+      'security',
+      'build-apps',
+      'dependency-audit',
+    ] as const) {
+      expect(fullGateIds).toContain(gate);
+    }
+  });
+
+  it('stores JUnit coverage verification and CI summary artifacts', () => {
     expect(workflow).toContain('actions/upload-artifact@v6');
     expect(workflow).toContain('path: artifacts/');
     expect(vitestConfiguration).toContain("'junit'");
     expect(vitestConfiguration).toContain('artifacts/test-results/junit.xml');
     expect(vitestConfiguration).toContain('artifacts/coverage');
     expect(packageJson.scripts['ci:report']).toBe('tsx tools/scripts/ci-report.ts');
+    expect(packageJson.scripts['verify:ci']).toBe('tsx tools/verification/runner.ts ci');
   });
 
-  it('prepares foundation declarations before clean type-aware lint', () => {
-    expect(packageJson.scripts['prepare:quality']).toBe(
-      'pnpm build:foundation:direct && pnpm build:domain:direct',
-    );
-    expect(packageJson.scripts['check']).toContain('pnpm prepare:quality && pnpm lint');
+  it('keeps the existing branch-protection check names stable', () => {
+    expect(workflow).toContain('name: Quality (${{ matrix.os }})');
+    expect(workflow).toContain('name: Architecture and repository policy (${{ matrix.os }})');
 
-    const installIndex = workflow.indexOf('pnpm install --frozen-lockfile');
-    const prepareIndex = workflow.indexOf('pnpm prepare:quality');
-    const lintIndex = workflow.indexOf('pnpm lint');
+    for (const operatingSystem of ['ubuntu-latest', 'windows-latest'] as const) {
+      expect(workflow).toContain(`- ${operatingSystem}`);
+      expect(branchProtection).toContain(`Quality (${operatingSystem})`);
+      expect(branchProtection).toContain(`Architecture and repository policy (${operatingSystem})`);
+    }
 
-    expect(installIndex).toBeGreaterThanOrEqual(0);
-    expect(prepareIndex).toBeGreaterThan(installIndex);
-    expect(lintIndex).toBeGreaterThan(prepareIndex);
-  });
+    for (const staticName of [
+      'Contracts OpenAPI and migrations',
+      'Build four applications',
+      'Dependency vulnerability audit',
+    ]) {
+      expect(workflow).toContain(`name: ${staticName}`);
+      expect(branchProtection).toContain(staticName);
+    }
 
-  it('defines direct builds for domain modules and all four applications', () => {
-    const domainScript = packageJson.scripts['build:domain:direct'];
-    const script = packageJson.scripts['build:apps:direct'];
-
-    expect(domainScript).toContain('@workspace/identity');
-    expect(domainScript).toContain('@workspace/organizations');
-    expect(domainScript).toContain('@workspace/teams');
-    expect(script).toContain('pnpm prepare:quality');
-
-    expect(script).toContain('@workspace/web');
-    expect(script).toContain('@workspace/api');
-    expect(script).toContain('@workspace/worker');
-    expect(script).toContain('@workspace/scheduler');
-    expect(script).not.toContain('turbo');
-  });
-
-  it('records the branch protection baseline without claiming remote mutation', () => {
     expect(branchProtection).toContain(
       'Remote branch protection is not changed by local project scripts',
     );
-    expect(branchProtection).toContain('Require a pull request before merging');
   });
 });

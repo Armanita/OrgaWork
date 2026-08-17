@@ -90,7 +90,9 @@ describe('identity and organization routes', () => {
       headers: { cookie: 'orgawork-session=session-secret' },
     });
     expect(response.statusCode).toBe(200);
-    expect(response.json().data.organizations).toHaveLength(1);
+    expect(
+      response.json<{ data: { organizations: readonly unknown[] } }>().data.organizations,
+    ).toHaveLength(1);
     await app.close();
   });
 });

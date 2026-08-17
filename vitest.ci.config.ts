@@ -1,7 +1,11 @@
 import { configDefaults, defineConfig } from 'vitest/config';
 
+import { testTimeoutPolicy } from './tools/verification/test-policy.js';
+
 export default defineConfig({
   test: {
+    testTimeout: testTimeoutPolicy.acceptanceMs,
+    hookTimeout: testTimeoutPolicy.acceptanceMs,
     exclude: [...configDefaults.exclude, 'artifacts/**'],
     reporters: [
       'default',

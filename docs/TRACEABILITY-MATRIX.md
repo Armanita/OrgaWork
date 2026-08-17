@@ -1733,3 +1733,29 @@ Commit و Tagهای شناخته‌شده ثبت شده‌اند. برای P1.1 
 | اعضا دعوت‌ها و تیم‌ها   | `UI-ORGANIZATION-ADMIN-P2R-001` | صفحات مدیریت سازمان             | آزمون قرارداد، حالت‌ها و مرورگر                               | بسته  |
 | دسترس‌پذیری             | `UI-ACCESSIBILITY-P2R-001`      | Focus، کنتراست و Reduced Motion | Playwright، Axe و Google Chrome                               | بسته  |
 | پذیرش نهایی مسیر اصلاحی | `UI-P2R-FINAL-ACCEPTANCE-001`   | کل دامنه P2R                    | ساخت تولیدی، Smoke، بازگشت کامل آزمون‌ها و صفر خطای Lint جدید | بسته  |
+
+<!-- ORGAWORK:VERIFICATION-INFRASTRUCTURE-TRACEABILITY:START -->
+
+# ردیابی زیرساخت Verification و Stage Closure
+
+| شناسه         | نیاز                                                            | پیاده‌سازی                                                                                    | آزمون                                                                      | شاهد                                                |
+| ------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------- |
+| QG-VERIFY-001 | اجرای آزمون متناسب با ریسک و بدون انتخاب دستی Scriptهای پراکنده | `tools/verification/gates.ts`, `tools/verification/runner.ts`, `tools/verification/stages.ts` | `tools/verification/runner.test.ts`                                        | گزارش JSON Runner                                   |
+| QG-CLOSE-001  | جلوگیری از بسته‌شدن Stage بدون Docs، Evidence، Commit و Tag     | `tools/verification/closure.ts`, `tools/verification/publish.ts`                              | `tools/verification/closure.test.ts`, `tools/verification/publish.test.ts` | Acceptance Report + Closure Commit + Acceptance Tag |
+| QG-CI-001     | یک منبع حقیقت برای Gateهای Local و CI با حفظ Parallelism        | `.github/workflows/ci.yml`, `tools/verification/gates.ts`                                     | `tools/checks/ci-contract.test.ts`, `tools/checks/p1.8-acceptance.test.ts` | CI artifacts + verification report                  |
+
+<!-- ORGAWORK:VERIFICATION-INFRASTRUCTURE-TRACEABILITY:END -->
+
+<!-- ORGAWORK:TRACE:VERIFICATION-STATE-001 -->
+
+## Verification state and timeout policy
+
+| شناسه                      | نیاز                                         | پیاده‌سازی                                                                                | آزمون                                                            | وضعیت  |
+| -------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------ |
+| `VERIFICATION-STATE-001`   | Historical Acceptance مستقل از Current-State | `tools/verification/project-state.ts`                                                     | project-state/current-state/P1-P2 regression                     | 00F-A4 |
+| `VERIFICATION-TIMEOUT-001` | timeout متناسب با کلاس تست                   | `tools/verification/test-policy.ts`، `vitest.acceptance.config.ts`، `vitest.ci.config.ts` | `tools/verification/test-policy.test.ts` و Acceptance regression | 00F-A4 |
+
+<!-- ORGAWORK:TRACE:VERIFICATION-SYSTEM-001 -->
+
+| `VERIFICATION-SYSTEM-001` | Session/Agent جدید بتواند روش بررسی و ادامه پروژه را فقط از Repository بازسازی کند | `docs/VERIFICATION-SYSTEM.md`، `docs/CONTINUATION-PROTOCOL.md` | `tools/checks/verification-system-documentation.test.ts` | پیاده‌سازی در 00F-B |
+| `SECURITY-DEPS-001` | صفر High در Production dependency audit | Next Patch + pnpm-workspace.yaml scoped overrides | `pnpm audit --prod --audit-level=high` و Clean-runner Full | پیاده‌سازی در 00F-B |

@@ -1352,3 +1352,26 @@ Commit و Tag:
 اگر ادامه کار به جمله‌ای مانند «قبلاً در گفت‌وگو گفته شد» وابسته باشد، فرایند تحویل و مستندسازی هنوز کامل نیست.
 
 هر ادامه معتبر با مشاهده وضعیت واقعی آغاز می‌شود، با یک تغییر محدود پیش می‌رود و با شاهد قابل بررسی ثبت می‌شود.
+
+<!-- ORGAWORK:UNIFIED-CONTINUATION:START -->
+
+# پیوست جاری — ادامه کار با Verification Registry
+
+پس از بازگشت به پروژه، به‌جای حدس‌زدن مجموعه فرمان‌های تاریخی:
+
+1. `PROJECT-STATUS.md` و `ROADMAP.md` خوانده می‌شوند.
+2. Stage جاری از `tools/verification/stages.ts` تطبیق داده می‌شود.
+3. برای تغییر روزمره `pnpm verify:fast` اجرا می‌شود.
+4. برای پایان زیرمرحله `pnpm verify:stage -- --stage <STAGE_ID>` اجرا می‌شود.
+5. اختتام فقط از مسیر `stage:close:prepare` و سپس `stage:close:publish` انجام می‌شود.
+6. برای ممیزی Foundation/CI یا پذیرش کلان از `pnpm verify:full` استفاده می‌شود.
+
+اگر Stage در Registry وجود ندارد یا Stage-specific evidence gate آن تعریف نشده است، پیاده‌سازی می‌تواند ادامه یابد اما Stage نباید بسته و منتشر شود تا Registry و معیار پذیرش آن تکمیل شوند.
+
+<!-- ORGAWORK:UNIFIED-CONTINUATION:END -->
+
+<!-- ORGAWORK:VERIFICATION-SYSTEM:BOOTSTRAP -->
+
+## Verification System bootstrap
+
+هر Session یا Agent جدید، بعد از خواندن Project Status و Roadmap، باید `docs/VERIFICATION-SYSTEM.md` را به‌عنوان قرارداد مرکزی Verification، Stage Closure، Historical/Current-State، Timeout Policy و Clean-runner validation بخواند و اجرا کند.

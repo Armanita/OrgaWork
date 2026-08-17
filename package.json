@@ -71,7 +71,16 @@
     "accept:p2:audit:pre": "tsx tools/acceptance/p2-complete-audit.ts pre",
     "accept:p2:audit:closed": "tsx tools/acceptance/p2-complete-audit.ts closed",
     "accept:p2:real": "tsx tools/acceptance/p2-real-postgresql.ts",
-    "test:p2r:browser": "playwright test --config playwright.config.ts"
+    "test:p2r:browser": "playwright test --config playwright.config.ts",
+    "verify:fast": "tsx tools/verification/runner.ts fast",
+    "verify:stage": "tsx tools/verification/runner.ts stage",
+    "verify:full": "tsx tools/verification/runner.ts full",
+    "verify:infra": "tsx tools/verification/runner.ts infra",
+    "stage:close:prepare": "tsx tools/verification/closure.ts prepare",
+    "stage:close:check": "tsx tools/verification/closure.ts check",
+    "verify:ci": "tsx tools/verification/runner.ts ci",
+    "stage:close:publish": "tsx tools/verification/publish.ts",
+    "test:acceptance": "vitest run --config vitest.acceptance.config.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.12.1",

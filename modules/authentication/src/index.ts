@@ -950,7 +950,7 @@ export async function createAuthenticationService(
       );
       if (consumed === undefined) {
         throw new AuthenticationError(
-          'AUTH_PASSWORD_RESET_INVALID' as AuthenticationErrorCode,
+          'AUTH_PASSWORD_RESET_INVALID',
           'درخواست بازیابی گذرواژه معتبر نیست.',
         );
       }

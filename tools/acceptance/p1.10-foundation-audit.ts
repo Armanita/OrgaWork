@@ -4,6 +4,8 @@ import { pathToFileURL } from 'node:url';
 
 import { inspectArchitecture } from '../checks/architecture-policy.js';
 import { inspectRepositorySecurity } from '../checks/repository-security.js';
+import { ciSuiteGateIds } from '../verification/gates.js';
+import { isAtOrBeyondMajorStage } from '../verification/project-state.js';
 
 export type FoundationAcceptanceMode = 'auto' | 'pre' | 'closed';
 
@@ -86,10 +88,7 @@ function requireMarker(issues: string[], content: string, marker: string, label:
 }
 
 export function isPostFoundationStage(stage: string): boolean {
-  const match = /^P(\d+)(?:\.|$)/u.exec(stage);
-  const major = match?.[1];
-
-  return major !== undefined && Number.parseInt(major, 10) >= 2;
+  return isAtOrBeyondMajorStage(stage, 2);
 }
 
 function roadmapCurrentStage(roadmap: string): string | undefined {
@@ -110,7 +109,6 @@ export function inspectFoundationAcceptance(
   const roadmap = read(repository, 'docs/ROADMAP.md');
   const status = read(repository, 'docs/PROJECT-STATUS.md');
   const traceability = read(repository, 'docs/TRACEABILITY-MATRIX.md');
-  const workflow = read(repository, '.github/workflows/ci.yml');
   const decisions = read(repository, 'docs/DECISIONS.md');
   const risks = read(repository, 'docs/RISKS-ASSUMPTIONS-DEBT.md');
   const packageDocument = JSON.parse(read(repository, 'package.json')) as {
@@ -232,12 +230,21 @@ export function inspectFoundationAcceptance(
     issues.push('فرمان‌های ساخت باید بنیاد P1 و چهار برنامه را حفظ کنند.');
   }
 
-  const installIndex = workflow.indexOf('pnpm install --frozen-lockfile');
-  const prepareIndex = workflow.indexOf('pnpm prepare:quality');
-  const lintIndex = workflow.indexOf('pnpm lint');
+  for (const suite of ['quality', 'quality-coverage'] as const) {
+    const gateIds = ciSuiteGateIds[suite];
+    const prepareIndex = gateIds.indexOf('prepare-quality');
+    const p2BuildIndex = gateIds.indexOf('build-p2-modules');
+    const formatIndex = gateIds.indexOf('format-all');
+    const lintIndex = gateIds.indexOf('lint-all');
 
-  if (installIndex < 0 || prepareIndex <= installIndex || lintIndex <= prepareIndex) {
-    issues.push('ترتیب آماده‌سازی Type Declaration پیش از Lint در CI معتبر نیست.');
+    if (
+      prepareIndex < 0 ||
+      p2BuildIndex <= prepareIndex ||
+      formatIndex <= p2BuildIndex ||
+      lintIndex <= formatIndex
+    ) {
+      issues.push(`ترتیب آماده‌سازی Type Declaration پیش از Lint در CI مرکزی معتبر نیست: ${suite}`);
+    }
   }
 
   if (!(tsconfigDocument.include ?? []).includes('tools/acceptance/**/*.ts')) {

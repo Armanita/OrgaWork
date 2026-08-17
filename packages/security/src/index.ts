@@ -150,13 +150,14 @@ export interface PasswordCompromiseChecker {
 }
 
 export const defaultPasswordCompromiseChecker: PasswordCompromiseChecker = {
-  isCompromised: async (password: string): Promise<boolean> => {
+  isCompromised: (password: string): Promise<boolean> => {
+    let compromised = false;
     try {
       assertPasswordPolicy(password);
-      return false;
     } catch (error: unknown) {
-      return error instanceof PasswordSecurityError && error.code === 'PASSWORD_COMPROMISED';
+      compromised = error instanceof PasswordSecurityError && error.code === 'PASSWORD_COMPROMISED';
     }
+    return Promise.resolve(compromised);
   },
 };
 
