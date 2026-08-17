@@ -144,3 +144,11 @@ Rollback ابزارهای Verification باید فقط تغییرات همان �
 ## 12. شرط ادامه توسعه
 
 اگر Session جدید وضعیت Git، Stage جاری، Evidence یا اسناد Canonical را نتواند با اطمینان بازسازی کند، نباید Feature جدید را شروع کند. ابتدا Verification/Continuation contract باید بازسازی و هم‌راستا شود.
+
+<!-- ORGAWORK:STAGE-00:BOOTSTRAP-CLOSURE -->
+
+## Stage 00 bootstrap closure
+
+`STAGE-00` یک Stage محصول نیست؛ خط‌مبنای اعتماد Repository است. Closure آن با `closureMode: trust-bootstrap` در Registry ثبت می‌شود تا همان زنجیره `verify:stage → evidence → stage:close:prepare → stage:close:publish` را استفاده کند، بدون اینکه یک ردیف محصول را به‌اشتباه ببندد.
+
+در Bootstrap Closure فقط این تغییر Current-State مجاز است: چون `P3.1` از قبل Historical Acceptance معتبر دارد، `PROJECT-STATUS.md` برای ادامه کار به `P3.2` همگام می‌شود. Roadmap محصول و checkboxهای P3 مستقل باقی می‌مانند. پس از پذیرش Stage 00، این مسیر استثنای دائمی نیست؛ تمام Stageهای محصول از Closure استاندارد خودشان استفاده می‌کنند.

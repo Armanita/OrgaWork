@@ -147,6 +147,66 @@ export function validateVerificationReport(
   }
 }
 
+const trustBaselineMarker = '<!-- ORGAWORK:TRUST-BASELINE:STAGE-00 -->';
+
+function updateTrustRoadmap(
+  roadmap: string,
+  stage: StageDefinition,
+  technicalCommit: string,
+): string {
+  if (roadmap.includes(trustBaselineMarker)) {
+    throw new Error('ROADMAP already contains the Stage 00 trust baseline marker.');
+  }
+
+  return [
+    roadmap.trimEnd(),
+    '',
+    trustBaselineMarker,
+    '## خط‌مبنای اعتماد Repository',
+    '',
+    `- وضعیت: \`ACCEPTED\` برای \`${stage.documentation.titleFa}\``,
+    `- Technical commit: \`${technicalCommit}\``,
+    `- Acceptance tag target: \`${stage.documentation.acceptanceTag}\``,
+    '- این Closure هیچ checkbox محصولی را تغییر نمی‌دهد.',
+    '',
+  ].join('\\n');
+}
+
+function updateTrustProjectStatus(
+  status: string,
+  stage: StageDefinition,
+  technicalCommit: string,
+): string {
+  if (status.includes(trustBaselineMarker)) {
+    throw new Error('PROJECT-STATUS already contains the Stage 00 trust baseline marker.');
+  }
+
+  const nextTitle = stage.documentation.nextStageTitleFa;
+  if (nextTitle === undefined) {
+    throw new Error('Stage 00 trust closure requires nextStageTitleFa.');
+  }
+
+  const updated = replaceExactlyOnce(
+    status,
+    /^- زیرمرحله جاری: `[^`]+`$/mu,
+    `- زیرمرحله جاری: \`${nextTitle}\``,
+    'PROJECT-STATUS current product substage after Stage 00',
+  );
+
+  return [
+    updated.trimEnd(),
+    '',
+    trustBaselineMarker,
+    '## خط‌مبنای اعتماد Stage 00',
+    '',
+    `- وضعیت: \`ACCEPTED\``,
+    `- Technical commit: \`${technicalCommit}\``,
+    `- Acceptance tag target: \`${stage.documentation.acceptanceTag}\``,
+    `- ادامه محصول: \`${nextTitle}\``,
+    '',
+  ].join('\\n');
+}
+
 function updateRoadmap(roadmap: string, stage: StageDefinition): string {
   const escapedItem = stage.documentation.roadmapItemFa.replaceAll(/[.*+?^${}()|[\]\\]/gu, '\\$&');
 
@@ -366,8 +426,13 @@ export function prepareClosureDocuments(
     throw new Error(`Journal already contains a closure block for ${stage.id}.`);
   }
 
-  writeUtf8(roadmapPath, updateRoadmap(readUtf8(roadmapPath), stage));
-  writeUtf8(statusPath, updateProjectStatus(readUtf8(statusPath), stage, technicalCommit));
+  if (stage.closureMode === 'trust-bootstrap') {
+    writeUtf8(roadmapPath, updateTrustRoadmap(readUtf8(roadmapPath), stage, technicalCommit));
+    writeUtf8(statusPath, updateTrustProjectStatus(readUtf8(statusPath), stage, technicalCommit));
+  } else {
+    writeUtf8(roadmapPath, updateRoadmap(readUtf8(roadmapPath), stage));
+    writeUtf8(statusPath, updateProjectStatus(readUtf8(statusPath), stage, technicalCommit));
+  }
   writeUtf8(
     journalPath,
     `${journal.trimEnd()}\n${journalBlock(stage, evidence, technicalCommit, report)}`,
@@ -436,11 +501,24 @@ export function checkClosureDocuments(
   const traceability = readUtf8(resolve(cwd, 'docs/TRACEABILITY-MATRIX.md'));
   const acceptancePath = resolve(cwd, `docs/acceptance/${stage.id}-ACCEPTANCE.md`);
 
-  if (!roadmap.includes(`- [x] ${stage.documentation.roadmapItemFa}`)) {
-    throw new Error(`ROADMAP does not mark ${stage.id} as closed.`);
-  }
-  if (!status.includes(`- آخرین زیرمرحله بسته‌شده: \`${stage.documentation.titleFa}\``)) {
-    throw new Error(`PROJECT-STATUS does not record ${stage.id} as last closed.`);
+  if (stage.closureMode === 'trust-bootstrap') {
+    if (!roadmap.includes(trustBaselineMarker)) {
+      throw new Error('ROADMAP does not record the Stage 00 trust baseline.');
+    }
+    if (!status.includes(trustBaselineMarker)) {
+      throw new Error('PROJECT-STATUS does not record the Stage 00 trust baseline.');
+    }
+    const nextTitle = stage.documentation.nextStageTitleFa;
+    if (nextTitle === undefined || !status.includes(`- زیرمرحله جاری: \`${nextTitle}\``)) {
+      throw new Error('PROJECT-STATUS is not aligned to the post-Stage-00 product substage.');
+    }
+  } else {
+    if (!roadmap.includes(`- [x] ${stage.documentation.roadmapItemFa}`)) {
+      throw new Error(`ROADMAP does not mark ${stage.id} as closed.`);
+    }
+    if (!status.includes(`- آخرین زیرمرحله بسته‌شده: \`${stage.documentation.titleFa}\``)) {
+      throw new Error(`PROJECT-STATUS does not record ${stage.id} as last closed.`);
+    }
   }
   if (!journal.includes(`<!-- ORGAWORK:CLOSURE:${stage.id} -->`)) {
     throw new Error(`Journal closure block is missing for ${stage.id}.`);

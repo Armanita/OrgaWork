@@ -12,6 +12,7 @@ export interface StageDefinition {
   readonly id: string;
   readonly title: string;
   readonly status: 'accepted' | 'planned' | 'active';
+  readonly closureMode: 'product-substage' | 'trust-bootstrap';
   readonly gates: readonly GateId[];
   readonly closureEvidenceGateIds: readonly GateId[];
   readonly requiredDocuments: readonly string[];
@@ -34,10 +35,59 @@ const commonReviewDocuments = [
 ] as const;
 
 export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
+  'STAGE-00': {
+    id: 'STAGE-00',
+    title: 'Repository trust and verification baseline',
+    status: 'accepted',
+    closureMode: 'trust-bootstrap',
+    gates: [
+      'prepare-quality',
+      'build-p2-modules',
+      'format-all',
+      'lint-all',
+      'typecheck-all',
+      'coverage-ci',
+      'contracts',
+      'migrations',
+      'architecture',
+      'security',
+      'build-apps',
+      'dependency-audit',
+    ],
+    closureEvidenceGateIds: [
+      'prepare-quality',
+      'build-p2-modules',
+      'format-all',
+      'lint-all',
+      'typecheck-all',
+      'coverage-ci',
+      'contracts',
+      'migrations',
+      'architecture',
+      'security',
+      'build-apps',
+      'dependency-audit',
+    ],
+    requiredDocuments: commonClosureDocuments,
+    reviewDocuments: [
+      ...commonReviewDocuments,
+      'docs/VERIFICATION-SYSTEM.md',
+      'docs/CONTINUATION-PROTOCOL.md',
+    ],
+    documentation: {
+      titleFa: 'Stage 00 — خط‌مبنای اعتماد و Verification مخزن',
+      roadmapItemFa: 'Stage 00 خط‌مبنای اعتماد و Verification مخزن',
+      nextStageId: 'P3.2',
+      nextStageTitleFa: 'P3.2 — پیاده‌سازی ایجاد پرونده توسط کاربر',
+      acceptanceTag: 'stage-00-trust-baseline-acceptance',
+    },
+    closureRequiresStageSpecificEvidence: true,
+  },
   'P3.1': {
     id: 'P3.1',
     title: 'Domain contract for cases, assignments and actions',
     status: 'accepted',
+    closureMode: 'product-substage',
     gates: [
       'p3-contract-build',
       'p3-contract-typecheck',
@@ -62,6 +112,7 @@ export const stageDefinitions: Readonly<Record<string, StageDefinition>> = {
     id: 'P3.2',
     title: 'Create a case for the current user',
     status: 'planned',
+    closureMode: 'product-substage',
     gates: [
       'prepare-quality',
       'build-p2-modules',
