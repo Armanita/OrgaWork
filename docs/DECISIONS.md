@@ -1051,3 +1051,104 @@ PasswordCredential، Session و Invitation عمداً در P2.3 ساخته نم�
 ## رابطه با DEC-UI-001
 
 `DEC-UI-001` به‌عنوان شاهد تاریخی انتخاب مراجع و الزامات محصول حفظ می‌شود. این تصمیم فقط روش اجرای زبان و زمان‌بندی بازطراحی را برای مراحل آینده اصلاح می‌کند و اعتبار فنی یا شواهد بسته‌شدن P2 را تغییر نمی‌دهد.
+
+# تصمیم‌های معماری و تحویل 2026-08-19
+
+## DEC-ARCH-2026-001 - جایگزینی مدل اجرایی P با Capability و Vertical Slice
+
+- وضعیت: `پذیرفته‌شده`
+- دامنه: اجرای آینده پروژه
+
+### تصمیم
+
+مدل `P0` تا `P12` برای Evidence و تاریخچه حفظ می‌شود، اما از 2026-08-19 مدل اجرای آینده نیست.
+
+مدل جدید:
+
+`Release -> Capability -> Milestone -> Vertical Slice -> Task`
+
+P-stageهای پذیرفته‌شده باز نمی‌شوند و تاریخچه حذف نمی‌شود.
+
+### دلیل
+
+تقسیم لایه‌ای قبلی UI و بازخورد کاربر را دیر می‌کرد و برای هر Substage هزینه Closure/Docs/Test نامتناسب ایجاد می‌کرد.
+
+## DEC-ARCH-2026-002 - Bounded Context به‌جای Entity Workspace برای قابلیت‌های جدید
+
+- وضعیت: `پذیرفته‌شده`
+
+### تصمیم
+
+Capabilityهای جدید در Workspaceهای bounded-context سازمان‌دهی می‌شوند.
+
+اولین Context:
+
+`modules/work-management`
+
+که مالک Case، Responsibility، Action، Current Work و Follow-up behavior است.
+
+ماژول‌های entity-based تاریخی به روش strangler و هنگام لمس Capability migrate می‌شوند، نه با Big Bang.
+
+## DEC-ARCH-2026-003 - Access Control تراکنش‌پذیر و cross-cutting
+
+- وضعیت: `پذیرفته‌شده`
+
+### تصمیم
+
+Authorization عمومی به‌عنوان concern cross-cutting به package تراکنش‌پذیر منتقل می‌شود.
+
+برای write حساس tenant-aware، authorization load/decision، resource state check و write باید در همان organization transaction انجام شوند.
+
+Nested authorization transaction معماری نهایی نیست.
+
+## DEC-DELIVERY-2026-001 - UI بخشی از Vertical Slice است
+
+- وضعیت: `پذیرفته‌شده`
+
+### تصمیم
+
+برای قابلیت user-facing، UI جزء Definition of Done همان Slice است.
+
+قرار دادن UI در انتهای Capability یا Release ممنوع است مگر قابلیت واقعاً UI نداشته باشد.
+
+Foundation P2R و مراجع Studio Admin، Kiranism Dashboard و TailAdmin Next.js حفظ می‌شوند.
+
+## DEC-QUALITY-2026-001 - چهار سطح Verification
+
+- وضعیت: `پذیرفته‌شده`
+
+### تصمیم
+
+Verification به `DEV / SLICE / MILESTONE / RELEASE` تقسیم می‌شود.
+
+Historical Acceptance در related test discovery روزمره اجرا نمی‌شود و Full regression به Release منتقل می‌شود.
+
+Security، tenant isolation و migration integrity در boundary مرتبط حذف نمی‌شوند.
+
+## DEC-DOC-2026-001 - Active Working Set کوچک و Project State واحد
+
+- وضعیت: `پذیرفته‌شده`
+
+### تصمیم
+
+`project-state.json` منبع machine-readable وضعیت جاری است.
+
+Active docs کوچک هستند و اسناد طولانی تاریخی به Reference/Evidence تبدیل می‌شوند.
+
+Journal و Traceability در هر Patch الزام به تغییر ندارند و در Milestone batch می‌شوند.
+
+## DEC-GIT-2026-001 - جداسازی Commit توسعه از Acceptance
+
+- وضعیت: `پذیرفته‌شده`
+
+### تصمیم
+
+Feature/development branch محل Commitهای مکرر مهندسی است.
+
+Commit عادی:
+
+- Acceptance نیست
+- Tag لازم ندارد
+- Roadmap closure رسمی ایجاد نمی‌کند
+
+`main` baseline پذیرفته‌شده را نگه می‌دارد و promotion در Milestone/Release انجام می‌شود.

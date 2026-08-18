@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "project": "OrgaWork",
+  "executionModel": "capability-vertical-slice",
+  "status": "active-development",
+  "release": {
+    "id": "R1",
+    "name": "Version 1"
+  },
+  "current": {
+    "capabilityId": "WM",
+    "capabilityName": "Work Management",
+    "milestoneId": "WM-A",
+    "milestoneName": "Case Intake",
+    "sliceId": "WM-01",
+    "sliceName": "Create Own Case",
+    "sliceStatus": "planned"
+  },
+  "publishedTrustBaseline": {
+    "stage": "STAGE-00",
+    "evidence": "EVD-043",
+    "technicalCommit": "4b858c5b87b330ad46feb9018c9e7a7b45d1311d",
+    "closureCommit": "81a71b41c05055ad028df94447d677f08f2dcc36",
+    "acceptanceTag": "stage-00-trust-baseline-acceptance"
+  },
+  "legacyExecution": {
+    "pModel": "retired-for-future-execution",
+    "lastAcceptedProductSubstage": "P3.1",
+    "nextUnacceptedProductSubstage": "P3.2",
+    "p3ReAuditCompleted": "2026-08-18",
+    "historyPreserved": true
+  },
+  "branches": {
+    "publishedMain": "main",
+    "development": "architecture/vertical-slices-v1",
+    "archivedPreArchitectureP3": "archive/pre-architecture-p3-wip-20260819",
+    "archivedPreArchitectureP3Commit": "c8b4f76156380049d990b25d93064d7f98349813"
+  },
+  "nextAction": "Migrate the accepted P3 findings into the Work Management bounded context and implement WM-01 end-to-end with UI, API, authorization, transaction, PostgreSQL/RLS, and targeted tests."
+}
