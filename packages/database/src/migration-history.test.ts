@@ -63,7 +63,15 @@ class FakeAccess implements PostgreSqlAccess {
     }
 
     if (text.includes('FROM public.orgawork_migration_history')) {
-      return Promise.resolve(createResult(this.historyRows) as unknown as QueryResult<Row>);
+      const rows = [...this.historyRows];
+
+      if (text.includes('ORDER BY history.applied_order ASC')) {
+        rows.sort((left, right) => Number(left.applied_order) - Number(right.applied_order));
+      } else if (text.includes('ORDER BY applied_order ASC')) {
+        rows.sort((left, right) => left.applied_order.localeCompare(right.applied_order));
+      }
+
+      return Promise.resolve(createResult(rows) as unknown as QueryResult<Row>);
     }
 
     return Promise.reject(new Error('database-secret unexpected access query'));
@@ -200,6 +208,29 @@ describe('persistent migration history', () => {
 
     expect(secondRun.appliedVersions).toEqual([]);
     expect(secondRun.skippedVersions).toEqual([1, 2]);
+    expect(access.transactionCount).toBe(1);
+  });
+
+  it('keeps persistent history numerically ordered after migration version 9', async () => {
+    const access = new FakeAccess();
+    const migrations = Array.from({ length: 10 }, (_, index) => {
+      const version = index + 1;
+
+      return version === 1
+        ? createMigration(
+            1,
+            'create-migration-history',
+            'CREATE TABLE public.orgawork_migration_history ();',
+          )
+        : createMigration(version, `migration-${version}`, `SELECT ${version};`);
+    });
+
+    const firstRun = await runTrackedVersionedMigrations(access, migrations);
+    const secondRun = await runTrackedVersionedMigrations(access, migrations);
+
+    expect(firstRun.appliedVersions).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    expect(secondRun.appliedVersions).toEqual([]);
+    expect(secondRun.skippedVersions).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     expect(access.transactionCount).toBe(1);
   });
 

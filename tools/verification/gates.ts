@@ -111,25 +111,25 @@ export const gates: Readonly<Record<GateId, GateDefinition>> = {
   'p3-contract-build': {
     id: 'p3-contract-build',
     label: 'P3.1 contract build',
-    args: ['run', 'build:p34:contracts'],
+    args: ['run', 'build:p3:contracts'],
     timeoutMs: 5 * minute,
   },
   'p3-contract-typecheck': {
     id: 'p3-contract-typecheck',
     label: 'P3.1 contract typecheck',
-    args: ['run', 'typecheck:p34:contracts'],
+    args: ['run', 'typecheck:p3:contracts'],
     timeoutMs: 5 * minute,
   },
   'p3-contract-lint': {
     id: 'p3-contract-lint',
     label: 'P3.1 contract lint',
-    args: ['run', 'lint:p34:contracts'],
+    args: ['run', 'lint:p3:contracts'],
     timeoutMs: 5 * minute,
   },
   'p3-contract-test': {
     id: 'p3-contract-test',
     label: 'P3.1 contract tests',
-    args: ['run', 'test:p34:contracts'],
+    args: ['run', 'test:p3:contracts'],
     timeoutMs: 5 * minute,
   },
 };

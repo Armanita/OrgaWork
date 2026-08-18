@@ -1,5 +1,8 @@
 import { withOrganizationTransaction, type PostgreSqlAccess } from '@workspace/database';
 
+export const p3PermissionCatalog = ['case.create_self'] as const;
+export type P3PermissionKey = (typeof p3PermissionCatalog)[number];
+
 export const permissionCatalog = [
   'organization.view',
   'organization.manage_members',
@@ -9,12 +12,20 @@ export const permissionCatalog = [
   'task.update',
   'task.assign',
   'report.view',
+  ...p3PermissionCatalog,
 ] as const;
 export type PermissionKey = (typeof permissionCatalog)[number];
 
 export const organizationRoleCatalog = {
-  member: ['organization.view', 'task.view'],
-  manager: ['organization.view', 'task.view', 'task.update', 'task.assign', 'report.view'],
+  member: ['organization.view', 'task.view', 'case.create_self'],
+  manager: [
+    'organization.view',
+    'task.view',
+    'task.update',
+    'task.assign',
+    'report.view',
+    'case.create_self',
+  ],
   organization_admin: [
     'organization.view',
     'organization.manage_members',
@@ -54,6 +65,15 @@ export interface AuthorizationDecision {
     | 'ALLOWED';
 }
 
+export interface P3AuthorizationInput extends Omit<
+  AuthorizationInput,
+  'permission' | 'relationshipAllowed' | 'resourceStatusAllowed'
+> {
+  readonly permission: P3PermissionKey;
+  readonly relationshipAllowed: boolean;
+  readonly resourceStatusAllowed: boolean;
+}
+
 export function decideAuthorization(input: AuthorizationInput): AuthorizationDecision {
   if (!input.authenticated) return { allowed: false, reasonCode: 'IDENTITY_REQUIRED' };
   if (!input.sessionActive) return { allowed: false, reasonCode: 'SESSION_REQUIRED' };
@@ -69,6 +89,10 @@ export function decideAuthorization(input: AuthorizationInput): AuthorizationDec
   if (input.resourceStatusAllowed === false)
     return { allowed: false, reasonCode: 'RESOURCE_STATE_DENIED' };
   return { allowed: true, reasonCode: 'ALLOWED' };
+}
+
+export function decideP3Authorization(input: P3AuthorizationInput): AuthorizationDecision {
+  return decideAuthorization(input);
 }
 
 export interface AuthorizationRepository {

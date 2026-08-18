@@ -1,13 +1,16 @@
 import {
   createCaseAssignmentId,
   createCaseId,
+  createMembershipId,
   createOrganizationId,
-  createUserId,
+  createResponsibilityTarget,
   createUtcTimestamp,
   type CaseAssignmentId,
   type CaseId,
+  type MembershipId,
   type OrganizationId,
-  type UserId,
+  type ResponsibilityTarget,
+  type ResponsibilityTargetInput,
   type UtcTimestamp,
 } from '@workspace/contracts';
 
@@ -19,11 +22,16 @@ export const assignmentStatuses = [
   'ended',
 ] as const;
 export type AssignmentStatus = (typeof assignmentStatuses)[number];
-export const assignmentAcceptanceModes = ['explicit', 'forced'] as const;
+
+export const assignmentAcceptanceModes = ['self', 'explicit', 'forced'] as const;
 export type AssignmentAcceptanceMode = (typeof assignmentAcceptanceModes)[number];
+
+export const assignmentRoles = ['primary', 'collaborator'] as const;
+export type AssignmentRole = (typeof assignmentRoles)[number];
 
 export const assignmentDomainErrorCodes = [
   'INVALID_ASSIGNMENT_TRANSITION',
+  'INVALID_SELF_ASSIGNMENT',
   'ASSIGNMENT_REJECTION_REASON_REQUIRED',
   'ASSIGNMENT_TRANSFER_TARGET_REQUIRED',
   'MULTIPLE_ACTIVE_PRIMARY_ASSIGNMENTS',
@@ -45,11 +53,13 @@ export interface CaseAssignment {
   readonly id: CaseAssignmentId;
   readonly caseId: CaseId;
   readonly organizationId: OrganizationId;
-  readonly assigneeUserId: UserId;
-  readonly assignedByUserId: UserId;
+  readonly target: ResponsibilityTarget;
+  readonly assignedByMembershipId: MembershipId;
   readonly status: AssignmentStatus;
   readonly acceptanceMode: AssignmentAcceptanceMode;
-  readonly isPrimary: boolean;
+  readonly role: AssignmentRole;
+  readonly acceptedByMembershipId: MembershipId | null;
+  readonly rejectedByMembershipId: MembershipId | null;
   readonly rejectionReason: string | null;
   readonly transferredToAssignmentId: CaseAssignmentId | null;
   readonly acceptedAt: UtcTimestamp | null;
@@ -72,7 +82,6 @@ function nextVersion(version: number): number {
   if (!Number.isSafeInteger(version) || version < 1) {
     throw new RangeError('نسخه مسئولیت معتبر نیست.');
   }
-
   return version + 1;
 }
 
@@ -96,11 +105,9 @@ function requireAccepted(value: CaseAssignment): void {
 
 function normalizeReason(value: string, code: AssignmentDomainErrorCode, message: string): string {
   const normalized = value.trim().replace(/\s+/gu, ' ');
-
   if (normalized === '') {
     throw new AssignmentDomainError(code, message);
   }
-
   return normalized;
 }
 
@@ -108,25 +115,41 @@ export function createCaseAssignment(input: {
   readonly id: string;
   readonly caseId: string;
   readonly organizationId: string;
-  readonly assigneeUserId: string;
-  readonly assignedByUserId: string;
+  readonly target: ResponsibilityTargetInput;
+  readonly assignedByMembershipId: string;
   readonly acceptanceMode?: AssignmentAcceptanceMode;
-  readonly isPrimary?: boolean;
+  readonly role?: AssignmentRole;
   readonly now: string | Date;
 }): CaseAssignment {
   const now = createUtcTimestamp(input.now);
+  const target = createResponsibilityTarget(input.target);
+  const assignedByMembershipId = createMembershipId(input.assignedByMembershipId);
   const acceptanceMode = input.acceptanceMode ?? 'explicit';
-  const accepted = acceptanceMode === 'forced';
+
+  if (
+    acceptanceMode === 'self' &&
+    (target.kind !== 'membership' || target.membershipId !== assignedByMembershipId)
+  ) {
+    throw new AssignmentDomainError(
+      'INVALID_SELF_ASSIGNMENT',
+      'مسئولیت self فقط برای عضویت همان ایجادکننده مجاز است.',
+    );
+  }
+
+  const accepted = acceptanceMode === 'self' || acceptanceMode === 'forced';
 
   return {
     id: createCaseAssignmentId(input.id),
     caseId: createCaseId(input.caseId),
     organizationId: createOrganizationId(input.organizationId),
-    assigneeUserId: createUserId(input.assigneeUserId),
-    assignedByUserId: createUserId(input.assignedByUserId),
+    target,
+    assignedByMembershipId,
     status: accepted ? 'accepted' : 'pending',
     acceptanceMode,
-    isPrimary: input.isPrimary ?? false,
+    role: input.role ?? 'collaborator',
+    acceptedByMembershipId:
+      acceptanceMode === 'self' && target.kind === 'membership' ? target.membershipId : null,
+    rejectedByMembershipId: null,
     rejectionReason: null,
     transferredToAssignmentId: null,
     acceptedAt: accepted ? now : null,
@@ -137,13 +160,17 @@ export function createCaseAssignment(input: {
   };
 }
 
-export function acceptAssignment(value: CaseAssignment, now: string | Date): CaseAssignment {
+export function acceptAssignment(
+  value: CaseAssignment,
+  acceptedByMembershipId: string,
+  now: string | Date,
+): CaseAssignment {
   requirePending(value);
   const timestamp = createUtcTimestamp(now);
-
   return {
     ...value,
     status: 'accepted',
+    acceptedByMembershipId: createMembershipId(acceptedByMembershipId),
     acceptedAt: timestamp,
     updatedAt: timestamp,
     version: nextVersion(value.version),
@@ -152,17 +179,20 @@ export function acceptAssignment(value: CaseAssignment, now: string | Date): Cas
 
 export function rejectAssignment(
   value: CaseAssignment,
-  reason: string,
-  now: string | Date,
+  input: {
+    readonly rejectedByMembershipId: string;
+    readonly reason: string;
+    readonly now: string | Date;
+  },
 ): CaseAssignment {
   requirePending(value);
-  const timestamp = createUtcTimestamp(now);
-
+  const timestamp = createUtcTimestamp(input.now);
   return {
     ...value,
     status: 'rejected',
+    rejectedByMembershipId: createMembershipId(input.rejectedByMembershipId),
     rejectionReason: normalizeReason(
-      reason,
+      input.reason,
       'ASSIGNMENT_REJECTION_REASON_REQUIRED',
       'رد مسئولیت به دلیل روشن نیاز دارد.',
     ),
@@ -179,7 +209,6 @@ export function transferAssignment(
 ): CaseAssignment {
   requireAccepted(value);
   const target = createCaseAssignmentId(targetAssignmentId);
-
   if (target === value.id) {
     throw new AssignmentDomainError(
       'ASSIGNMENT_TRANSFER_TARGET_REQUIRED',
@@ -188,7 +217,6 @@ export function transferAssignment(
   }
 
   const timestamp = createUtcTimestamp(now);
-
   return {
     ...value,
     status: 'transferred',
@@ -200,9 +228,14 @@ export function transferAssignment(
 }
 
 export function endAssignment(value: CaseAssignment, now: string | Date): CaseAssignment {
-  requireAccepted(value);
-  const timestamp = createUtcTimestamp(now);
+  if (value.status !== 'pending' && value.status !== 'accepted') {
+    throw new AssignmentDomainError(
+      'INVALID_ASSIGNMENT_TRANSITION',
+      'فقط مسئولیت فعال را می‌توان پایان داد.',
+    );
+  }
 
+  const timestamp = createUtcTimestamp(now);
   return {
     ...value,
     status: 'ended',
@@ -222,19 +255,17 @@ export function assertAtMostOneActivePrimaryAssignment(
   const seen = new Set<string>();
 
   for (const assignment of assignments) {
-    if (!assignment.isPrimary || !isActiveAssignment(assignment)) {
+    if (assignment.role !== 'primary' || !isActiveAssignment(assignment)) {
       continue;
     }
 
     const key = `${assignment.organizationId}:${assignment.caseId}`;
-
     if (seen.has(key)) {
       throw new AssignmentDomainError(
         'MULTIPLE_ACTIVE_PRIMARY_ASSIGNMENTS',
         'هر پرونده فقط یک مسئولیت اصلی فعال می‌تواند داشته باشد.',
       );
     }
-
     seen.add(key);
   }
 }

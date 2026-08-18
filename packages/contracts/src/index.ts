@@ -16,6 +16,7 @@ export type InvitationId = Brand<string, 'InvitationId'>;
 export type PermissionId = Brand<string, 'PermissionId'>;
 export type CaseId = Brand<string, 'CaseId'>;
 export type CaseAssignmentId = Brand<string, 'CaseAssignmentId'>;
+export type CaseResponsibilityId = CaseAssignmentId;
 export type ActionItemId = Brand<string, 'ActionItemId'>;
 export type FollowUpStateId = Brand<string, 'FollowUpStateId'>;
 export type DecisionRequestId = Brand<string, 'DecisionRequestId'>;
@@ -76,6 +77,8 @@ export function createCaseId(value: string): CaseId {
 export function createCaseAssignmentId(value: string): CaseAssignmentId {
   return createIdentifier<'CaseAssignmentId'>(value, 'مسئولیت پرونده');
 }
+
+export const createCaseResponsibilityId = createCaseAssignmentId;
 
 export function createActionItemId(value: string): ActionItemId {
   return createIdentifier<'ActionItemId'>(value, 'اقدام');
@@ -337,6 +340,28 @@ export function normalizeFilterSpec(input: FilterSpec): FilterSpec {
   };
 }
 
+export interface MembershipResponsibilityTarget {
+  readonly kind: 'membership';
+  readonly membershipId: MembershipId;
+}
+
+export interface TeamResponsibilityTarget {
+  readonly kind: 'team';
+  readonly teamId: TeamId;
+}
+
+export type ResponsibilityTarget = MembershipResponsibilityTarget | TeamResponsibilityTarget;
+
+export type ResponsibilityTargetInput =
+  | { readonly kind: 'membership'; readonly membershipId: string }
+  | { readonly kind: 'team'; readonly teamId: string };
+
+export function createResponsibilityTarget(input: ResponsibilityTargetInput): ResponsibilityTarget {
+  return input.kind === 'membership'
+    ? { kind: 'membership', membershipId: createMembershipId(input.membershipId) }
+    : { kind: 'team', teamId: createTeamId(input.teamId) };
+}
+
 export const currentWorkKinds = [
   'action',
   'internal_wait',
@@ -364,6 +389,16 @@ export interface DecisionCurrentWorkReference {
 
 export type CurrentWorkReference =
   ActionCurrentWorkReference | FollowUpStateCurrentWorkReference | DecisionCurrentWorkReference;
+
+export interface ResponsibilityAcceptanceCurrentWorkReference {
+  readonly kind: 'responsibility_acceptance';
+  readonly id: CaseResponsibilityId;
+}
+
+export const caseCurrentWorkKinds = ['action', 'responsibility_acceptance'] as const;
+export type CaseCurrentWorkKind = (typeof caseCurrentWorkKinds)[number];
+export type CaseCurrentWorkReference =
+  ActionCurrentWorkReference | ResponsibilityAcceptanceCurrentWorkReference;
 
 export const continuationKinds = [...currentWorkKinds, 'resolved', 'cancelled'] as const;
 export type ContinuationKind = (typeof continuationKinds)[number];
