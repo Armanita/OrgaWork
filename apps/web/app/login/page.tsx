@@ -8,6 +8,7 @@ import { useState, type FormEvent } from 'react';
 import { AuthPageShell } from '@/components/auth-page-shell';
 import { PasswordField } from '@/components/password-field';
 import { identityRequest } from '@/lib/identity-api';
+import { PlatformRequestError, platformRequest } from '@/lib/platform-api';
 
 export default function LoginPage(): React.ReactElement {
   const application = useTranslations('application');
@@ -37,7 +38,16 @@ export default function LoginPage(): React.ReactElement {
           password: form.get('password'),
         }),
       });
-      window.location.assign('/organization');
+      try {
+        await platformRequest('session');
+        window.location.assign('/platform');
+      } catch (platformError: unknown) {
+        if (platformError instanceof PlatformRequestError && platformError.status === 403) {
+          window.location.assign('/organization');
+          return;
+        }
+        throw platformError;
+      }
     } catch (caught: unknown) {
       setError(caught instanceof Error ? caught.message : errors('loginFailed'));
     } finally {

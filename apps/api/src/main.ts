@@ -29,6 +29,11 @@ async function start(): Promise<void> {
         administration: runtime.administration,
         production: runtime.production,
       },
+      platformControlPlane: {
+        authentication: runtime.authentication,
+        platformControlPlane: runtime.platformControlPlane,
+        production: runtime.production,
+      },
       workManagement: {
         authentication: runtime.authentication,
         workManagement,

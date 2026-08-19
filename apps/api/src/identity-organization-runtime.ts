@@ -14,7 +14,9 @@ import {
 } from '@workspace/authorization';
 import {
   createOrganizationAdministrationService,
+  createPlatformControlPlaneService,
   createPostgreSqlOrganizationAdministrationRepository,
+  createPostgreSqlPlatformControlPlaneRepository,
 } from '@workspace/organization-administration';
 
 export async function createIdentityOrganizationRuntime(
@@ -36,12 +38,16 @@ export async function createIdentityOrganizationRuntime(
   const administration = createOrganizationAdministrationService(
     createPostgreSqlOrganizationAdministrationRepository(database),
   );
+  const platformControlPlane = createPlatformControlPlaneService(
+    createPostgreSqlPlatformControlPlaneRepository(database),
+  );
   return {
     database,
     authentication,
     organizationContext,
     authorization,
     administration,
+    platformControlPlane,
     production: environment['NODE_ENV'] === 'production',
   };
 }

@@ -32,6 +32,16 @@ describe('organization administration', () => {
     );
     expect(captured?.tokenHash).toMatch(/^[0-9a-f]{64}$/u);
   });
+  it('keeps tenant role mutation limited to member and manager', () => {
+    const source = readFileSync(new URL('./index.ts', import.meta.url), 'utf8');
+    expect(source).toContain(
+      "export type TenantAssignableOrganizationRoleKey = 'member' | 'manager'",
+    );
+    expect(source).toContain('readonly roleKeys: readonly OrganizationRoleKey[];');
+    expect(source).toContain('readonly roleKeys: readonly TenantAssignableOrganizationRoleKey[];');
+    expect(source).toContain("protected_role.role_key = 'organization_admin'");
+  });
+
   it('binds invitation acceptance to user, token, and organization before locking', () => {
     const source = readFileSync(new URL('./index.ts', import.meta.url), 'utf8');
     const userContextIndex = source.indexOf("set_config('orgawork.user_id'");

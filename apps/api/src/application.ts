@@ -17,6 +17,10 @@ import {
   type OrganizationAdministrationRouteOptions,
 } from './routes/organization-administration.js';
 import { createOperationalRoutes } from './routes/operational.js';
+import {
+  createPlatformControlPlaneRoutes,
+  type PlatformControlPlaneRouteOptions,
+} from './routes/platform-control-plane.js';
 import { readinessRoute } from './routes/readiness.js';
 import {
   createWorkManagementRoutes,
@@ -30,6 +34,7 @@ export interface ApplicationOptions {
   readonly operationalHealthDependencies?: readonly DependencyHealthCheck[];
   readonly identityOrganization?: IdentityOrganizationRouteOptions;
   readonly organizationAdministration?: OrganizationAdministrationRouteOptions;
+  readonly platformControlPlane?: PlatformControlPlaneRouteOptions;
   readonly workManagement?: WorkManagementRouteOptions;
 }
 
@@ -55,6 +60,9 @@ export function buildApplication(options: ApplicationOptions = {}): FastifyInsta
     application.register(
       createOrganizationAdministrationRoutes(options.organizationAdministration),
     );
+  }
+  if (options.platformControlPlane !== undefined) {
+    application.register(createPlatformControlPlaneRoutes(options.platformControlPlane));
   }
   if (options.workManagement !== undefined) {
     application.register(createWorkManagementRoutes(options.workManagement));

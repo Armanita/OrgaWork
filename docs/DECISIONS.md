@@ -1201,3 +1201,52 @@ Commit عادی:
 ### شرایط تغییر
 
 هرگونه self-service Organization creation، اجازه tenant برای grant کردن `organization_admin`، یا دسترسی ضمنی `platform_operator` به داده tenant نیازمند تصمیم امنیتی مستقل، threat model، Audit contract و آزمون‌های منفی cross-tenant/privilege-escalation است.
+
+## DEC-SEC-2026-002 - Platform Operator Control Plane Contract
+
+- وضعیت: `پذیرفته‌شده`
+- تاریخ: `2026-08-19`
+- دامنه اثر: `OA-01`, `OA-02`, `OA-03`, Platform Control Plane, Database/RLS, API, Web
+
+### تصمیم
+
+قرارداد دقیق کنترل‌پلین `platform_operator` در
+`docs/contracts/OA-PLATFORM-CONTROL-PLANE-CONTRACT.md` تثبیت شد.
+
+قواعد الزام‌آور:
+
+1. `platform_operator` اختیار سراسری مستقل از tenant membership است.
+2. احراز هویت از نشست عادی OrgaWork استفاده می‌کند، اما مجوز Platform از authority
+   سراسری مستقل بررسی می‌شود.
+3. هیچ Permission ضمنی tenant برای این نقش ایجاد نمی‌شود.
+4. ایجاد Organization و اعطای `organization_admin` فقط از Platform Control Plane
+   انجام می‌شود.
+5. RLS غیرفعال یا bypass نمی‌شود؛ policyهای محدود Platform فقط عملیات provisioning
+   مصوب را مجاز می‌کنند.
+6. Commandهای تغییردهنده Platform به CSRF، reason، idempotency و Audit سراسری نیاز دارند.
+7. Tenant UI/API فقط `member` و `manager` را می‌تواند grant/replace کند.
+8. مسیرهای HTTP اولیه:
+   - `GET /v1/platform/session`
+   - `GET /v1/platform/audit`
+   - `POST /v1/platform/organizations`
+   - `POST /v1/platform/organizations/:organizationId/initial-admin`
+9. کاربر Admin هدف در صورت نبودن می‌تواند بدون credential ساخته شود و credential از
+   مسیر account/password setup موجود ایجاد می‌شود؛ هیچ گذرواژه‌ای توسط Platform API
+   تولید یا نمایش داده نمی‌شود.
+10. UI اولیه در `/platform` قرار می‌گیرد و پس از Login، active platform operator به
+    این Control Plane هدایت می‌شود.
+11. Seed توسعه فقط برای `orgawork_dev` مجاز است و production bootstrap نیست.
+
+### دلیل
+
+Audit خواندنی 2026-08-19 نشان داد authority سراسری، جدول Platform، API و UI فعلی وجود
+ندارد و Audit موجود tenant-scoped است. در نتیجه اجرای مستقیم بدون قرارداد دقیق باعث
+حدس‌زدن مدل authority، RLS و API می‌شد و با `DEC-006` ناسازگار بود.
+
+### پیامد اجرایی
+
+پیاده‌سازی بعدی باید Migration، Repository/Service، API، OA-03 hardening، Web UI،
+development fixture و آزمون‌های مثبت/منفی را دقیقاً بر اساس Contract فوق بسازد.
+
+هر توسعه‌ای که به `platform_operator` دسترسی ضمنی به محتوای tenant بدهد خارج از این
+تصمیم است و به threat model و تصمیم امنیتی مستقل نیاز دارد.
