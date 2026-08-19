@@ -1020,3 +1020,37 @@ OrgaWork زمانی به هدف خود نزدیک است که سازمان بت�
 - مدیر در دامنه مجاز باید به چه چیزی توجه کند.
 
 هر قابلیت نسخه `1.0` باید به حفظ یا تقویت این شفافیت کمک کند.
+
+## Provisioning سازمان و Organization Admin — DEC-SEC-2026-001
+
+این بخش یک ناوردای امنیتی محصول برای چرخه عمر Organization و نقش `organization_admin` است.
+
+### قرارداد محصول
+
+- ایجاد Organization به‌صورت self-service توسط کاربر محصول مجاز نیست.
+- User، Member، Manager و `organization_admin` نباید بتوانند برای خود Organization جدید ایجاد کنند.
+- ایجاد Organization فقط از مسیر **platform-controlled provisioning** مجاز است.
+- اولین `organization_admin` فقط از همان مسیر provisioning سکو ایجاد یا اعطا می‌شود.
+- `organization_admin` یک نقش tenant-scoped است و حق self-elevation ندارد.
+- `organization_admin` حق grant یا replacement نقش `organization_admin` برای خود یا کاربر دیگری را ندارد.
+- مدیریت عادی نقش در tenant به `member` و `manager` محدود است.
+- دعوت و مدیریت Member/Manager در محدوده Organization Admin باقی می‌ماند.
+- نقش `platform_operator` به‌خودی‌خود نباید دسترسی ضمنی به محتوای tenant دریافت کند.
+- provisioning سکو باید یک عملیات صریح، محدود، دلیل‌دار و ممیزی‌شده باشد و نباید organization isolation یا RLS محتوای tenant را به‌صورت ضمنی دور بزند.
+- ویرایش مستقیم SQL مسیر عادی provisioning تولیدی نیست.
+
+### حداقل Audit برای Provisioning
+
+هر عملیات حساس ایجاد Organization یا اعطای `organization_admin` باید حداقل موارد زیر را ثبت کند:
+
+- actor؛
+- reason؛
+- organization؛
+- target user؛
+- timestamp؛
+- request/correlation identifier؛
+- نتیجه عملیات.
+
+### محیط توسعه
+
+Seed و fixture توسعه فقط برای دیتابیس توسعه اختصاصی مجاز است و قرارداد provisioning تولیدی محسوب نمی‌شود.

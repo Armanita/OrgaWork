@@ -72,6 +72,9 @@ Branch توسعه معماری:
 - composite tenant foreign keys در مرزهای دامنه
 - authorization و write حساس در یک organization transaction
 - no PUBLIC privileges
+- ایجاد Organization فقط از مسیر platform-controlled provisioning مجاز است؛ self-service organization creation ممنوع است.
+- ایجاد یا اعطای نقش `organization_admin` از tenant RBAC ممنوع است؛ این نقش فقط از مسیر provisioning سکو و با Audit صریح ایجاد/اعطا می‌شود.
+- `organization_admin` داخل سازمان فقط `member` و `manager` را مدیریت می‌کند و حق self-elevation یا grant کردن `organization_admin` ندارد.
 - عدم چاپ یا commit Secret
 - `.env.local` ignored و untracked
 - عدم rewrite Migration history

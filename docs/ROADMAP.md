@@ -92,6 +92,26 @@ Regression کامل، Historical Acceptance، امنیت سراسری، Migratio
 - [ ] `WM-12` authorization matrix and cross-tenant negative tests
 - [ ] `WM-13` browser acceptance for core Work Management flows
 
+### Capability OA - Organization Administration
+
+مالک provisioning سازمان، ایجاد مدیر اولیه سازمان و مرزهای نقش مدیریتی tenant.
+
+#### OA-A - Platform Provisioning
+
+- [ ] `OA-01` Platform-controlled Organization Creation
+  - بدون self-service organization creation
+  - مسیر عملیاتی صریح و محدود
+  - default deny و عدم وابستگی به tenant session
+- [ ] `OA-02` Initial Organization Admin Provisioning
+  - ایجاد/اتصال User به Organization
+  - اعطای اولیه `organization_admin` فقط از مسیر provisioning سکو
+  - Audit شامل actor، reason، organization، target user، timestamp، request/correlation
+- [ ] `OA-03` Tenant Admin Role Boundary
+  - `organization_admin` فقط `member` و `manager` را مدیریت می‌کند
+  - self-elevation ممنوع
+  - grant/replacement نقش `organization_admin` از tenant API/UI ممنوع
+  - تست منفی API و browser برای جلوگیری از privilege escalation
+
 ### Capability AT - Attention and Reminders
 
 #### AT-A - Reminder Basics

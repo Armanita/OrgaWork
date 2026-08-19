@@ -1152,3 +1152,52 @@ Commit عادی:
 - Roadmap closure رسمی ایجاد نمی‌کند
 
 `main` baseline پذیرفته‌شده را نگه می‌دارد و promotion در Milestone/Release انجام می‌شود.
+
+## DEC-SEC-2026-001 - Platform-controlled Organization and Organization Admin Provisioning
+
+- وضعیت: `پذیرفته‌شده`
+- تاریخ تصمیم: `2026-08-19`
+- دامنه: Organization lifecycle، Identity/Administration، Security، R1
+
+### مسئله
+
+اگر هر کاربر احرازهویت‌شده بتواند برای خود Organization ایجاد کند یا مدیر tenant بتواند نقش `organization_admin` را به خود یا دیگران grant کند، زنجیره اعتماد سامانه مبهم می‌شود و امکان ایجاد Organization بدون کنترل و privilege escalation به وجود می‌آید.
+
+### تصمیم
+
+1. self-service Organization creation برای کاربران محصول ممنوع است.
+2. ایجاد Organization فقط از مسیر **platform-controlled provisioning** انجام می‌شود.
+3. اولین `organization_admin` فقط در همان فرایند provisioning یا یک عملیات provisioning صریح بعدی ایجاد/اعطا می‌شود.
+4. `organization_admin` یک نقش tenant-scoped است و حق self-elevation یا grant کردن `organization_admin` به کاربر دیگر را ندارد.
+5. `organization_admin` می‌تواند در محدوده Organization خودش، طبق Permissionهای مصوب، `member` و `manager` را دعوت و مدیریت کند.
+6. نقش فنی `platform_operator` به‌خودی‌خود Permission tenant دریافت نمی‌کند و نباید organization isolation یا RLS محتوای tenant را دور بزند.
+7. اختیار provisioning یک مسیر سراسری صریح، محدود و جدا از tenant RBAC است.
+8. ویرایش مستقیم SQL مسیر عادی provisioning تولیدی نیست. مسیر تولیدی باید Command/API/Tool کنترل‌شده، transactional، در صورت نیاز idempotent و قابل Audit داشته باشد.
+9. هر provisioning حساس باید حداقل actor، reason، Organization، target User، timestamp، request/correlation identifier و نتیجه عملیات را ثبت کند.
+10. Seed و fixture توسعه فقط روی دیتابیس توسعه اختصاصی مجاز است و قرارداد provisioning تولیدی محسوب نمی‌شود.
+
+### زنجیره اعتماد
+
+`Platform-controlled provisioning -> Organization -> organization_admin -> manager/member`
+
+### اثر بر قرارداد محصول
+
+- Organization creation از UI عمومی یا session عادی tenant ارائه نمی‌شود.
+- tenant administration مدیریت عادی `member` و `manager` را انجام می‌دهد.
+- هر UI/API که از tenant context امکان grant یا replacement نقش `organization_admin` بدهد با این تصمیم ناسازگار است.
+- دعوت کاربر و مدیریت Manager/Member همچنان در دامنه Organization Admin باقی می‌ماند.
+
+### وضعیت پیاده‌سازی در زمان تصمیم
+
+- self-service Organization creation در snapshot جاری وجود ندارد.
+- نقش `platform_operator` در access-control جاری Permission tenant ندارد و default-deny آن باید حفظ شود.
+- route تاریخی tenant role replacement در snapshot جاری هنوز `organization_admin` را به‌عنوان ورودی می‌پذیرد. این یک شکاف اجرایی شناخته‌شده است و مالک آن `OA-03 Tenant Admin Role Boundary` است.
+- مسیر production-grade برای platform-controlled Organization/Admin provisioning هنوز پیاده‌سازی نشده و `OA-01` و `OA-02` مالک آن هستند.
+
+### دلیل
+
+این مدل زنجیره اعتماد را روشن نگه می‌دارد، از privilege escalation در tenant جلوگیری می‌کند و در عین حال default deny، organization isolation و عدم دسترسی ضمنی اپراتور فنی به داده tenant را حفظ می‌کند.
+
+### شرایط تغییر
+
+هرگونه self-service Organization creation، اجازه tenant برای grant کردن `organization_admin`، یا دسترسی ضمنی `platform_operator` به داده tenant نیازمند تصمیم امنیتی مستقل، threat model، Audit contract و آزمون‌های منفی cross-tenant/privilege-escalation است.

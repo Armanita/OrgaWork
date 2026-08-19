@@ -69,6 +69,22 @@ Foundation UI موجود و پذیرفته‌شده حفظ می‌شود:
 
 از `WM-01` به بعد رابط کاربری در همان Vertical Slice متصل می‌شود.
 
+## ناوردای امنیتی Provisioning سازمان
+
+تصمیم پذیرفته‌شده `DEC-SEC-2026-001`:
+
+- ایجاد Organization به‌صورت self-service برای کاربران محصول مجاز نیست.
+- اولین `organization_admin` فقط از مسیر platform-controlled provisioning ایجاد/اعطا می‌شود.
+- `organization_admin` در tenant می‌تواند اعضای `member` و `manager` را مدیریت کند، اما حق اعطای `organization_admin` به خود یا دیگران را ندارد.
+- نقش فنی `platform_operator` به‌خودی‌خود هیچ دسترسی ضمنی به داده tenant ایجاد نمی‌کند؛ provisioning باید مسیر صریح، محدود و ممیزی‌شده مستقل از tenant RBAC داشته باشد.
+- Seed توسعه فقط برای دیتابیس توسعه اختصاصی مجاز است و قرارداد provisioning تولیدی محسوب نمی‌شود.
+
+### شکاف اجرایی شناخته‌شده
+
+- self-service Organization creation در محصول فعلی پیاده‌سازی نشده است و طبق این تصمیم نباید اضافه شود.
+- API تاریخی مدیریت نقش tenant در snapshot فعلی هنوز `organization_admin` را در ورودی role replacement می‌پذیرد. این رفتار با تصمیم جدید ناسازگار است و باید در `OA-03` پیش از استفاده تولیدی از این عملیات محدود شود.
+- مسیر تولیدی platform-controlled برای ساخت Organization و اولین Organization Admin هنوز پیاده‌سازی نشده و در Capability `OA` برنامه‌ریزی شده است.
+
 ## Next Action
 
 پس از تثبیت این کنترل‌پلین:
