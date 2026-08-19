@@ -181,8 +181,8 @@ export async function readMigrationHistory(
         fingerprint,
         applied_order::text AS applied_order,
         applied_at
-      FROM ${qualifiedHistoryTable}
-      ORDER BY applied_order ASC`,
+      FROM ${qualifiedHistoryTable} AS history
+      ORDER BY history.applied_order ASC`,
     );
   } catch {
     throw createHistoryError('MIGRATION_HISTORY_UNAVAILABLE');

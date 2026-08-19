@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/authorization",
+  "name": "@workspace/work-management",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -21,9 +21,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@workspace/contracts": "workspace:*",
-    "@workspace/database": "workspace:*",
-    "@workspace/access-control": "workspace:*"
+    "@workspace/contracts": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "24.13.3",
