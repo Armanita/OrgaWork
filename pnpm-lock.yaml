@@ -100,6 +100,9 @@ importers:
       '@workspace/storage':
         specifier: workspace:*
         version: link:../../packages/storage
+      '@workspace/work-management':
+        specifier: workspace:*
+        version: link:../../modules/work-management
       fastify:
         specifier: 5.10.0
         version: 5.10.0
@@ -574,9 +577,15 @@ importers:
 
   modules/work-management:
     dependencies:
+      '@workspace/access-control':
+        specifier: workspace:*
+        version: link:../../packages/access-control
       '@workspace/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@workspace/database':
+        specifier: workspace:*
+        version: link:../../packages/database
     devDependencies:
       '@types/node':
         specifier: 24.13.3
