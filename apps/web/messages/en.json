@@ -18,7 +18,8 @@
     "security": "Sign in and security",
     "primaryLabel": "Primary navigation",
     "openMenu": "Open navigation menu",
-    "closeMenu": "Close navigation menu"
+    "closeMenu": "Close navigation menu",
+    "cases": "Cases"
   },
   "common": {
     "currentOrganization": "Current organization",
@@ -190,6 +191,9 @@
         "role": "The sales team manager role was updated",
         "session": "An old user session was revoked"
       }
+    },
+    "actions": {
+      "createCase": "Create case"
     }
   },
   "themeSwitcher": {
@@ -244,5 +248,49 @@
     "acceptedDescription": "Your organization membership is ready. Select the organization to continue.",
     "continueAction": "Choose organization",
     "backToLogin": "Go to sign in"
+  },
+  "workManagement": {
+    "createOwnCase": {
+      "eyebrow": "Work management",
+      "title": "Create a case",
+      "description": "Capture a case, take primary responsibility, and define the first action.",
+      "formTitle": "Case details",
+      "formDescription": "Start with a clear subject and the first action you can take.",
+      "titleLabel": "Case title",
+      "titlePlaceholder": "For example Customer renewal",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Describe the context and expected outcome",
+      "priorityLabel": "Priority",
+      "priorities": {
+        "low": "Low",
+        "normal": "Normal",
+        "high": "High"
+      },
+      "initialActionLabel": "First action",
+      "initialActionPlaceholder": "For example Call the customer",
+      "submit": "Create case",
+      "submitting": "Creating case",
+      "loadingSession": "Preparing your workspace",
+      "missingOrganization": "Select an organization before creating a case.",
+      "successEyebrow": "Case created",
+      "successTitle": "Your case is ready",
+      "successDescription": "You are the accepted primary responsible person and the first action is now current work.",
+      "statusLabel": "Status",
+      "prioritySummaryLabel": "Priority",
+      "actionLabel": "Current action",
+      "caseIdLabel": "Case reference",
+      "createAnother": "Create another case",
+      "statuses": {
+        "open": "Open",
+        "pending": "Pending"
+      },
+      "errors": {
+        "required": "Complete the required fields.",
+        "authorization": "You do not have permission to create a case in this organization.",
+        "conflict": "This request conflicts with a recent attempt. Try creating the case again.",
+        "session": "Your current organization session could not be prepared.",
+        "unavailable": "The case could not be created. Try again."
+      }
+    }
   }
 }

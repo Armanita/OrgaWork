@@ -2049,3 +2049,212 @@ button:disabled {
     transform: none !important;
   }
 }
+/* ORGAWORK:WM01-CREATE-OWN-CASE */
+textarea {
+  font: inherit;
+}
+
+.dashboard-primary-action {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-block-start: 10px;
+  border-radius: 11px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+.dashboard-primary-action:hover {
+  transform: translateY(-1px);
+}
+
+.dashboard-primary-action svg {
+  width: 18px;
+  height: 18px;
+}
+
+.work-management-page {
+  display: grid;
+  gap: 28px;
+}
+
+.case-create-card {
+  width: min(100%, 820px);
+}
+
+.case-create-card [data-slot='card-header'] {
+  gap: 8px;
+  border-block-end: 1px solid var(--border);
+}
+
+.case-create-card [data-slot='card-content'] {
+  padding-block-start: 24px;
+}
+
+.case-create-loading {
+  display: flex;
+  min-height: 132px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--muted-foreground);
+}
+
+.case-create-form {
+  display: grid;
+  gap: 20px;
+}
+
+.case-create-field {
+  display: grid;
+  gap: 8px;
+}
+
+.case-create-field textarea,
+.case-create-field select {
+  width: 100%;
+  border: 1px solid var(--input);
+  border-radius: 10px;
+  background: var(--background);
+  color: var(--foreground);
+  padding: 10px 12px;
+}
+
+.case-create-field textarea {
+  min-height: 132px;
+  resize: vertical;
+  line-height: 1.8;
+}
+
+.case-create-field select {
+  min-height: 40px;
+}
+
+.case-create-field textarea::placeholder {
+  color: var(--muted-foreground);
+}
+
+.case-create-field textarea:focus,
+.case-create-field select:focus {
+  border-color: var(--ring);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 18%, transparent);
+}
+
+.case-create-field textarea:disabled,
+.case-create-field select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.case-create-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-block-start: 2px;
+}
+
+.case-create-alert {
+  margin: 0 0 18px;
+  border: 1px solid color-mix(in oklab, var(--destructive) 38%, var(--border));
+  border-radius: 11px;
+  background: color-mix(in oklab, var(--destructive) 7%, var(--card));
+  color: var(--foreground);
+  padding: 12px 14px;
+  line-height: 1.7;
+}
+
+.case-create-success [data-slot='card-header'] {
+  position: relative;
+}
+
+.case-create-success__mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--success) 16%, var(--card));
+  color: var(--success);
+}
+
+.case-create-success__mark svg {
+  width: 21px;
+  height: 21px;
+}
+
+.case-create-success__content {
+  display: grid;
+  gap: 22px;
+}
+
+.case-create-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  overflow: hidden;
+}
+
+.case-create-summary > div {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 16px;
+}
+
+.case-create-summary > div:nth-child(odd) {
+  border-inline-end: 1px solid var(--border);
+}
+
+.case-create-summary > div:nth-child(-n + 2) {
+  border-block-end: 1px solid var(--border);
+}
+
+.case-create-summary dt {
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+}
+
+.case-create-summary dd {
+  min-width: 0;
+  margin: 0;
+  font-weight: 650;
+}
+
+.case-create-reference {
+  display: block;
+  overflow-wrap: anywhere;
+  direction: ltr;
+  color: var(--foreground);
+  font-size: 0.78rem;
+  text-align: left;
+}
+
+@media (max-width: 640px) {
+  .case-create-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .case-create-summary > div:nth-child(odd) {
+    border-inline-end: 0;
+  }
+
+  .case-create-summary > div:not(:last-child) {
+    border-block-end: 1px solid var(--border);
+  }
+
+  .case-create-actions > [data-slot='button'] {
+    width: 100%;
+  }
+}

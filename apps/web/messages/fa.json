@@ -18,7 +18,8 @@
     "security": "ورود و امنیت",
     "primaryLabel": "ناوبری اصلی",
     "openMenu": "باز کردن فهرست ناوبری",
-    "closeMenu": "بستن فهرست ناوبری"
+    "closeMenu": "بستن فهرست ناوبری",
+    "cases": "پرونده‌ها"
   },
   "common": {
     "currentOrganization": "سازمان جاری",
@@ -190,6 +191,9 @@
         "role": "نقش مدیر تیم فروش به‌روزرسانی شد",
         "session": "نشست قدیمی کاربر لغو شد"
       }
+    },
+    "actions": {
+      "createCase": "ایجاد پرونده"
     }
   },
   "themeSwitcher": {
@@ -244,5 +248,49 @@
     "acceptedDescription": "عضویت سازمانی شما آماده است. برای ادامه سازمان را انتخاب کنید.",
     "continueAction": "انتخاب سازمان",
     "backToLogin": "رفتن به صفحه ورود"
+  },
+  "workManagement": {
+    "createOwnCase": {
+      "eyebrow": "مدیریت کار",
+      "title": "ایجاد پرونده",
+      "description": "موضوع را ثبت کنید، مسئولیت اصلی را خودتان بپذیرید و نخستین اقدام را مشخص کنید.",
+      "formTitle": "مشخصات پرونده",
+      "formDescription": "پرونده را با موضوعی روشن و نخستین اقدام قابل انجام آغاز کنید.",
+      "titleLabel": "عنوان پرونده",
+      "titlePlaceholder": "برای نمونه تمدید قرارداد مشتری",
+      "descriptionLabel": "شرح پرونده",
+      "descriptionPlaceholder": "زمینه و نتیجه مورد انتظار را بنویسید",
+      "priorityLabel": "اولویت",
+      "priorities": {
+        "low": "کم",
+        "normal": "عادی",
+        "high": "زیاد"
+      },
+      "initialActionLabel": "نخستین اقدام",
+      "initialActionPlaceholder": "برای نمونه تماس با مشتری",
+      "submit": "ایجاد پرونده",
+      "submitting": "در حال ایجاد پرونده",
+      "loadingSession": "در حال آماده‌سازی فضای کار",
+      "missingOrganization": "پیش از ایجاد پرونده یک سازمان را انتخاب کنید.",
+      "successEyebrow": "پرونده ایجاد شد",
+      "successTitle": "پرونده آماده پیگیری است",
+      "successDescription": "مسئولیت اصلی شما پذیرفته شده و نخستین اقدام به‌عنوان کار جاری ثبت شده است.",
+      "statusLabel": "وضعیت",
+      "prioritySummaryLabel": "اولویت",
+      "actionLabel": "اقدام جاری",
+      "caseIdLabel": "شناسه پرونده",
+      "createAnother": "ایجاد پرونده دیگر",
+      "statuses": {
+        "open": "باز",
+        "pending": "در انتظار"
+      },
+      "errors": {
+        "required": "فیلدهای ضروری را کامل کنید.",
+        "authorization": "اجازه ایجاد پرونده در این سازمان را ندارید.",
+        "conflict": "این درخواست با تلاش اخیر تداخل دارد. دوباره پرونده را ایجاد کنید.",
+        "session": "آماده‌سازی نشست سازمان جاری ناموفق بود.",
+        "unavailable": "ایجاد پرونده ناموفق بود. دوباره تلاش کنید."
+      }
+    }
   }
 }
