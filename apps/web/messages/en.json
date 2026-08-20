@@ -407,6 +407,34 @@
     "results": {
       "succeeded": "Succeeded",
       "failed": "Failed"
-    }
+    },
+    "consoleNavigation": {
+      "label": "Platform control plane navigation",
+      "title": "Platform control plane",
+      "description": "Choose the workspace you need.",
+      "overview": "Overview",
+      "organizations": "Organizations",
+      "administration": "Admins & access",
+      "audit": "Audit & reports"
+    },
+    "consoleOverview": {
+      "organizations": "Organizations",
+      "activeAdmins": "Active primary admins",
+      "auditRows": "Audit events",
+      "failedOperations": "Failed operations",
+      "quickActionsTitle": "Quick actions",
+      "quickActionsDescription": "Jump directly to organization management or the audit and reporting center.",
+      "openOrganizations": "Manage organizations",
+      "openAudit": "Open audit & reports"
+    },
+    "selectOrganizationPrompt": "Explicitly select a target organization before managing administrators and access.",
+    "auditSummaryLabel": "Audit report summary",
+    "auditSummary": {
+      "visibleRows": "Visible rows",
+      "succeeded": "Succeeded",
+      "failed": "Failed",
+      "organizations": "Organizations involved"
+    },
+    "auditTechnicalDetails": "Technical details"
   }
 }

@@ -407,6 +407,34 @@
     "results": {
       "succeeded": "موفق",
       "failed": "ناموفق"
-    }
+    },
+    "consoleNavigation": {
+      "label": "ناوبری کنترل‌پلین سکو",
+      "title": "کنترل‌پلین سکو",
+      "description": "بخش موردنظر را انتخاب کنید.",
+      "overview": "نمای کلی",
+      "organizations": "سازمان‌ها",
+      "administration": "مدیران و دسترسی",
+      "audit": "ممیزی و گزارش"
+    },
+    "consoleOverview": {
+      "organizations": "سازمان‌ها",
+      "activeAdmins": "مدیران اصلی فعال",
+      "auditRows": "رویدادهای ممیزی",
+      "failedOperations": "عملیات ناموفق",
+      "quickActionsTitle": "دسترسی سریع",
+      "quickActionsDescription": "برای عملیات روزمره مستقیماً وارد مدیریت سازمان‌ها یا مرکز ممیزی شوید.",
+      "openOrganizations": "مدیریت سازمان‌ها",
+      "openAudit": "باز کردن ممیزی و گزارش"
+    },
+    "selectOrganizationPrompt": "برای مدیریت مدیران و دسترسی‌ها ابتدا سازمان هدف را صریح انتخاب کنید.",
+    "auditSummaryLabel": "خلاصه گزارش ممیزی",
+    "auditSummary": {
+      "visibleRows": "ردیف‌های قابل مشاهده",
+      "succeeded": "موفق",
+      "failed": "ناموفق",
+      "organizations": "سازمان‌های درگیر"
+    },
+    "auditTechnicalDetails": "جزئیات فنی"
   }
 }

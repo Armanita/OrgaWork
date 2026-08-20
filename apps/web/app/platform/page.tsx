@@ -75,6 +75,8 @@ type AuditAction =
   | 'organization_admin.provision'
   | 'organization_admin.revoke';
 
+type PlatformSection = 'overview' | 'organizations' | 'administration' | 'audit';
+
 interface AuditRow {
   readonly id: string;
   readonly action: AuditAction;
@@ -136,6 +138,7 @@ export default function PlatformControlPlanePage(): React.ReactElement {
   const [organizationSearch, setOrganizationSearch] = React.useState('');
   const [auditOrganizationFilter, setAuditOrganizationFilter] = React.useState('');
   const [auditTextFilter, setAuditTextFilter] = React.useState('');
+  const [activeSection, setActiveSection] = React.useState<PlatformSection>('overview');
 
   const loadOrganizations = React.useCallback(async (preferredId?: string): Promise<void> => {
     const result = await platformRequest<{
@@ -152,7 +155,7 @@ export default function PlatformControlPlanePage(): React.ReactElement {
       if (result.organizations.some((organization) => organization.id === current)) {
         return current;
       }
-      return result.organizations[0]?.id ?? '';
+      return '';
     });
   }, []);
 
@@ -176,7 +179,7 @@ export default function PlatformControlPlanePage(): React.ReactElement {
         setSession(sessionData.session);
         setOperator(platformData.platformOperator);
         setOrganizations(organizationData.organizations);
-        setSelectedOrganizationId(organizationData.organizations[0]?.id ?? '');
+        setSelectedOrganizationId('');
         setAudit(auditData.audit);
       })
       .catch((caught: unknown) => {
@@ -286,6 +289,7 @@ export default function PlatformControlPlanePage(): React.ReactElement {
       setNotice(messages('organizationCreated'));
       formElement.reset();
       await refreshPlatform(result.organization.id);
+      setActiveSection('administration');
     } catch (caught: unknown) {
       setError(
         caught instanceof Error ? caught.message : errors('platformOrganizationCreateFailed'),
@@ -442,7 +446,7 @@ export default function PlatformControlPlanePage(): React.ReactElement {
   }
 
   return (
-    <main className="organization-selection">
+    <main className="organization-selection platform-console">
       <section className="organization-selection__container">
         <header className="organization-selection__header">
           <div className="organization-selection__brand">
@@ -452,21 +456,6 @@ export default function PlatformControlPlanePage(): React.ReactElement {
               <small>{messages('controlPlaneLabel')}</small>
             </div>
           </div>
-          {operator === undefined ? null : (
-            <div className="organization-selection__account">
-              <span>{messages('accountLabel')}</span>
-              <strong>{operator.email}</strong>
-              <Badge variant="secondary">{messages('operatorBadge')}</Badge>
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={loggingOut}
-                onClick={() => void logout()}
-              >
-                {loggingOut ? messages('loggingOut') : messages('logoutAction')}
-              </Button>
-            </div>
-          )}
         </header>
 
         <div className="organization-selection__heading">
@@ -502,146 +491,328 @@ export default function PlatformControlPlanePage(): React.ReactElement {
           </div>
         )}
 
-        <div className="management-page">
-          <Card className="management-card">
-            <CardHeader>
-              <CardTitle>{messages('createOrganizationTitle')}</CardTitle>
-              <CardDescription>{messages('createOrganizationDescription')}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form
-                className="management-form-grid"
-                onSubmit={(event) => void createOrganization(event)}
-              >
-                <div className="field-group">
-                  <Label htmlFor="platform-organization-name">{messages('organizationName')}</Label>
-                  <Input
-                    id="platform-organization-name"
-                    name="name"
-                    maxLength={120}
-                    placeholder={messages('organizationNamePlaceholder')}
-                    disabled={creatingOrganization}
-                    required
-                  />
+        <div className="platform-console__layout">
+          <aside
+            className="platform-console__sidebar"
+            aria-label={messages('consoleNavigation.label')}
+          >
+            <div className="platform-console__nav-card">
+              <div className="platform-console__nav-heading">
+                <span className="organization-selection__heading-icon">
+                  <ShieldCheck aria-hidden="true" />
+                </span>
+                <div>
+                  <strong>{messages('consoleNavigation.title')}</strong>
+                  <small>{messages('consoleNavigation.description')}</small>
                 </div>
-                <div className="field-group">
-                  <Label htmlFor="platform-organization-reason">{messages('reason')}</Label>
-                  <Input
-                    id="platform-organization-reason"
-                    name="reason"
-                    minLength={10}
-                    maxLength={500}
-                    placeholder={messages('organizationReasonPlaceholder')}
-                    disabled={creatingOrganization}
-                    required
-                  />
-                </div>
-                <Button type="submit" disabled={creatingOrganization}>
-                  {creatingOrganization ? (
-                    <LoaderCircle className="management-spin" aria-hidden="true" />
-                  ) : (
-                    <Building2 aria-hidden="true" />
-                  )}
-                  {creatingOrganization
-                    ? messages('creatingOrganization')
-                    : messages('createOrganizationAction')}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          <Card className="management-card">
-            <CardHeader>
-              <CardTitle>{messages('organizationDirectoryTitle')}</CardTitle>
-              <CardDescription>{messages('organizationDirectoryDescription')}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="field-group">
-                <Label htmlFor="platform-organization-search">
-                  {messages('organizationSearch')}
-                </Label>
-                <Input
-                  id="platform-organization-search"
-                  value={organizationSearch}
-                  onChange={(event) => setOrganizationSearch(event.target.value)}
-                  placeholder={messages('organizationSearchPlaceholder')}
-                />
               </div>
 
-              {filteredOrganizations.length === 0 ? (
-                <div className="management-empty">
-                  <Building2 aria-hidden="true" />
-                  <strong>{messages('organizationDirectoryEmpty')}</strong>
-                </div>
-              ) : (
-                <div className="management-table-wrap">
-                  <table className="management-table">
-                    <thead>
-                      <tr>
-                        <th>{messages('organizationColumns.name')}</th>
-                        <th>{messages('organizationColumns.id')}</th>
-                        <th>{messages('organizationColumns.admins')}</th>
-                        <th>{messages('organizationColumns.action')}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredOrganizations.map((organization) => (
-                        <tr key={organization.id}>
-                          <td data-label={messages('organizationColumns.name')}>
-                            <strong>{organization.name}</strong>
-                            {organization.id === selectedOrganizationId ? (
-                              <Badge variant="secondary">{messages('selectedOrganization')}</Badge>
-                            ) : null}
-                          </td>
-                          <td data-label={messages('organizationColumns.id')}>{organization.id}</td>
-                          <td data-label={messages('organizationColumns.admins')}>
-                            {organization.admins.length === 0
-                              ? messages('noOrganizationAdmin')
-                              : organization.admins.map((admin) => admin.email).join('، ')}
-                          </td>
-                          <td data-label={messages('organizationColumns.action')}>
-                            <Button
-                              type="button"
-                              variant="secondary"
-                              onClick={() => {
-                                setSelectedOrganizationId(organization.id);
-                                setRevokeReason('');
-                                setAdminResult(undefined);
-                              }}
-                            >
-                              {messages('selectOrganizationAction')}
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+              <nav className="platform-console__nav">
+                <button
+                  type="button"
+                  data-active={activeSection === 'overview'}
+                  onClick={() => setActiveSection('overview')}
+                >
+                  <span>{messages('consoleNavigation.overview')}</span>
+                  <Badge variant="secondary">{organizations.length}</Badge>
+                </button>
+                <button
+                  type="button"
+                  data-active={activeSection === 'organizations'}
+                  onClick={() => setActiveSection('organizations')}
+                >
+                  <span>{messages('consoleNavigation.organizations')}</span>
+                  <Badge variant="secondary">{organizations.length}</Badge>
+                </button>
+                <button
+                  type="button"
+                  data-active={activeSection === 'administration'}
+                  onClick={() => setActiveSection('administration')}
+                >
+                  <span>{messages('consoleNavigation.administration')}</span>
+                  <Badge variant="secondary">
+                    {organizations.reduce(
+                      (count, organization) => count + organization.admins.length,
+                      0,
+                    )}
+                  </Badge>
+                </button>
+                <button
+                  type="button"
+                  data-active={activeSection === 'audit'}
+                  onClick={() => setActiveSection('audit')}
+                >
+                  <span>{messages('consoleNavigation.audit')}</span>
+                  <Badge variant="secondary">{audit.length}</Badge>
+                </button>
+              </nav>
 
-          {selectedOrganization === undefined ? null : (
-            <Card className="management-card">
+              {/* ORGAWORK_PLATFORM_SIDEBAR_ACCOUNT_V3 */}
+              <div className="platform-console__nav-footer">
+                <div className="platform-console__sidebar-account">
+                  <span>{messages('accountLabel')}</span>
+                  <strong>{operator?.email ?? '—'}</strong>
+                  <Badge variant="secondary">{messages('operatorBadge')}</Badge>
+                </div>
+                <Button
+                  className="platform-console__logout"
+                  type="button"
+                  variant="secondary"
+                  disabled={operator === undefined || loggingOut}
+                  onClick={() => void logout()}
+                >
+                  {loggingOut ? messages('loggingOut') : messages('logoutAction')}
+                </Button>
+              </div>
+            </div>
+          </aside>
+
+          <div className="management-page platform-console__workspace">
+            <header className="platform-console__workspace-heading">
+              <span>{messages('controlPlaneLabel')}</span>
+              <h2>
+                {activeSection === 'overview'
+                  ? messages('consoleNavigation.overview')
+                  : activeSection === 'organizations'
+                    ? messages('consoleNavigation.organizations')
+                    : activeSection === 'administration'
+                      ? messages('consoleNavigation.administration')
+                      : messages('consoleNavigation.audit')}
+              </h2>
+            </header>
+
+            {activeSection === 'overview' ? (
+              <div className="platform-overview">
+                <div className="platform-overview__metrics">
+                  <Card className="management-metric">
+                    <CardContent>
+                      <span>
+                        <Building2 aria-hidden="true" />
+                      </span>
+                      <div>
+                        <strong>{organizations.length}</strong>
+                        <p>{messages('consoleOverview.organizations')}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="management-metric">
+                    <CardContent>
+                      <span>
+                        <UserRoundCheck aria-hidden="true" />
+                      </span>
+                      <div>
+                        <strong>
+                          {organizations.reduce(
+                            (count, organization) =>
+                              count +
+                              organization.admins.filter(
+                                (admin) => admin.membershipStatus === 'active',
+                              ).length,
+                            0,
+                          )}
+                        </strong>
+                        <p>{messages('consoleOverview.activeAdmins')}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="management-metric">
+                    <CardContent>
+                      <span>
+                        <ShieldCheck aria-hidden="true" />
+                      </span>
+                      <div>
+                        <strong>{audit.length}</strong>
+                        <p>{messages('consoleOverview.auditRows')}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="management-metric">
+                    <CardContent>
+                      <span>
+                        <ShieldCheck aria-hidden="true" />
+                      </span>
+                      <div>
+                        <strong>{audit.filter((row) => row.result === 'failed').length}</strong>
+                        <p>{messages('consoleOverview.failedOperations')}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card className="management-card platform-overview__actions">
+                  <CardHeader>
+                    <CardTitle>{messages('consoleOverview.quickActionsTitle')}</CardTitle>
+                    <CardDescription>
+                      {messages('consoleOverview.quickActionsDescription')}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="platform-quick-actions">
+                      <Button type="button" onClick={() => setActiveSection('organizations')}>
+                        <Building2 aria-hidden="true" />
+                        {messages('consoleOverview.openOrganizations')}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => setActiveSection('audit')}
+                      >
+                        <ShieldCheck aria-hidden="true" />
+                        {messages('consoleOverview.openAudit')}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ) : null}
+            <Card className="management-card" hidden={activeSection !== 'organizations'}>
               <CardHeader>
-                <CardTitle>{messages('organizationManagementTitle')}</CardTitle>
-                <CardDescription>{messages('organizationManagementDescription')}</CardDescription>
+                <CardTitle>{messages('createOrganizationTitle')}</CardTitle>
+                <CardDescription>{messages('createOrganizationDescription')}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="management-form-grid">
+                <form
+                  className="management-form-grid"
+                  onSubmit={(event) => void createOrganization(event)}
+                >
                   <div className="field-group">
-                    <Label htmlFor="platform-organization-selector">
+                    <Label htmlFor="platform-organization-name">
+                      {messages('organizationName')}
+                    </Label>
+                    <Input
+                      id="platform-organization-name"
+                      name="name"
+                      maxLength={120}
+                      placeholder={messages('organizationNamePlaceholder')}
+                      disabled={creatingOrganization}
+                      required
+                    />
+                  </div>
+                  <div className="field-group">
+                    <Label htmlFor="platform-organization-reason">{messages('reason')}</Label>
+                    <Input
+                      id="platform-organization-reason"
+                      name="reason"
+                      minLength={10}
+                      maxLength={500}
+                      placeholder={messages('organizationReasonPlaceholder')}
+                      disabled={creatingOrganization}
+                      required
+                    />
+                  </div>
+                  <Button type="submit" disabled={creatingOrganization}>
+                    {creatingOrganization ? (
+                      <LoaderCircle className="management-spin" aria-hidden="true" />
+                    ) : (
+                      <Building2 aria-hidden="true" />
+                    )}
+                    {creatingOrganization
+                      ? messages('creatingOrganization')
+                      : messages('createOrganizationAction')}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+
+            <Card className="management-card" hidden={activeSection !== 'organizations'}>
+              <CardHeader>
+                <CardTitle>{messages('organizationDirectoryTitle')}</CardTitle>
+                <CardDescription>{messages('organizationDirectoryDescription')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="field-group">
+                  <Label htmlFor="platform-organization-search">
+                    {messages('organizationSearch')}
+                  </Label>
+                  <Input
+                    id="platform-organization-search"
+                    value={organizationSearch}
+                    onChange={(event) => setOrganizationSearch(event.target.value)}
+                    placeholder={messages('organizationSearchPlaceholder')}
+                  />
+                </div>
+
+                {filteredOrganizations.length === 0 ? (
+                  <div className="management-empty">
+                    <Building2 aria-hidden="true" />
+                    <strong>{messages('organizationDirectoryEmpty')}</strong>
+                  </div>
+                ) : (
+                  <div className="management-table-wrap">
+                    <table className="management-table">
+                      <thead>
+                        <tr>
+                          <th>{messages('organizationColumns.name')}</th>
+                          <th>{messages('organizationColumns.id')}</th>
+                          <th>{messages('organizationColumns.admins')}</th>
+                          <th>{messages('organizationColumns.action')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredOrganizations.map((organization) => (
+                          <tr key={organization.id}>
+                            <td data-label={messages('organizationColumns.name')}>
+                              <strong>{organization.name}</strong>
+                              {organization.id === selectedOrganizationId ? (
+                                <Badge variant="secondary">
+                                  {messages('selectedOrganization')}
+                                </Badge>
+                              ) : null}
+                            </td>
+                            <td data-label={messages('organizationColumns.id')}>
+                              {organization.id}
+                            </td>
+                            <td data-label={messages('organizationColumns.admins')}>
+                              {organization.admins.length === 0
+                                ? messages('noOrganizationAdmin')
+                                : organization.admins.map((admin) => admin.email).join('، ')}
+                            </td>
+                            <td data-label={messages('organizationColumns.action')}>
+                              <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() => {
+                                  setSelectedOrganizationId(organization.id);
+                                  setRevokeReason('');
+                                  setAdminResult(undefined);
+                                  setActiveSection('administration');
+                                }}
+                              >
+                                {messages('selectOrganizationAction')}
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {activeSection === 'administration' && selectedOrganization === undefined ? (
+              <Card className="management-card platform-selection-required">
+                <CardHeader>
+                  <CardTitle>{messages('organizationManagementTitle')}</CardTitle>
+                  <CardDescription>{messages('selectOrganizationPrompt')}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="field-group">
+                    <Label htmlFor="platform-organization-selector-empty">
                       {messages('organizationSelector')}
                     </Label>
                     <select
-                      id="platform-organization-selector"
-                      value={selectedOrganization.id}
+                      id="platform-organization-selector-empty"
+                      value=""
                       onChange={(event) => {
                         setSelectedOrganizationId(event.target.value);
                         setRevokeReason('');
                         setAdminResult(undefined);
                       }}
                     >
+                      <option value="" disabled>
+                        {messages('selectOrganizationPrompt')}
+                      </option>
                       {organizations.map((organization) => (
                         <option value={organization.id} key={organization.id}>
                           {organization.name} — {organization.id}
@@ -650,276 +821,344 @@ export default function PlatformControlPlanePage(): React.ReactElement {
                     </select>
                     <small>{messages('organizationSelectorHelp')}</small>
                   </div>
-                </div>
-
-                <form
-                  className="management-form-grid"
-                  key={`rename-${selectedOrganization.id}-${selectedOrganization.name}`}
-                  onSubmit={(event) => void renameOrganization(event)}
-                >
-                  <div className="field-group">
-                    <Label htmlFor="platform-rename-name">
-                      {messages('renameOrganizationName')}
-                    </Label>
-                    <Input
-                      id="platform-rename-name"
-                      name="name"
-                      defaultValue={selectedOrganization.name}
-                      maxLength={120}
-                      disabled={renamingOrganization}
-                      required
-                    />
-                  </div>
-                  <div className="field-group">
-                    <Label htmlFor="platform-rename-reason">{messages('reason')}</Label>
-                    <Input
-                      id="platform-rename-reason"
-                      name="reason"
-                      minLength={10}
-                      maxLength={500}
-                      placeholder={messages('renameReasonPlaceholder')}
-                      disabled={renamingOrganization}
-                      required
-                    />
-                  </div>
-                  <Button type="submit" variant="secondary" disabled={renamingOrganization}>
-                    {renamingOrganization ? (
-                      <LoaderCircle className="management-spin" aria-hidden="true" />
-                    ) : null}
-                    {renamingOrganization
-                      ? messages('renamingOrganization')
-                      : messages('renameOrganizationAction')}
-                  </Button>
-                </form>
-
-                <div className="management-notice">
-                  <Building2 aria-hidden="true" />
-                  <div>
-                    <strong>{selectedOrganization.name}</strong>
-                    <p>{messages('organizationId', { id: selectedOrganization.id })}</p>
-                  </div>
-                </div>
-
-                <div>
-                  <h3>{messages('adminsTitle')}</h3>
-                  <p>{messages('adminsDescription')}</p>
-                </div>
-
-                <form
-                  className="management-form-grid"
-                  onSubmit={(event) => void provisionAdmin(event)}
-                >
-                  <div className="field-group">
-                    <Label htmlFor="platform-admin-email">{messages('adminEmail')}</Label>
-                    <Input
-                      id="platform-admin-email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      placeholder={messages('adminEmailPlaceholder')}
-                      disabled={provisioningAdmin}
-                      required
-                    />
-                  </div>
-                  <div className="field-group">
-                    <Label htmlFor="platform-admin-reason">{messages('reason')}</Label>
-                    <Input
-                      id="platform-admin-reason"
-                      name="reason"
-                      minLength={10}
-                      maxLength={500}
-                      placeholder={messages('adminReasonPlaceholder')}
-                      disabled={provisioningAdmin}
-                      required
-                    />
-                  </div>
-                  <Button type="submit" disabled={provisioningAdmin}>
-                    {provisioningAdmin ? (
-                      <LoaderCircle className="management-spin" aria-hidden="true" />
-                    ) : (
-                      <MailPlus aria-hidden="true" />
-                    )}
-                    {provisioningAdmin
-                      ? messages('provisioningAdmin')
-                      : messages('provisionAdminAction')}
-                  </Button>
-                </form>
-
-                {adminResult === undefined ? null : (
-                  <div className="management-notice" role="status">
-                    <UserRoundCheck aria-hidden="true" />
-                    <div>
-                      <strong>{adminResult.email}</strong>
-                      <p>{messages('adminRoleConfirmed')}</p>
-                      {adminResult.accountSetupRequired ? (
-                        <p>{messages('accountSetupRequired')}</p>
-                      ) : (
-                        <p>{messages('accountAlreadyReady')}</p>
-                      )}
+                </CardContent>
+              </Card>
+            ) : null}
+            {activeSection === 'administration' && selectedOrganization !== undefined && (
+              <Card className="management-card">
+                <CardHeader>
+                  <CardTitle>{messages('organizationManagementTitle')}</CardTitle>
+                  <CardDescription>{messages('organizationManagementDescription')}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="management-form-grid">
+                    <div className="field-group">
+                      <Label htmlFor="platform-organization-selector">
+                        {messages('organizationSelector')}
+                      </Label>
+                      <select
+                        id="platform-organization-selector"
+                        value={selectedOrganization.id}
+                        onChange={(event) => {
+                          setSelectedOrganizationId(event.target.value);
+                          setRevokeReason('');
+                          setAdminResult(undefined);
+                        }}
+                      >
+                        {organizations.map((organization) => (
+                          <option value={organization.id} key={organization.id}>
+                            {organization.name} — {organization.id}
+                          </option>
+                        ))}
+                      </select>
+                      <small>{messages('organizationSelectorHelp')}</small>
                     </div>
                   </div>
-                )}
 
-                {selectedOrganization.admins.length === 0 ? (
-                  <div className="management-empty">
-                    <UserRoundCheck aria-hidden="true" />
-                    <strong>{messages('adminListEmpty')}</strong>
-                  </div>
-                ) : (
-                  <>
+                  <form
+                    className="management-form-grid"
+                    key={`rename-${selectedOrganization.id}-${selectedOrganization.name}`}
+                    onSubmit={(event) => void renameOrganization(event)}
+                  >
                     <div className="field-group">
-                      <Label htmlFor="platform-revoke-reason">{messages('revokeReason')}</Label>
+                      <Label htmlFor="platform-rename-name">
+                        {messages('renameOrganizationName')}
+                      </Label>
                       <Input
-                        id="platform-revoke-reason"
-                        value={revokeReason}
-                        onChange={(event) => setRevokeReason(event.target.value)}
+                        id="platform-rename-name"
+                        name="name"
+                        defaultValue={selectedOrganization.name}
+                        maxLength={120}
+                        disabled={renamingOrganization}
+                        required
+                      />
+                    </div>
+                    <div className="field-group">
+                      <Label htmlFor="platform-rename-reason">{messages('reason')}</Label>
+                      <Input
+                        id="platform-rename-reason"
+                        name="reason"
                         minLength={10}
                         maxLength={500}
-                        placeholder={messages('revokeReasonPlaceholder')}
+                        placeholder={messages('renameReasonPlaceholder')}
+                        disabled={renamingOrganization}
+                        required
                       />
-                      {selectedOrganization.admins.length === 1 ? (
-                        <small>{messages('lastAdminProtected')}</small>
+                    </div>
+                    <Button type="submit" variant="secondary" disabled={renamingOrganization}>
+                      {renamingOrganization ? (
+                        <LoaderCircle className="management-spin" aria-hidden="true" />
                       ) : null}
+                      {renamingOrganization
+                        ? messages('renamingOrganization')
+                        : messages('renameOrganizationAction')}
+                    </Button>
+                  </form>
+
+                  <div className="management-notice">
+                    <Building2 aria-hidden="true" />
+                    <div>
+                      <strong>{selectedOrganization.name}</strong>
+                      <p>{messages('organizationId', { id: selectedOrganization.id })}</p>
                     </div>
-                    <div className="management-table-wrap">
-                      <table className="management-table">
-                        <thead>
-                          <tr>
-                            <th>{messages('adminColumns.email')}</th>
-                            <th>{messages('adminColumns.status')}</th>
-                            <th>{messages('adminColumns.action')}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {selectedOrganization.admins.map((admin) => (
-                            <tr key={admin.membershipId}>
-                              <td data-label={messages('adminColumns.email')}>{admin.email}</td>
-                              <td data-label={messages('adminColumns.status')}>
-                                {admin.membershipStatus === 'active'
-                                  ? messages('membershipStatus.active')
-                                  : messages('membershipStatus.suspended')}
-                              </td>
-                              <td data-label={messages('adminColumns.action')}>
-                                <Button
-                                  type="button"
-                                  variant="secondary"
-                                  disabled={
-                                    selectedOrganization.admins.length === 1 ||
-                                    revokeReason.trim().length < 10 ||
-                                    revokingMembershipId !== undefined
-                                  }
-                                  onClick={() => void revokeAdmin(admin)}
-                                >
-                                  {revokingMembershipId === admin.membershipId
-                                    ? messages('revokingAdmin')
-                                    : messages('revokeAdminAction')}
-                                </Button>
-                              </td>
+                  </div>
+
+                  <div>
+                    <h3>{messages('adminsTitle')}</h3>
+                    <p>{messages('adminsDescription')}</p>
+                  </div>
+
+                  <form
+                    className="management-form-grid"
+                    onSubmit={(event) => void provisionAdmin(event)}
+                  >
+                    <div className="field-group">
+                      <Label htmlFor="platform-admin-email">{messages('adminEmail')}</Label>
+                      <Input
+                        id="platform-admin-email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        placeholder={messages('adminEmailPlaceholder')}
+                        disabled={provisioningAdmin}
+                        required
+                      />
+                    </div>
+                    <div className="field-group">
+                      <Label htmlFor="platform-admin-reason">{messages('reason')}</Label>
+                      <Input
+                        id="platform-admin-reason"
+                        name="reason"
+                        minLength={10}
+                        maxLength={500}
+                        placeholder={messages('adminReasonPlaceholder')}
+                        disabled={provisioningAdmin}
+                        required
+                      />
+                    </div>
+                    <Button type="submit" disabled={provisioningAdmin}>
+                      {provisioningAdmin ? (
+                        <LoaderCircle className="management-spin" aria-hidden="true" />
+                      ) : (
+                        <MailPlus aria-hidden="true" />
+                      )}
+                      {provisioningAdmin
+                        ? messages('provisioningAdmin')
+                        : messages('provisionAdminAction')}
+                    </Button>
+                  </form>
+
+                  {adminResult === undefined ? null : (
+                    <div className="management-notice" role="status">
+                      <UserRoundCheck aria-hidden="true" />
+                      <div>
+                        <strong>{adminResult.email}</strong>
+                        <p>{messages('adminRoleConfirmed')}</p>
+                        {adminResult.accountSetupRequired ? (
+                          <p>{messages('accountSetupRequired')}</p>
+                        ) : (
+                          <p>{messages('accountAlreadyReady')}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedOrganization.admins.length === 0 ? (
+                    <div className="management-empty">
+                      <UserRoundCheck aria-hidden="true" />
+                      <strong>{messages('adminListEmpty')}</strong>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="field-group">
+                        <Label htmlFor="platform-revoke-reason">{messages('revokeReason')}</Label>
+                        <Input
+                          id="platform-revoke-reason"
+                          value={revokeReason}
+                          onChange={(event) => setRevokeReason(event.target.value)}
+                          minLength={10}
+                          maxLength={500}
+                          placeholder={messages('revokeReasonPlaceholder')}
+                        />
+                        {selectedOrganization.admins.length === 1 ? (
+                          <small>{messages('lastAdminProtected')}</small>
+                        ) : null}
+                      </div>
+                      <div className="management-table-wrap">
+                        <table className="management-table">
+                          <thead>
+                            <tr>
+                              <th>{messages('adminColumns.email')}</th>
+                              <th>{messages('adminColumns.status')}</th>
+                              <th>{messages('adminColumns.action')}</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </>
+                          </thead>
+                          <tbody>
+                            {selectedOrganization.admins.map((admin) => (
+                              <tr key={admin.membershipId}>
+                                <td data-label={messages('adminColumns.email')}>{admin.email}</td>
+                                <td data-label={messages('adminColumns.status')}>
+                                  {admin.membershipStatus === 'active'
+                                    ? messages('membershipStatus.active')
+                                    : messages('membershipStatus.suspended')}
+                                </td>
+                                <td data-label={messages('adminColumns.action')}>
+                                  <Button
+                                    type="button"
+                                    variant="secondary"
+                                    disabled={
+                                      selectedOrganization.admins.length === 1 ||
+                                      revokeReason.trim().length < 10 ||
+                                      revokingMembershipId !== undefined
+                                    }
+                                    onClick={() => void revokeAdmin(admin)}
+                                  >
+                                    {revokingMembershipId === admin.membershipId
+                                      ? messages('revokingAdmin')
+                                      : messages('revokeAdminAction')}
+                                  </Button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            <Card
+              className="management-card platform-audit-center"
+              hidden={activeSection !== 'audit'}
+            >
+              <CardHeader>
+                <CardTitle>{messages('auditTitle')}</CardTitle>
+                <CardDescription>{messages('auditDescriptionAllOperators')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="platform-audit-summary" aria-label={messages('auditSummaryLabel')}>
+                  <div>
+                    <span>{messages('auditSummary.visibleRows')}</span>
+                    <strong>{visibleAudit.length}</strong>
+                  </div>
+                  <div>
+                    <span>{messages('auditSummary.succeeded')}</span>
+                    <strong>
+                      {visibleAudit.filter((row) => row.result === 'succeeded').length}
+                    </strong>
+                  </div>
+                  <div>
+                    <span>{messages('auditSummary.failed')}</span>
+                    <strong>{visibleAudit.filter((row) => row.result === 'failed').length}</strong>
+                  </div>
+                  <div>
+                    <span>{messages('auditSummary.organizations')}</span>
+                    <strong>
+                      {
+                        new Set(
+                          visibleAudit
+                            .filter((row) => row.organizationId !== null)
+                            .map((row) => row.organizationId),
+                        ).size
+                      }
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="management-form-grid platform-report-toolbar">
+                  <div className="field-group">
+                    <Label htmlFor="platform-audit-organization">
+                      {messages('auditOrganizationFilter')}
+                    </Label>
+                    <select
+                      id="platform-audit-organization"
+                      value={auditOrganizationFilter}
+                      onChange={(event) => setAuditOrganizationFilter(event.target.value)}
+                    >
+                      <option value="">{messages('allOrganizations')}</option>
+                      {organizations.map((organization) => (
+                        <option value={organization.id} key={organization.id}>
+                          {organization.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="field-group">
+                    <Label htmlFor="platform-audit-search">{messages('auditSearch')}</Label>
+                    <Input
+                      id="platform-audit-search"
+                      value={auditTextFilter}
+                      onChange={(event) => setAuditTextFilter(event.target.value)}
+                      placeholder={messages('auditSearchPlaceholder')}
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={exportAuditCsv}
+                    disabled={visibleAudit.length === 0}
+                  >
+                    {messages('exportAuditCsv')}
+                  </Button>
+                </div>
+
+                {visibleAudit.length === 0 ? (
+                  <div className="management-empty">
+                    <ShieldCheck aria-hidden="true" />
+                    <strong>{messages('auditEmpty')}</strong>
+                  </div>
+                ) : (
+                  <div className="management-table-wrap">
+                    <table className="management-table">
+                      <thead>
+                        <tr>
+                          <th>{messages('auditColumns.action')}</th>
+                          <th>{messages('auditColumns.actor')}</th>
+                          <th>{messages('auditColumns.organization')}</th>
+                          <th>{messages('auditColumns.reason')}</th>
+                          <th>{messages('auditColumns.target')}</th>
+                          <th>{messages('auditColumns.result')}</th>
+                          <th>{messages('auditColumns.time')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {visibleAudit.map((row) => (
+                          <tr key={row.id}>
+                            <td data-label={messages('auditColumns.action')}>
+                              {actionLabel(row.action)}
+                            </td>
+                            <td data-label={messages('auditColumns.actor')}>{row.actorEmail}</td>
+                            <td data-label={messages('auditColumns.organization')}>
+                              {row.organizationName ?? row.organizationId ?? '—'}
+                            </td>
+                            <td data-label={messages('auditColumns.reason')}>{row.reason}</td>
+                            <td data-label={messages('auditColumns.target')}>
+                              {row.targetUserId ?? '—'}
+                            </td>
+                            <td data-label={messages('auditColumns.result')}>
+                              {row.result === 'succeeded'
+                                ? messages('results.succeeded')
+                                : messages('results.failed')}
+                            </td>
+                            <td data-label={messages('auditColumns.time')}>
+                              {formatAuditDate(row.createdAt, locale)}
+                              <details className="platform-audit-details">
+                                <summary>{messages('auditTechnicalDetails')}</summary>
+                                <code>Request: {row.requestId}</code>
+                                <code>Correlation: {row.correlationId}</code>
+                              </details>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </CardContent>
             </Card>
-          )}
-
-          <Card className="management-card">
-            <CardHeader>
-              <CardTitle>{messages('auditTitle')}</CardTitle>
-              <CardDescription>{messages('auditDescriptionAllOperators')}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="management-form-grid">
-                <div className="field-group">
-                  <Label htmlFor="platform-audit-organization">
-                    {messages('auditOrganizationFilter')}
-                  </Label>
-                  <select
-                    id="platform-audit-organization"
-                    value={auditOrganizationFilter}
-                    onChange={(event) => setAuditOrganizationFilter(event.target.value)}
-                  >
-                    <option value="">{messages('allOrganizations')}</option>
-                    {organizations.map((organization) => (
-                      <option value={organization.id} key={organization.id}>
-                        {organization.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="field-group">
-                  <Label htmlFor="platform-audit-search">{messages('auditSearch')}</Label>
-                  <Input
-                    id="platform-audit-search"
-                    value={auditTextFilter}
-                    onChange={(event) => setAuditTextFilter(event.target.value)}
-                    placeholder={messages('auditSearchPlaceholder')}
-                  />
-                </div>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={exportAuditCsv}
-                  disabled={visibleAudit.length === 0}
-                >
-                  {messages('exportAuditCsv')}
-                </Button>
-              </div>
-
-              {visibleAudit.length === 0 ? (
-                <div className="management-empty">
-                  <ShieldCheck aria-hidden="true" />
-                  <strong>{messages('auditEmpty')}</strong>
-                </div>
-              ) : (
-                <div className="management-table-wrap">
-                  <table className="management-table">
-                    <thead>
-                      <tr>
-                        <th>{messages('auditColumns.action')}</th>
-                        <th>{messages('auditColumns.actor')}</th>
-                        <th>{messages('auditColumns.organization')}</th>
-                        <th>{messages('auditColumns.reason')}</th>
-                        <th>{messages('auditColumns.target')}</th>
-                        <th>{messages('auditColumns.result')}</th>
-                        <th>{messages('auditColumns.time')}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {visibleAudit.map((row) => (
-                        <tr key={row.id}>
-                          <td data-label={messages('auditColumns.action')}>
-                            {actionLabel(row.action)}
-                          </td>
-                          <td data-label={messages('auditColumns.actor')}>{row.actorEmail}</td>
-                          <td data-label={messages('auditColumns.organization')}>
-                            {row.organizationName ??
-                              row.organizationId ??
-                              messages('notApplicable')}
-                          </td>
-                          <td data-label={messages('auditColumns.reason')}>{row.reason}</td>
-                          <td data-label={messages('auditColumns.target')}>
-                            {row.targetUserId ?? messages('notApplicable')}
-                          </td>
-                          <td data-label={messages('auditColumns.result')}>
-                            {row.result === 'succeeded'
-                              ? messages('results.succeeded')
-                              : messages('results.failed')}
-                          </td>
-                          <td data-label={messages('auditColumns.time')}>
-                            {formatAuditDate(row.createdAt, locale)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          </div>
         </div>
       </section>
     </main>

@@ -96,4 +96,51 @@ describe('OA Platform Control Plane web UI', () => {
       'string',
     );
   });
+
+  it('organizes the Platform Console into isolated professional workspaces', () => {
+    const page = readFileSync('apps/web/app/platform/page.tsx', 'utf8');
+    const css = readFileSync('apps/web/app/globals.css', 'utf8');
+
+    expect(page).toContain(
+      "type PlatformSection = 'overview' | 'organizations' | 'administration' | 'audit'",
+    );
+    expect(page).toContain("React.useState<PlatformSection>('overview')");
+    expect(page).toContain('platform-console__sidebar');
+    expect(page).toContain("hidden={activeSection !== 'organizations'}");
+    expect(page).toContain(
+      "activeSection === 'administration' && selectedOrganization !== undefined && (",
+    );
+    expect(page).toContain("hidden={activeSection !== 'audit'}");
+    expect(page).toContain("setSelectedOrganizationId('')");
+    expect(page).not.toContain("result.organizations[0]?.id ?? ''");
+    expect(page).not.toContain(
+      "setSelectedOrganizationId(organizationData.organizations[0]?.id ?? '')",
+    );
+    expect(page).toContain('platform-audit-summary');
+    expect(page).toContain('platform-audit-details');
+    expect(css).toContain('ORGAWORK:OA-PLATFORM-PROFESSIONAL-WORKSPACE-V2');
+    expect(css).toContain('.platform-console__layout');
+    expect(css).toContain('.platform-console__nav');
+  });
+
+  it('keeps the Platform sidebar physically right in RTL and consolidates operator actions', () => {
+    const page = readFileSync('apps/web/app/platform/page.tsx', 'utf8');
+    const css = readFileSync('apps/web/app/globals.css', 'utf8');
+
+    expect(page).toContain('ORGAWORK_PLATFORM_SIDEBAR_ACCOUNT_V3');
+    expect(page).toContain('platform-console__sidebar-account');
+    expect(page).toContain('platform-console__logout');
+    expect(page).toContain('platform-console__workspace-heading');
+    expect(page).toContain('platform-audit-center');
+    expect(page).not.toContain('className="organization-selection__account"');
+
+    expect(css).toContain('ORGAWORK:OA-PLATFORM-RTL-LAYOUT-REPORT-CENTER-V3');
+    expect(css).toContain('direction: ltr');
+    expect(css).toContain('grid-template-columns: minmax(0, 1fr) 304px');
+    expect(css).toContain('.platform-console__sidebar');
+    expect(css).toContain('grid-column: 2');
+    expect(css).toContain('.platform-console__workspace');
+    expect(css).toContain('grid-column: 1');
+    expect(css).toContain('.platform-audit-center .management-table thead th');
+  });
 });
