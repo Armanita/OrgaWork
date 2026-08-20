@@ -1,10 +1,27 @@
-﻿# OrgaWork Feature Specification
+# OrgaWork Feature Specification
 
-Each feature defines:
-1. Business need
-2. Expected behavior
-3. Flow design
-4. Architecture responsibility
-5. Implementation slice
-6. Manual acceptance
-7. Final state
+برای هر قابلیت فقط این موارد مشخص می‌شوند:
+
+## نیاز
+این قابلیت چه مشکل واقعی را حل می‌کند؟
+
+## رفتار مورد انتظار
+کاربر چه کاری انجام می‌دهد و سیستم چه نتیجه‌ای باید بدهد؟
+
+## جریان
+مسیر اصلی از UI تا API، منطق و داده چیست؟
+
+## معماری
+مسئولیت این قابلیت در کدام Module یا Slice قرار می‌گیرد؟
+
+## ریسک‌ها
+فقط ریسک‌های واقعی مثل امنیت، مجوز، Tenant Isolation، داده، همزمانی یا Migration بررسی می‌شوند.
+
+## پیاده‌سازی
+یک Slice قابل استفاده ساخته می‌شود.
+
+## پذیرش
+سناریوی واقعی توسط کاربر تست می‌شود و اشکالات UX یا منطق اصلاح می‌شوند.
+
+## وضعیت نهایی
+پس از تأیید، رفتار پذیرفته‌شده در `SYSTEM-BEHAVIOR.md` ثبت می‌شود.

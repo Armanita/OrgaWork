@@ -1,3 +1,11 @@
-﻿# OrgaWork Acceptance
+# OrgaWork Acceptance
 
-Acceptance is based on real user flow, manual verification and UX correctness.
+پذیرش هر قابلیت بر اساس استفاده واقعی انجام می‌شود.
+
+- جریان اصلی باید در UI قابل استفاده باشد.
+- رفتار کسب‌وکار باید مطابق تعریف قابلیت باشد.
+- خطاها و مجوزها باید درست عمل کنند.
+- اگر تغییر امنیت، Tenant، RLS، Database یا Migration را درگیر کند، بررسی هدفمند همان بخش الزامی است.
+- تست‌های خودکار برای محافظت از تغییر استفاده می‌شوند، نه برای ایجاد یک چرخه طولانی و تکراری.
+- Build به‌تنهایی Acceptance نیست.
+- پس از تست دستی و اصلاح لازم، Slice آماده Commit و Push روی `main` است.

@@ -1,23 +1,25 @@
-﻿# OrgaWork Development Method
+# OrgaWork Development Method
 
-Business need
-↓
-Expected behavior
-↓
-Architecture and flow design
-↓
-Risk review
-↓
-Complete implementation slice
-↓
-Real manual acceptance
-↓
-UX and logic refinement
-↓
-Commit and push to main
+روش توسعه OrgaWork ساده و محصول‌محور است:
 
-Rules:
-- Define behavior before coding.
-- Build complete slices.
-- Validate through real usage.
-- Preserve security, tenant isolation, data integrity and migration safety.
+1. نیاز واقعی کسب‌وکار
+2. تعریف رفتار مورد انتظار
+3. طراحی جریان و معماری
+4. بررسی ریسک‌های واقعی
+5. پیاده‌سازی یک Vertical Slice کامل
+6. تست دستی واقعی
+7. اصلاح UX و منطق
+8. Commit و Push روی `main`
+
+## قواعد
+
+- قبل از کدنویسی باید رفتار مورد انتظار روشن باشد.
+- هر تغییر باید یک نیاز واقعی را حل کند.
+- Slice تا حد ممکن از UI تا API، منطق و داده کامل ساخته می‌شود.
+- تست‌های هدفمند برای همان تغییر اجرا می‌شوند؛ Regression تاریخی کامل برای هر Patch لازم نیست.
+- تست دستی کاربر بخش اصلی پذیرش محصول است.
+- Build موفق به‌تنهایی به معنی پذیرش نیست.
+- امنیت، Tenant Isolation، RLS، Data Integrity و Migration Safety همیشه حفظ می‌شوند.
+- Migration اعمال‌شده بازنویسی نمی‌شود؛ تغییر جدید Migration جدید می‌خواهد.
+- Git history بازنویسی نمی‌شود و Force Push ممنوع است.
+- `main` شاخه اصلی و جاری توسعه است.
