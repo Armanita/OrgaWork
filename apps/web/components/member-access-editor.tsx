@@ -6,8 +6,15 @@ import * as React from 'react';
 
 export type MembershipStatus = 'invited' | 'active' | 'suspended' | 'revoked';
 export type OrganizationRoleKey = 'member' | 'manager' | 'organization_admin';
+export type TenantAssignableOrganizationRoleKey = 'member' | 'manager';
 
-const roleOrder: readonly OrganizationRoleKey[] = ['member', 'manager', 'organization_admin'];
+const roleOrder: readonly TenantAssignableOrganizationRoleKey[] = ['member', 'manager'];
+
+function isTenantAssignableRole(
+  role: OrganizationRoleKey,
+): role is TenantAssignableOrganizationRoleKey {
+  return role === 'member' || role === 'manager';
+}
 
 const statusOrder: readonly MembershipStatus[] = ['invited', 'active', 'suspended', 'revoked'];
 
@@ -19,7 +26,7 @@ export interface MemberAccessEditorProps {
   readonly onStatusChange: (memberId: string, status: MembershipStatus) => Promise<boolean>;
   readonly onRolesChange: (
     memberId: string,
-    roleKeys: readonly OrganizationRoleKey[],
+    roleKeys: readonly TenantAssignableOrganizationRoleKey[],
   ) => Promise<boolean>;
 }
 
@@ -34,14 +41,16 @@ export function MemberAccessEditor({
   const messages = useTranslations('members');
   const common = useTranslations('common');
   const [selectedStatus, setSelectedStatus] = React.useState(status);
-  const [selectedRoles, setSelectedRoles] =
-    React.useState<readonly OrganizationRoleKey[]>(roleKeys);
+  const protectedOrganizationAdmin = roleKeys.includes('organization_admin');
+  const [selectedRoles, setSelectedRoles] = React.useState<
+    readonly TenantAssignableOrganizationRoleKey[]
+  >(roleKeys.filter(isTenantAssignableRole));
 
   const rolesChanged =
     selectedRoles.length !== roleKeys.length ||
     roleOrder.some((role) => selectedRoles.includes(role) !== roleKeys.includes(role));
 
-  function toggleRole(role: OrganizationRoleKey): void {
+  function toggleRole(role: TenantAssignableOrganizationRoleKey): void {
     setSelectedRoles((current) =>
       current.includes(role)
         ? current.filter((candidate) => candidate !== role)
@@ -65,7 +74,7 @@ export function MemberAccessEditor({
     const updated = await onRolesChange(memberId, selectedRoles);
 
     if (!updated) {
-      setSelectedRoles(roleKeys);
+      setSelectedRoles(roleKeys.filter(isTenantAssignableRole));
     }
   }
 
@@ -83,7 +92,7 @@ export function MemberAccessEditor({
             <select
               value={selectedStatus}
               aria-label={messages('statusEditor')}
-              disabled={busy}
+              disabled={busy || protectedOrganizationAdmin}
               onChange={(event) => setSelectedStatus(event.currentTarget.value as MembershipStatus)}
             >
               {statusOrder.map((statusValue) => (
@@ -96,7 +105,7 @@ export function MemberAccessEditor({
               type="button"
               size="sm"
               variant="secondary"
-              disabled={busy || selectedStatus === status}
+              disabled={busy || protectedOrganizationAdmin || selectedStatus === status}
               onClick={() => void saveStatus()}
             >
               {busy ? (
@@ -109,8 +118,13 @@ export function MemberAccessEditor({
           </div>
         </div>
 
-        <fieldset className="member-access__group">
+        <fieldset className="member-access__group" disabled={busy || protectedOrganizationAdmin}>
           <legend>{messages('roleEditor')}</legend>
+          {protectedOrganizationAdmin ? (
+            <p className="member-access__validation">
+              {messages('organizationAdminPlatformManaged')}
+            </p>
+          ) : null}
           <div className="member-access__roles">
             {roleOrder.map((role) => (
               <label key={role}>
@@ -132,7 +146,9 @@ export function MemberAccessEditor({
           <Button
             type="button"
             size="sm"
-            disabled={busy || selectedRoles.length === 0 || !rolesChanged}
+            disabled={
+              busy || protectedOrganizationAdmin || selectedRoles.length === 0 || !rolesChanged
+            }
             onClick={() => void saveRoles()}
           >
             {busy ? (

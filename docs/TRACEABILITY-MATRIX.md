@@ -1,3 +1,10 @@
+<!-- ORGAWORK:EXECUTION-MODEL-V2-NOTICE -->
+> **Active model notice - 2026-08-19**
+>
+> مدل اجرایی جاری OrgaWork اکنون `Capability + Vertical Slice` است. برای وضعیت و ترتیب جاری به `project-state.json`، `ORGAWORK-MASTER-HANDOFF.md`، `docs/PROJECT-STATUS.md`، `docs/ROADMAP.md`، `docs/ARCHITECTURE.md` و `docs/QUALITY.md` مراجعه کن.
+>
+> بدنه تاریخی این سند برای Evidence، جزئیات یا مرجع گذشته حفظ شده است. هر دستور P-stage، current-stage یا الزام per-substage که با منابع فعال بالا تعارض داشته باشد، برای اجرای آینده non-operative است. محتوای فنی/عملیاتی غیرمتعارض همچنان قابل استفاده است.
+
 # ماتریس ردیابی OrgaWork
 
 ## 1. شناسنامه سند

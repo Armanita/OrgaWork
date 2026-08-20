@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   LoaderCircle,
   Network,
+  Plus,
   ShieldCheck,
   Users,
   X,
@@ -20,6 +21,12 @@ const navigationItems = [
     key: 'overview',
     icon: LayoutDashboard,
     exact: true,
+  },
+  {
+    href: '/cases/new',
+    key: 'cases',
+    icon: Plus,
+    exact: false,
   },
   {
     href: '/organization/members',
@@ -78,7 +85,6 @@ export function DashboardSidebar({
             <span>{application('tagline')}</span>
           </span>
         </Link>
-
         <Button
           ref={closeButtonRef}
           type="button"

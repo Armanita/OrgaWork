@@ -22,7 +22,8 @@
   },
   "dependencies": {
     "@workspace/contracts": "workspace:*",
-    "@workspace/database": "workspace:*"
+    "@workspace/database": "workspace:*",
+    "@workspace/access-control": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "24.13.3",

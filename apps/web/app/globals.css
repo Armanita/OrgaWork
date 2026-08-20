@@ -2049,3 +2049,739 @@ button:disabled {
     transform: none !important;
   }
 }
+/* ORGAWORK:WM01-CREATE-OWN-CASE */
+textarea {
+  font: inherit;
+}
+
+.dashboard-primary-action {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-block-start: 10px;
+  border-radius: 11px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+.dashboard-primary-action:hover {
+  transform: translateY(-1px);
+}
+
+.dashboard-primary-action svg {
+  width: 18px;
+  height: 18px;
+}
+
+.work-management-page {
+  display: grid;
+  gap: 28px;
+}
+
+.case-create-card {
+  width: min(100%, 820px);
+}
+
+.case-create-card [data-slot='card-header'] {
+  gap: 8px;
+  border-block-end: 1px solid var(--border);
+}
+
+.case-create-card [data-slot='card-content'] {
+  padding-block-start: 24px;
+}
+
+.case-create-loading {
+  display: flex;
+  min-height: 132px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--muted-foreground);
+}
+
+.case-create-form {
+  display: grid;
+  gap: 20px;
+}
+
+.case-create-field {
+  display: grid;
+  gap: 8px;
+}
+
+.case-create-field textarea,
+.case-create-field select {
+  width: 100%;
+  border: 1px solid var(--input);
+  border-radius: 10px;
+  background: var(--background);
+  color: var(--foreground);
+  padding: 10px 12px;
+}
+
+.case-create-field textarea {
+  min-height: 132px;
+  resize: vertical;
+  line-height: 1.8;
+}
+
+.case-create-field select {
+  min-height: 40px;
+}
+
+.case-create-field textarea::placeholder {
+  color: var(--muted-foreground);
+}
+
+.case-create-field textarea:focus,
+.case-create-field select:focus {
+  border-color: var(--ring);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 18%, transparent);
+}
+
+.case-create-field textarea:disabled,
+.case-create-field select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.case-create-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-block-start: 2px;
+}
+
+.case-create-alert {
+  margin: 0 0 18px;
+  border: 1px solid color-mix(in oklab, var(--destructive) 38%, var(--border));
+  border-radius: 11px;
+  background: color-mix(in oklab, var(--destructive) 7%, var(--card));
+  color: var(--foreground);
+  padding: 12px 14px;
+  line-height: 1.7;
+}
+
+.case-create-success [data-slot='card-header'] {
+  position: relative;
+}
+
+.case-create-success__mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--success) 16%, var(--card));
+  color: var(--success);
+}
+
+.case-create-success__mark svg {
+  width: 21px;
+  height: 21px;
+}
+
+.case-create-success__content {
+  display: grid;
+  gap: 22px;
+}
+
+.case-create-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  overflow: hidden;
+}
+
+.case-create-summary > div {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 16px;
+}
+
+.case-create-summary > div:nth-child(odd) {
+  border-inline-end: 1px solid var(--border);
+}
+
+.case-create-summary > div:nth-child(-n + 2) {
+  border-block-end: 1px solid var(--border);
+}
+
+.case-create-summary dt {
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+}
+
+.case-create-summary dd {
+  min-width: 0;
+  margin: 0;
+  font-weight: 650;
+}
+
+.case-create-reference {
+  display: block;
+  overflow-wrap: anywhere;
+  direction: ltr;
+  color: var(--foreground);
+  font-size: 0.78rem;
+  text-align: left;
+}
+
+@media (max-width: 640px) {
+  .case-create-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .case-create-summary > div:nth-child(odd) {
+    border-inline-end: 0;
+  }
+
+  .case-create-summary > div:not(:last-child) {
+    border-block-end: 1px solid var(--border);
+  }
+
+  .case-create-actions > [data-slot='button'] {
+    width: 100%;
+  }
+}
+
+/* ORGAWORK:OA-PLATFORM-PROFESSIONAL-WORKSPACE-V2 */
+.platform-console .organization-selection__container {
+  width: min(100%, 1480px);
+}
+
+.platform-console .organization-selection__heading {
+  max-width: 900px;
+  margin-block: 52px 28px;
+}
+
+.platform-console__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 292px;
+  align-items: start;
+  gap: 24px;
+}
+
+.platform-console__workspace {
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+  min-width: 0;
+}
+
+.platform-console__sidebar {
+  grid-column: 2;
+  grid-row: 1;
+  position: sticky;
+  inset-block-start: 24px;
+  min-width: 0;
+}
+
+.platform-console__nav-card {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: color-mix(in oklab, var(--card) 96%, transparent);
+  box-shadow: var(--shadow);
+}
+
+.platform-console__nav-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-block-end: 1px solid var(--border);
+  padding: 18px;
+}
+
+.platform-console__nav-heading .organization-selection__heading-icon {
+  width: 42px;
+  height: 42px;
+  margin: 0;
+  border-radius: 13px;
+}
+
+.platform-console__nav-heading > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.platform-console__nav-heading small,
+.platform-console__nav-footer span,
+.platform-console__nav-footer small {
+  color: var(--muted-foreground);
+  font-size: 0.76rem;
+}
+
+.platform-console__nav {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+}
+
+.platform-console__nav button {
+  display: flex;
+  width: 100%;
+  min-height: 46px;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--muted-foreground);
+  padding: 10px 12px;
+  text-align: start;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.platform-console__nav button:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.platform-console__nav button[data-active='true'] {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  font-weight: 750;
+}
+
+.platform-console__nav button[data-active='true']::before {
+  width: 5px;
+  height: 24px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--primary);
+  content: '';
+}
+
+.platform-console__nav button > span:first-of-type {
+  margin-inline-end: auto;
+}
+
+.platform-console__nav-footer {
+  display: grid;
+  gap: 4px;
+  border-block-start: 1px solid var(--border);
+  background: var(--muted);
+  padding: 16px 18px;
+}
+
+.platform-console__nav-footer strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.platform-overview {
+  display: grid;
+  gap: 22px;
+}
+
+.platform-overview__metrics,
+.platform-audit-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.platform-overview__actions [data-slot='card-content'] {
+  padding-block-start: 22px;
+}
+
+.platform-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.platform-selection-required [data-slot='card-content'] {
+  max-width: 760px;
+}
+
+.platform-audit-summary {
+  margin-block-end: 22px;
+}
+
+.platform-audit-summary > div {
+  display: grid;
+  gap: 5px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--muted);
+  padding: 15px 16px;
+}
+
+.platform-audit-summary span {
+  color: var(--muted-foreground);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.platform-audit-summary strong {
+  font-size: 1.45rem;
+}
+
+.platform-report-toolbar {
+  margin-block-end: 18px;
+}
+
+.platform-audit-details {
+  margin-block-start: 8px;
+}
+
+.platform-audit-details summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--primary);
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.platform-audit-details code {
+  display: block;
+  overflow-wrap: anywhere;
+  margin-block-start: 6px;
+  direction: ltr;
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+  text-align: left;
+}
+
+.platform-console .management-table tbody tr {
+  transition: background-color 140ms ease;
+}
+
+.platform-console .management-table tbody tr:hover {
+  background: color-mix(in oklab, var(--muted) 58%, transparent);
+}
+
+@media (max-width: 1180px) {
+  .platform-overview__metrics,
+  .platform-audit-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .platform-console__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-console__sidebar {
+    grid-column: 1;
+    grid-row: 1;
+    position: static;
+  }
+
+  .platform-console__workspace {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .platform-console__nav {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .platform-console__nav button {
+    min-width: 0;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .platform-console__nav button::before,
+  .platform-console__nav button [data-slot='badge'] {
+    display: none;
+  }
+
+  .platform-console__nav button > span:first-of-type {
+    margin: 0;
+  }
+
+  .platform-console__nav-footer {
+    display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .platform-console__nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .platform-overview__metrics,
+  .platform-audit-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-quick-actions {
+    display: grid;
+  }
+
+  .platform-quick-actions > * {
+    width: 100%;
+  }
+}
+
+/* ORGAWORK:OA-PLATFORM-RTL-LAYOUT-REPORT-CENTER-V3 */
+
+/*
+ * The page itself is RTL. CSS Grid line numbering follows writing direction,
+ * so the V2 "column 2" sidebar appeared physically on the left.
+ * Keep the layout geometry LTR and restore RTL independently inside both panes.
+ */
+.platform-console__layout {
+  direction: ltr;
+  grid-template-columns: minmax(0, 1fr) 304px;
+  gap: 20px;
+}
+
+.platform-console__workspace {
+  grid-column: 1;
+  direction: rtl;
+  max-width: none;
+}
+
+.platform-console__sidebar {
+  grid-column: 2;
+  direction: rtl;
+  inset-block-start: 16px;
+}
+
+.platform-console .organization-selection__container {
+  width: min(100%, 1600px);
+}
+
+.platform-console .organization-selection__header {
+  min-height: 0;
+}
+
+.platform-console .organization-selection__heading {
+  max-width: none;
+  margin-block: 24px 18px;
+}
+
+.platform-console__nav-card {
+  display: flex;
+  min-height: min(680px, calc(100vh - 100px));
+  flex-direction: column;
+}
+
+.platform-console__nav {
+  flex: 1 1 auto;
+}
+
+.platform-console__nav button {
+  border-right: 4px solid transparent;
+  padding-inline: 12px 10px;
+}
+
+.platform-console__nav button[data-active='true'] {
+  border-right-color: var(--primary);
+}
+
+.platform-console__nav button[data-active='true']::before {
+  display: none;
+}
+
+.platform-console__nav-footer {
+  margin-block-start: auto;
+  gap: 12px;
+  background: color-mix(in oklab, var(--muted) 72%, var(--card));
+}
+
+.platform-console__sidebar-account {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+
+.platform-console__sidebar-account > span {
+  color: var(--muted-foreground);
+  font-size: 0.72rem;
+}
+
+.platform-console__sidebar-account > strong {
+  overflow: hidden;
+  direction: ltr;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  text-align: right;
+}
+
+.platform-console__sidebar-account [data-slot='badge'] {
+  width: fit-content;
+}
+
+.platform-console__logout {
+  width: 100%;
+}
+
+.platform-console__workspace-heading {
+  display: grid;
+  gap: 4px;
+  margin-block-end: 2px;
+  padding-inline: 4px;
+}
+
+.platform-console__workspace-heading span {
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.platform-console__workspace-heading h2 {
+  margin: 0;
+  font-size: clamp(1.45rem, 2vw, 1.9rem);
+  letter-spacing: -0.025em;
+}
+
+.platform-console__workspace > .management-card,
+.platform-overview,
+.platform-overview__actions {
+  width: 100%;
+  max-width: none;
+}
+
+.platform-overview__metrics {
+  gap: 12px;
+}
+
+.platform-audit-center {
+  width: 100%;
+  max-width: none;
+  overflow: hidden;
+}
+
+.platform-audit-center [data-slot='card-header'] {
+  border-block-end: 1px solid var(--border);
+}
+
+.platform-audit-center [data-slot='card-content'] {
+  padding-block-start: 20px;
+}
+
+.platform-audit-center .platform-audit-summary {
+  gap: 12px;
+}
+
+.platform-audit-center .platform-report-toolbar {
+  display: grid;
+  grid-template-columns: minmax(210px, 0.8fr) minmax(300px, 1.4fr) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.platform-audit-center .platform-report-toolbar > button {
+  min-width: 148px;
+}
+
+.platform-audit-center .management-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  max-height: calc(100vh - 330px);
+  min-height: 320px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.platform-audit-center .management-table {
+  min-width: 1180px;
+}
+
+.platform-audit-center .management-table thead th {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  background: var(--card);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.platform-audit-center .management-table tbody tr:hover {
+  background: color-mix(in oklab, var(--muted) 70%, transparent);
+}
+
+@media (max-width: 1180px) {
+  .platform-console__layout {
+    grid-template-columns: minmax(0, 1fr) 272px;
+  }
+
+  .platform-audit-center .platform-report-toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .platform-audit-center .platform-report-toolbar > button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 980px) {
+  .platform-console__layout {
+    direction: rtl;
+    grid-template-columns: 1fr;
+  }
+
+  .platform-console__sidebar,
+  .platform-console__workspace {
+    grid-column: 1;
+    direction: rtl;
+  }
+
+  .platform-console__nav-card {
+    min-height: 0;
+  }
+
+  .platform-console__nav-footer {
+    display: grid;
+  }
+
+  .platform-console__sidebar-account {
+    display: none;
+  }
+
+  .platform-console__logout {
+    width: auto;
+  }
+
+  .platform-audit-center .platform-report-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-audit-center .management-table-wrap {
+    max-height: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .platform-console .organization-selection__heading {
+    margin-block: 18px 14px;
+  }
+
+  .platform-console__workspace-heading h2 {
+    font-size: 1.35rem;
+  }
+
+  .platform-console__nav-footer {
+    padding: 12px;
+  }
+
+  .platform-console__logout {
+    width: 100%;
+  }
+}

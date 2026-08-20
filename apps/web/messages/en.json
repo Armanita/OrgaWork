@@ -18,7 +18,8 @@
     "security": "Sign in and security",
     "primaryLabel": "Primary navigation",
     "openMenu": "Open navigation menu",
-    "closeMenu": "Close navigation menu"
+    "closeMenu": "Close navigation menu",
+    "cases": "Cases"
   },
   "common": {
     "currentOrganization": "Current organization",
@@ -51,7 +52,13 @@
       "memberUpdateFailed": "The membership status could not be updated.",
       "memberRolesUpdateFailed": "The member roles could not be updated.",
       "teamRenameFailed": "The team could not be renamed.",
-      "invitationAcceptFailed": "The invitation could not be accepted."
+      "invitationAcceptFailed": "The invitation could not be accepted.",
+      "platformControlPlaneLoadFailed": "Loading the platform control plane failed.",
+      "platformOrganizationCreateFailed": "Creating the organization from the control plane failed.",
+      "platformAdminProvisionFailed": "Provisioning the initial organization administrator failed.",
+      "logoutFailed": "Signing out failed.",
+      "platformOrganizationRenameFailed": "Renaming the organization failed.",
+      "platformAdminRevokeFailed": "Revoking the organization administrator failed."
     },
     "skipToContent": "Skip to main content",
     "organizationLoading": "Loading organization",
@@ -129,7 +136,8 @@
       "role": "Roles",
       "status": "Status",
       "actions": "Access controls"
-    }
+    },
+    "organizationAdminPlatformManaged": "Organization administrators are managed only through the platform control plane and cannot be changed here."
   },
   "teams": {
     "eyebrow": "Organization structure",
@@ -190,6 +198,9 @@
         "role": "The sales team manager role was updated",
         "session": "An old user session was revoked"
       }
+    },
+    "actions": {
+      "createCase": "Create case"
     }
   },
   "themeSwitcher": {
@@ -244,5 +255,186 @@
     "acceptedDescription": "Your organization membership is ready. Select the organization to continue.",
     "continueAction": "Choose organization",
     "backToLogin": "Go to sign in"
+  },
+  "workManagement": {
+    "createOwnCase": {
+      "eyebrow": "Work management",
+      "title": "Create a case",
+      "description": "Capture a case, take primary responsibility, and define the first action.",
+      "formTitle": "Case details",
+      "formDescription": "Start with a clear subject and the first action you can take.",
+      "titleLabel": "Case title",
+      "titlePlaceholder": "For example Customer renewal",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Describe the context and expected outcome",
+      "priorityLabel": "Priority",
+      "priorities": {
+        "low": "Low",
+        "normal": "Normal",
+        "high": "High"
+      },
+      "initialActionLabel": "First action",
+      "initialActionPlaceholder": "For example Call the customer",
+      "submit": "Create case",
+      "submitting": "Creating case",
+      "loadingSession": "Preparing your workspace",
+      "missingOrganization": "Select an organization before creating a case.",
+      "successEyebrow": "Case created",
+      "successTitle": "Your case is ready",
+      "successDescription": "You are the accepted primary responsible person and the first action is now current work.",
+      "statusLabel": "Status",
+      "prioritySummaryLabel": "Priority",
+      "actionLabel": "Current action",
+      "caseIdLabel": "Case reference",
+      "createAnother": "Create another case",
+      "statuses": {
+        "open": "Open",
+        "pending": "Pending"
+      },
+      "errors": {
+        "required": "Complete the required fields.",
+        "authorization": "You do not have permission to create a case in this organization.",
+        "conflict": "This request conflicts with a recent attempt. Try creating the case again.",
+        "session": "Your current organization session could not be prepared.",
+        "unavailable": "The case could not be created. Try again."
+      }
+    }
+  },
+  "platformControlPlane": {
+    "controlPlaneLabel": "Platform control plane",
+    "accountLabel": "Operator account",
+    "operatorBadge": "Platform operator",
+    "eyebrow": "Global administration",
+    "title": "OrgaWork control plane",
+    "description": "Manage organizations and their primary administrators through the controlled global path and review the audit trail for sensitive operations.",
+    "loading": "Preparing the platform control plane",
+    "createOrganizationTitle": "Create organization",
+    "createOrganizationDescription": "This creates a new organization without granting implicit access to tenant business content.",
+    "organizationName": "Organization name",
+    "organizationNamePlaceholder": "For example Gamma Sample Company",
+    "reason": "Operation reason",
+    "organizationReasonPlaceholder": "Record why this organization is being created",
+    "createOrganizationAction": "Create organization",
+    "creatingOrganization": "Creating organization",
+    "organizationCreated": "The organization was created successfully.",
+    "organizationId": "Organization ID: {id}",
+    "initialAdminTitle": "Provision initial organization administrator",
+    "initialAdminDescription": "Provision an organization administrator for {organization} through the global audited path.",
+    "adminEmail": "Administrator email",
+    "adminEmailPlaceholder": "admin@organization.com",
+    "adminReasonPlaceholder": "Record why the organization administrator role is being granted",
+    "provisionAdminAction": "Provision administrator",
+    "provisioningAdmin": "Provisioning administrator",
+    "adminProvisioned": "The organization administrator was provisioned successfully.",
+    "adminRoleConfirmed": "The organization administrator role was recorded through the control plane.",
+    "accountSetupRequired": "This account does not have a password yet and must set one through the account recovery/setup flow.",
+    "accountAlreadyReady": "This account already has an active password credential.",
+    "auditTitle": "Platform provisioning audit",
+    "auditDescription": "Recent provisioning operations performed by this operator.",
+    "auditEmpty": "No provisioning event has been recorded for this operator yet.",
+    "auditColumns": {
+      "action": "Action",
+      "reason": "Reason",
+      "target": "Target",
+      "time": "Time",
+      "actor": "Operator",
+      "organization": "Organization",
+      "result": "Result",
+      "requestId": "Request ID",
+      "correlationId": "Correlation ID"
+    },
+    "actions": {
+      "organization": {
+        "create": "Create organization",
+        "rename": "Rename organization"
+      },
+      "organization_admin": {
+        "provision": "Provision organization administrator",
+        "revoke": "Revoke organization administrator"
+      }
+    },
+    "notApplicable": "No user target",
+    "logoutAction": "Sign out",
+    "loggingOut": "Signing out",
+    "organizationCount": "{count} organizations",
+    "organizationDirectoryTitle": "Organizations",
+    "organizationDirectoryDescription": "Review organization names, identifiers, and registered primary administrators in one place.",
+    "organizationSearch": "Search organizations",
+    "organizationSearchPlaceholder": "Search by organization name or identifier",
+    "organizationDirectoryEmpty": "No organization matches this search.",
+    "selectedOrganization": "Selected",
+    "noOrganizationAdmin": "No primary administrator registered",
+    "selectOrganizationAction": "Select organization",
+    "organizationManagementTitle": "Organization and administrator management",
+    "organizationManagementDescription": "Explicitly select the target organization, rename it, and manage primary administrators through audited platform operations.",
+    "organizationSelector": "Target organization",
+    "organizationSelectorHelp": "Verify the selected organization name and identifier before every sensitive operation.",
+    "renameOrganizationName": "Organization name",
+    "renameReasonPlaceholder": "Record why the organization name is being changed",
+    "renameOrganizationAction": "Save organization name",
+    "renamingOrganization": "Saving organization name",
+    "organizationRenamed": "The organization name was updated successfully.",
+    "adminsTitle": "Primary organization administrators",
+    "adminsDescription": "Add another administrator or revoke a previous administrator after a replacement has been provisioned.",
+    "adminListEmpty": "No active primary administrator is registered for this organization.",
+    "revokeReason": "Administrator revocation reason",
+    "revokeReasonPlaceholder": "Record why this administrator access is being revoked",
+    "revokeAdminAction": "Revoke administrator access",
+    "revokingAdmin": "Revoking access",
+    "adminRevoked": "The organization administrator access was revoked successfully.",
+    "lastAdminProtected": "Provision another administrator first so the organization is not left without an active administrator.",
+    "auditDescriptionAllOperators": "Review and filter recent sensitive control-plane operations across authorized platform operators.",
+    "auditOrganizationFilter": "Organization filter",
+    "allOrganizations": "All organizations",
+    "auditSearch": "Search audit",
+    "auditSearchPlaceholder": "Reason, operator, organization, or target identifier",
+    "exportAuditCsv": "Download report file",
+    "organizationColumns": {
+      "name": "Organization name",
+      "id": "Organization ID",
+      "admins": "Primary administrators",
+      "action": "Action"
+    },
+    "adminColumns": {
+      "email": "Administrator email",
+      "status": "Status",
+      "action": "Action"
+    },
+    "membershipStatus": {
+      "active": "Active",
+      "suspended": "Suspended"
+    },
+    "results": {
+      "succeeded": "Succeeded",
+      "failed": "Failed"
+    },
+    "consoleNavigation": {
+      "label": "Platform control plane navigation",
+      "title": "Platform control plane",
+      "description": "Choose the workspace you need.",
+      "overview": "Overview",
+      "organizations": "Organizations",
+      "administration": "Admins & access",
+      "audit": "Audit & reports"
+    },
+    "consoleOverview": {
+      "organizations": "Organizations",
+      "activeAdmins": "Active primary admins",
+      "auditRows": "Audit events",
+      "failedOperations": "Failed operations",
+      "quickActionsTitle": "Quick actions",
+      "quickActionsDescription": "Jump directly to organization management or the audit and reporting center.",
+      "openOrganizations": "Manage organizations",
+      "openAudit": "Open audit & reports"
+    },
+    "selectOrganizationPrompt": "Explicitly select a target organization before managing administrators and access.",
+    "auditSummaryLabel": "Audit report summary",
+    "auditSummary": {
+      "visibleRows": "Visible rows",
+      "succeeded": "Succeeded",
+      "failed": "Failed",
+      "organizations": "Organizations involved"
+    },
+    "auditTechnicalDetails": "Technical details"
   }
 }

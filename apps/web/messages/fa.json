@@ -18,7 +18,8 @@
     "security": "ورود و امنیت",
     "primaryLabel": "ناوبری اصلی",
     "openMenu": "باز کردن فهرست ناوبری",
-    "closeMenu": "بستن فهرست ناوبری"
+    "closeMenu": "بستن فهرست ناوبری",
+    "cases": "پرونده‌ها"
   },
   "common": {
     "currentOrganization": "سازمان جاری",
@@ -51,7 +52,13 @@
       "memberUpdateFailed": "به‌روزرسانی وضعیت عضویت ناموفق بود.",
       "memberRolesUpdateFailed": "به‌روزرسانی نقش‌های عضو ناموفق بود.",
       "teamRenameFailed": "تغییر نام تیم ناموفق بود.",
-      "invitationAcceptFailed": "پذیرش دعوت ناموفق بود."
+      "invitationAcceptFailed": "پذیرش دعوت ناموفق بود.",
+      "platformControlPlaneLoadFailed": "خواندن کنترل‌پلین سکو ناموفق بود.",
+      "platformOrganizationCreateFailed": "ایجاد سازمان از کنترل‌پلین ناموفق بود.",
+      "platformAdminProvisionFailed": "تعیین مدیر اولیه سازمان ناموفق بود.",
+      "logoutFailed": "خروج از حساب ناموفق بود.",
+      "platformOrganizationRenameFailed": "ویرایش نام سازمان ناموفق بود.",
+      "platformAdminRevokeFailed": "لغو دسترسی مدیر سازمان ناموفق بود."
     },
     "skipToContent": "رفتن به محتوای اصلی",
     "organizationLoading": "در حال دریافت سازمان",
@@ -129,7 +136,8 @@
       "role": "نقش‌ها",
       "status": "وضعیت",
       "actions": "کنترل دسترسی"
-    }
+    },
+    "organizationAdminPlatformManaged": "مدیر سازمان فقط از کنترل‌پلین سکو مدیریت می‌شود و از این بخش قابل تغییر نیست."
   },
   "teams": {
     "eyebrow": "ساختار سازمان",
@@ -190,6 +198,9 @@
         "role": "نقش مدیر تیم فروش به‌روزرسانی شد",
         "session": "نشست قدیمی کاربر لغو شد"
       }
+    },
+    "actions": {
+      "createCase": "ایجاد پرونده"
     }
   },
   "themeSwitcher": {
@@ -244,5 +255,186 @@
     "acceptedDescription": "عضویت سازمانی شما آماده است. برای ادامه سازمان را انتخاب کنید.",
     "continueAction": "انتخاب سازمان",
     "backToLogin": "رفتن به صفحه ورود"
+  },
+  "workManagement": {
+    "createOwnCase": {
+      "eyebrow": "مدیریت کار",
+      "title": "ایجاد پرونده",
+      "description": "موضوع را ثبت کنید، مسئولیت اصلی را خودتان بپذیرید و نخستین اقدام را مشخص کنید.",
+      "formTitle": "مشخصات پرونده",
+      "formDescription": "پرونده را با موضوعی روشن و نخستین اقدام قابل انجام آغاز کنید.",
+      "titleLabel": "عنوان پرونده",
+      "titlePlaceholder": "برای نمونه تمدید قرارداد مشتری",
+      "descriptionLabel": "شرح پرونده",
+      "descriptionPlaceholder": "زمینه و نتیجه مورد انتظار را بنویسید",
+      "priorityLabel": "اولویت",
+      "priorities": {
+        "low": "کم",
+        "normal": "عادی",
+        "high": "زیاد"
+      },
+      "initialActionLabel": "نخستین اقدام",
+      "initialActionPlaceholder": "برای نمونه تماس با مشتری",
+      "submit": "ایجاد پرونده",
+      "submitting": "در حال ایجاد پرونده",
+      "loadingSession": "در حال آماده‌سازی فضای کار",
+      "missingOrganization": "پیش از ایجاد پرونده یک سازمان را انتخاب کنید.",
+      "successEyebrow": "پرونده ایجاد شد",
+      "successTitle": "پرونده آماده پیگیری است",
+      "successDescription": "مسئولیت اصلی شما پذیرفته شده و نخستین اقدام به‌عنوان کار جاری ثبت شده است.",
+      "statusLabel": "وضعیت",
+      "prioritySummaryLabel": "اولویت",
+      "actionLabel": "اقدام جاری",
+      "caseIdLabel": "شناسه پرونده",
+      "createAnother": "ایجاد پرونده دیگر",
+      "statuses": {
+        "open": "باز",
+        "pending": "در انتظار"
+      },
+      "errors": {
+        "required": "فیلدهای ضروری را کامل کنید.",
+        "authorization": "اجازه ایجاد پرونده در این سازمان را ندارید.",
+        "conflict": "این درخواست با تلاش اخیر تداخل دارد. دوباره پرونده را ایجاد کنید.",
+        "session": "آماده‌سازی نشست سازمان جاری ناموفق بود.",
+        "unavailable": "ایجاد پرونده ناموفق بود. دوباره تلاش کنید."
+      }
+    }
+  },
+  "platformControlPlane": {
+    "controlPlaneLabel": "کنترل‌پلین سکو",
+    "accountLabel": "حساب اپراتور",
+    "operatorBadge": "اپراتور سکو",
+    "eyebrow": "مدیریت سراسری",
+    "title": "کنترل‌پلین اورگاوُرک",
+    "description": "سازمان‌ها و مدیران اصلی آن‌ها را از مسیر سراسری کنترل‌شده مدیریت کنید و ردپای ممیزی عملیات حساس را بررسی کنید.",
+    "loading": "در حال آماده‌سازی کنترل‌پلین",
+    "createOrganizationTitle": "ایجاد سازمان",
+    "createOrganizationDescription": "این عملیات یک سازمان جدید می‌سازد و هیچ دسترسی ضمنی به محتوای داخلی سازمان‌ها ایجاد نمی‌کند.",
+    "organizationName": "نام سازمان",
+    "organizationNamePlaceholder": "برای نمونه شرکت نمونه گاما",
+    "reason": "دلیل عملیات",
+    "organizationReasonPlaceholder": "دلیل ایجاد این سازمان را ثبت کنید",
+    "createOrganizationAction": "ایجاد سازمان",
+    "creatingOrganization": "در حال ایجاد سازمان",
+    "organizationCreated": "سازمان با موفقیت ایجاد شد.",
+    "organizationId": "شناسه سازمان: {id}",
+    "initialAdminTitle": "تعیین مدیر اولیه سازمان",
+    "initialAdminDescription": "برای {organization} یک مدیر سازمان از مسیر سراسری و ممیزی‌شده تعیین کنید.",
+    "adminEmail": "ایمیل مدیر سازمان",
+    "adminEmailPlaceholder": "admin@organization.com",
+    "adminReasonPlaceholder": "دلیل اعطای نقش مدیر سازمان را ثبت کنید",
+    "provisionAdminAction": "تعیین مدیر سازمان",
+    "provisioningAdmin": "در حال تعیین مدیر",
+    "adminProvisioned": "مدیر سازمان با موفقیت تعیین شد.",
+    "adminRoleConfirmed": "نقش مدیر سازمان از مسیر کنترل‌پلین ثبت شد.",
+    "accountSetupRequired": "این حساب هنوز گذرواژه ندارد و باید از مسیر بازیابی/راه‌اندازی حساب، گذرواژه تعیین کند.",
+    "accountAlreadyReady": "این حساب از قبل گذرواژه فعال دارد.",
+    "auditTitle": "ممیزی عملیات سکو",
+    "auditDescription": "آخرین عملیات Provisioning انجام‌شده توسط همین اپراتور.",
+    "auditEmpty": "هنوز رویداد Provisioning برای این اپراتور ثبت نشده است.",
+    "auditColumns": {
+      "action": "عملیات",
+      "reason": "دلیل",
+      "target": "هدف",
+      "time": "زمان",
+      "actor": "اپراتور",
+      "organization": "سازمان",
+      "result": "نتیجه",
+      "requestId": "شناسه درخواست",
+      "correlationId": "شناسه رهگیری"
+    },
+    "actions": {
+      "organization": {
+        "create": "ایجاد سازمان",
+        "rename": "ویرایش نام سازمان"
+      },
+      "organization_admin": {
+        "provision": "تعیین مدیر سازمان",
+        "revoke": "لغو دسترسی مدیر سازمان"
+      }
+    },
+    "notApplicable": "بدون هدف کاربری",
+    "logoutAction": "خروج",
+    "loggingOut": "در حال خروج",
+    "organizationCount": "{count} سازمان",
+    "organizationDirectoryTitle": "فهرست سازمان‌ها",
+    "organizationDirectoryDescription": "نام سازمان‌ها، شناسه آن‌ها و مدیران اصلی ثبت‌شده را یکجا ببینید.",
+    "organizationSearch": "جستجوی سازمان",
+    "organizationSearchPlaceholder": "نام یا شناسه سازمان را جستجو کنید",
+    "organizationDirectoryEmpty": "سازمانی با این جستجو پیدا نشد.",
+    "selectedOrganization": "انتخاب‌شده",
+    "noOrganizationAdmin": "مدیر اصلی ثبت نشده است",
+    "selectOrganizationAction": "انتخاب سازمان",
+    "organizationManagementTitle": "مدیریت سازمان و مدیران اصلی",
+    "organizationManagementDescription": "سازمان هدف را صریح انتخاب کنید، نام آن را ویرایش کنید و مدیران اصلی را از مسیر ممیزی‌شده مدیریت کنید.",
+    "organizationSelector": "سازمان هدف",
+    "organizationSelectorHelp": "پیش از هر عملیات حساس، نام و شناسه سازمان انتخاب‌شده را بررسی کنید.",
+    "renameOrganizationName": "نام سازمان",
+    "renameReasonPlaceholder": "دلیل ویرایش نام سازمان را ثبت کنید",
+    "renameOrganizationAction": "ذخیره نام سازمان",
+    "renamingOrganization": "در حال ذخیره نام",
+    "organizationRenamed": "نام سازمان با موفقیت به‌روزرسانی شد.",
+    "adminsTitle": "مدیران اصلی سازمان",
+    "adminsDescription": "می‌توانید مدیر دیگری اضافه کنید یا پس از تعیین مدیر جایگزین، دسترسی مدیر قبلی را لغو کنید.",
+    "adminListEmpty": "برای این سازمان مدیر اصلی فعالی ثبت نشده است.",
+    "revokeReason": "دلیل لغو دسترسی مدیر",
+    "revokeReasonPlaceholder": "دلیل لغو دسترسی این مدیر را ثبت کنید",
+    "revokeAdminAction": "لغو دسترسی مدیر",
+    "revokingAdmin": "در حال لغو دسترسی",
+    "adminRevoked": "دسترسی مدیر سازمان با موفقیت لغو شد.",
+    "lastAdminProtected": "برای جلوگیری از بدون‌مدیر شدن سازمان، ابتدا یک مدیر دیگر تعیین کنید.",
+    "auditDescriptionAllOperators": "آخرین عملیات حساس کنترل‌پلین را برای همه اپراتورهای مجاز بررسی و فیلتر کنید.",
+    "auditOrganizationFilter": "فیلتر سازمان",
+    "allOrganizations": "همه سازمان‌ها",
+    "auditSearch": "جستجوی ممیزی",
+    "auditSearchPlaceholder": "دلیل، اپراتور، سازمان یا شناسه هدف",
+    "exportAuditCsv": "دریافت فایل گزارش",
+    "organizationColumns": {
+      "name": "نام سازمان",
+      "id": "شناسه سازمان",
+      "admins": "مدیران اصلی",
+      "action": "عملیات"
+    },
+    "adminColumns": {
+      "email": "ایمیل مدیر",
+      "status": "وضعیت",
+      "action": "عملیات"
+    },
+    "membershipStatus": {
+      "active": "فعال",
+      "suspended": "تعلیق‌شده"
+    },
+    "results": {
+      "succeeded": "موفق",
+      "failed": "ناموفق"
+    },
+    "consoleNavigation": {
+      "label": "ناوبری کنترل‌پلین سکو",
+      "title": "کنترل‌پلین سکو",
+      "description": "بخش موردنظر را انتخاب کنید.",
+      "overview": "نمای کلی",
+      "organizations": "سازمان‌ها",
+      "administration": "مدیران و دسترسی",
+      "audit": "ممیزی و گزارش"
+    },
+    "consoleOverview": {
+      "organizations": "سازمان‌ها",
+      "activeAdmins": "مدیران اصلی فعال",
+      "auditRows": "رویدادهای ممیزی",
+      "failedOperations": "عملیات ناموفق",
+      "quickActionsTitle": "دسترسی سریع",
+      "quickActionsDescription": "برای عملیات روزمره مستقیماً وارد مدیریت سازمان‌ها یا مرکز ممیزی شوید.",
+      "openOrganizations": "مدیریت سازمان‌ها",
+      "openAudit": "باز کردن ممیزی و گزارش"
+    },
+    "selectOrganizationPrompt": "برای مدیریت مدیران و دسترسی‌ها ابتدا سازمان هدف را صریح انتخاب کنید.",
+    "auditSummaryLabel": "خلاصه گزارش ممیزی",
+    "auditSummary": {
+      "visibleRows": "ردیف‌های قابل مشاهده",
+      "succeeded": "موفق",
+      "failed": "ناموفق",
+      "organizations": "سازمان‌های درگیر"
+    },
+    "auditTechnicalDetails": "جزئیات فنی"
   }
 }

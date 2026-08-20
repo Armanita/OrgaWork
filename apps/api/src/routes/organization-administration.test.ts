@@ -61,6 +61,32 @@ describe('organization administration routes', () => {
     await app.close();
   });
 
+  it('rejects organization_admin from tenant invitation and role replacement', async () => {
+    const app = buildApplication({ organizationAdministration: options(true) });
+    const headers = {
+      cookie: 'orgawork-session=session-secret',
+      'x-csrf-token': 'csrf-token',
+    };
+    const invitation = await app.inject({
+      method: 'POST',
+      url: '/v1/organizations/33333333-3333-4333-8333-333333333333/invitations',
+      headers,
+      payload: { email: 'admin@example.com', roleKey: 'organization_admin' },
+    });
+    expect(invitation.statusCode).toBe(400);
+
+    const replacement = await app.inject({
+      method: 'PATCH',
+      url:
+        '/v1/organizations/33333333-3333-4333-8333-333333333333/' +
+        'memberships/44444444-4444-4444-8444-444444444444/roles',
+      headers,
+      payload: { roleKeys: ['organization_admin'] },
+    });
+    expect(replacement.statusCode).toBe(400);
+    await app.close();
+  });
+
   it('enforces authorization before listing memberships', async () => {
     const app = buildApplication({ organizationAdministration: options(false) });
     const response = await app.inject({

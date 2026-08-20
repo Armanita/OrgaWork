@@ -1,4 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@workspace/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Plus } from '@workspace/ui';
+import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 
 import { DashboardShell } from '@/components/dashboard-shell';
@@ -7,7 +8,6 @@ export default async function HomePage(): Promise<React.ReactElement> {
   const dashboard = await getTranslations('dashboard');
 
   const cards = ['activeMembers', 'pendingInvitations', 'activeTeams', 'activeSessions'] as const;
-
   const activityItems = ['invitation', 'role', 'session'] as const;
 
   return (
@@ -16,8 +16,11 @@ export default async function HomePage(): Promise<React.ReactElement> {
         <p className="eyebrow">{dashboard('eyebrow')}</p>
         <h1>{dashboard('title')}</h1>
         <p className="lead">{dashboard('description')}</p>
+        <Link className="dashboard-primary-action" href="/cases/new">
+          <Plus aria-hidden="true" />
+          {dashboard('actions.createCase')}
+        </Link>
       </section>
-
       <div className="metric-grid">
         {cards.map((card) => (
           <Card className="metric-card" key={card}>
@@ -26,7 +29,6 @@ export default async function HomePage(): Promise<React.ReactElement> {
           </Card>
         ))}
       </div>
-
       <Card className="activity-panel">
         <CardHeader className="activity-panel__header">
           <CardTitle>{dashboard('recentActivity.title')}</CardTitle>

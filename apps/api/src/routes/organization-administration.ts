@@ -31,7 +31,7 @@ interface AdministrationService {
   createInvitation(input: {
     organizationId: string;
     email: string;
-    roleKey?: string;
+    roleKey?: 'member' | 'manager';
   }): Promise<unknown>;
   acceptInvitation(token: string, userId: string): Promise<unknown>;
   revokeInvitation(organizationId: string, invitationId: string): Promise<boolean>;
@@ -43,7 +43,7 @@ interface AdministrationService {
   replaceMembershipRoles(
     organizationId: string,
     membershipId: string,
-    roleKeys: readonly ('member' | 'manager' | 'organization_admin')[],
+    roleKeys: readonly ('member' | 'manager')[],
   ): Promise<boolean>;
   createTeam(organizationId: string, name: string): Promise<unknown>;
   renameTeam(teamId: string, organizationId: string, name: string): Promise<boolean>;
@@ -176,10 +176,18 @@ export function createOrganizationAdministrationRoutes(
         await permit(options, s, req.params.organizationId, 'organization.manage_members');
         if (typeof req.body?.email !== 'string')
           return fail(reply, 'VALIDATION_ERROR', 'ایمیل معتبر نیست.', now());
+        if (
+          req.body.roleKey !== undefined &&
+          (typeof req.body.roleKey !== 'string' ||
+            !['member', 'manager'].includes(req.body.roleKey))
+        )
+          return fail(reply, 'VALIDATION_ERROR', 'نقش دعوت معتبر نیست.', now());
         const result = await options.administration.createInvitation({
           organizationId: req.params.organizationId,
           email: req.body.email,
-          ...(typeof req.body.roleKey === 'string' ? { roleKey: req.body.roleKey } : {}),
+          ...(typeof req.body.roleKey === 'string'
+            ? { roleKey: req.body.roleKey as 'member' | 'manager' }
+            : {}),
         });
         return reply.send(createApiSuccess(result, meta(reply, now())));
       } catch (e) {
@@ -269,15 +277,13 @@ export function createOrganizationAdministrationRoutes(
         if (
           !Array.isArray(req.body?.roleKeys) ||
           req.body.roleKeys.length === 0 ||
-          req.body.roleKeys.some(
-            (role) => !['member', 'manager', 'organization_admin'].includes(String(role)),
-          )
+          req.body.roleKeys.some((role) => !['member', 'manager'].includes(String(role)))
         )
           return fail(reply, 'VALIDATION_ERROR', 'نقش‌های عضویت معتبر نیست.', now());
         const updated = await options.administration.replaceMembershipRoles(
           req.params.organizationId,
           req.params.membershipId,
-          req.body.roleKeys as ('member' | 'manager' | 'organization_admin')[],
+          req.body.roleKeys as ('member' | 'manager')[],
         );
         return reply.send(createApiSuccess({ updated }, meta(reply, now())));
       } catch (e) {

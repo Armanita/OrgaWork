@@ -1,30 +1,34 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  contractVersion,
+  caseCurrentWorkKinds,
   continuationKinds,
-  currentWorkKinds,
+  contractOperations,
+  contractVersion,
   createActionItemId,
   createApiError,
   createApiSuccess,
   createCaseAssignmentId,
   createCaseId,
+  createCaseResponsibilityId,
   createCorrelationId,
   createDecisionRequestId,
   createDecisionResponseId,
   createFollowUpStateId,
   createIdempotencyKey,
+  createMembershipId,
   createOrganizationId,
   createPageInfo,
   createRequestId,
+  createResponsibilityTarget,
   createSessionOrganizationContext,
   createUtcTimestamp,
+  currentWorkKinds,
+  identityOrganizationOperations,
   normalizeContractField,
   normalizeFilterSpec,
   normalizePageRequest,
   normalizeSortSpec,
-  contractOperations,
-  identityOrganizationOperations,
   parseHealthResponse,
   parseReadinessResponse,
 } from './index.js';
@@ -32,6 +36,8 @@ import {
 const identifiers = {
   organization: '11111111-1111-4111-8111-111111111111',
   user: '22222222-2222-4222-8222-222222222222',
+  membership: '23232323-2323-4232-8232-232323232323',
+  team: '24242424-2424-4242-8242-242424242424',
   session: '33333333-3333-4333-8333-333333333333',
   request: '44444444-4444-4444-8444-444444444444',
   correlation: '55555555-5555-4555-8555-555555555555',
@@ -60,6 +66,7 @@ describe('shared contract foundations', () => {
     expect(createOrganizationId(identifiers.organization.toUpperCase())).toBe(
       identifiers.organization,
     );
+    expect(createMembershipId(identifiers.membership)).toBe(identifiers.membership);
   });
 
   it('rejects invalid identifiers', () => {
@@ -97,7 +104,6 @@ describe('shared contract foundations', () => {
 
   it('normalizes pagination and creates page metadata', () => {
     const request = normalizePageRequest({ page: 2, pageSize: 10 });
-
     expect(createPageInfo(request, 25)).toEqual({
       page: 2,
       pageSize: 10,
@@ -147,9 +153,10 @@ describe('shared contract foundations', () => {
     });
   });
 
-  it('creates stable identifiers for the P34 contract', () => {
+  it('creates stable identifiers for the P3/P4 contract', () => {
     expect(createCaseId(identifiers.case)).toBe(identifiers.case);
     expect(createCaseAssignmentId(identifiers.assignment)).toBe(identifiers.assignment);
+    expect(createCaseResponsibilityId(identifiers.assignment)).toBe(identifiers.assignment);
     expect(createActionItemId(identifiers.action)).toBe(identifiers.action);
     expect(createFollowUpStateId(identifiers.followUpState)).toBe(identifiers.followUpState);
     expect(createDecisionRequestId(identifiers.decisionRequest)).toBe(identifiers.decisionRequest);
@@ -158,12 +165,28 @@ describe('shared contract foundations', () => {
     );
   });
 
+  it('creates typed responsibility targets for memberships and teams', () => {
+    expect(
+      createResponsibilityTarget({
+        kind: 'membership',
+        membershipId: identifiers.membership,
+      }),
+    ).toEqual({ kind: 'membership', membershipId: identifiers.membership });
+
+    expect(
+      createResponsibilityTarget({
+        kind: 'team',
+        teamId: identifiers.team,
+      }),
+    ).toEqual({ kind: 'team', teamId: identifiers.team });
+  });
+
   it('validates idempotency keys without exposing secrets', () => {
     expect(createIdempotencyKey('case:create:request-0001')).toBe('case:create:request-0001');
     expect(() => createIdempotencyKey('short')).toThrow(TypeError);
   });
 
-  it('keeps current work and terminal continuations explicitly separated', () => {
+  it('keeps active P3 case current work isolated from blocked P4 work kinds', () => {
     expect(currentWorkKinds).toEqual([
       'action',
       'internal_wait',
@@ -172,6 +195,7 @@ describe('shared contract foundations', () => {
       'paused',
       'decision_request',
     ]);
+    expect(caseCurrentWorkKinds).toEqual(['action', 'responsibility_acceptance']);
     expect(continuationKinds).toEqual([...currentWorkKinds, 'resolved', 'cancelled']);
   });
 });
@@ -190,6 +214,13 @@ describe('operational HTTP contracts', () => {
         path: '/ready',
       },
     });
+  });
+
+  it('keeps identity and organization operations registered', () => {
+    expect(identityOrganizationOperations.login.path).toBe('/v1/auth/login');
+    expect(identityOrganizationOperations.createTeam.path).toBe(
+      '/v1/organizations/{organizationId}/teams',
+    );
   });
 
   it('parses a valid health response', () => {
@@ -228,12 +259,5 @@ describe('operational HTTP contracts', () => {
         timestamp: 'secret=value',
       }),
     ).toThrow(TypeError);
-  });
-
-  it('exposes stable identity and organization operation paths', () => {
-    expect(identityOrganizationOperations.login.path).toBe('/v1/auth/login');
-    expect(identityOrganizationOperations.currentOrganization.path).toBe(
-      '/v1/auth/current-organization',
-    );
   });
 });

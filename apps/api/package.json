@@ -25,7 +25,8 @@
     "@workspace/authentication": "workspace:*",
     "@workspace/organization-context": "workspace:*",
     "@workspace/authorization": "workspace:*",
-    "@workspace/organization-administration": "workspace:*"
+    "@workspace/organization-administration": "workspace:*",
+    "@workspace/work-management": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "24.13.3",

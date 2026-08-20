@@ -1,0 +1,8 @@
+{
+  "extends": "../../../packages/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["./wm01-create-own-case.pw.ts"]
+}

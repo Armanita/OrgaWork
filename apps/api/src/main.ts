@@ -1,3 +1,5 @@
+import { createPostgreSqlWorkManagementService } from '@workspace/work-management';
+
 import { buildApplication } from './application.js';
 import {
   closeIdentityOrganizationRuntime,
@@ -7,10 +9,13 @@ import { resolveRuntimeConfiguration } from './runtime-configuration.js';
 
 let application: ReturnType<typeof buildApplication> | undefined;
 let database: Awaited<ReturnType<typeof createIdentityOrganizationRuntime>>['database'] | undefined;
+
 async function start(): Promise<void> {
   try {
     const runtime = await createIdentityOrganizationRuntime();
     database = runtime.database;
+    const workManagement = createPostgreSqlWorkManagementService(runtime.database);
+
     application = buildApplication({
       logger: true,
       identityOrganization: {
@@ -24,13 +29,25 @@ async function start(): Promise<void> {
         administration: runtime.administration,
         production: runtime.production,
       },
+      platformControlPlane: {
+        authentication: runtime.authentication,
+        platformControlPlane: runtime.platformControlPlane,
+        production: runtime.production,
+      },
+      workManagement: {
+        authentication: runtime.authentication,
+        workManagement,
+        production: runtime.production,
+      },
     });
+
     await application.listen(resolveRuntimeConfiguration());
   } catch (error) {
     console.error(error);
     process.exitCode = 1;
   }
 }
+
 function shutdown(): void {
   void (async () => {
     await application?.close();
@@ -40,6 +57,7 @@ function shutdown(): void {
     process.exitCode = 1;
   });
 }
+
 process.once('SIGINT', shutdown);
 process.once('SIGTERM', shutdown);
 void start();

@@ -25,6 +25,7 @@ import {
   MemberAccessEditor,
   type MembershipStatus,
   type OrganizationRoleKey,
+  type TenantAssignableOrganizationRoleKey,
 } from '@/components/member-access-editor';
 import { DashboardShell } from '@/components/dashboard-shell';
 import { ManagementPageHeader } from '@/components/management-page-header';
@@ -59,8 +60,8 @@ function readText(form: FormData, name: string): string {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function isRole(value: string): value is OrganizationRoleKey {
-  return value === 'member' || value === 'manager' || value === 'organization_admin';
+function isRole(value: string): value is TenantAssignableOrganizationRoleKey {
+  return value === 'member' || value === 'manager';
 }
 
 export default function MembersPage(): React.ReactElement {
@@ -148,7 +149,9 @@ export default function MembersPage(): React.ReactElement {
     const form = new FormData(formElement);
     const email = readText(form, 'email');
     const roleCandidate = readText(form, 'roleKey');
-    const roleKey: OrganizationRoleKey = isRole(roleCandidate) ? roleCandidate : 'member';
+    const roleKey: TenantAssignableOrganizationRoleKey = isRole(roleCandidate)
+      ? roleCandidate
+      : 'member';
 
     if (email === '') {
       return;
@@ -211,7 +214,7 @@ export default function MembersPage(): React.ReactElement {
 
   async function updateMemberRoles(
     memberId: string,
-    roleKeys: readonly OrganizationRoleKey[],
+    roleKeys: readonly TenantAssignableOrganizationRoleKey[],
   ): Promise<boolean> {
     if (session?.currentOrganizationId === null || session === undefined || roleKeys.length === 0) {
       return false;
@@ -328,7 +331,6 @@ export default function MembersPage(): React.ReactElement {
                 <select id="member-role" name="roleKey" defaultValue="member" disabled={inviting}>
                   <option value="member">{common('roles.member')}</option>
                   <option value="manager">{common('roles.manager')}</option>
-                  <option value="organization_admin">{common('roles.organization_admin')}</option>
                 </select>
               </div>
               <Button type="submit" disabled={inviting}>

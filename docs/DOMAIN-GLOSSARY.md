@@ -2605,3 +2605,31 @@ Migration نسخه‌داری است که متن آن با SHA-256 در `orgawor
 ## 250. مرز P2.3
 
 این مرز شامل Schema هویت و سازمان، Constraint، Trigger و RLS است و شامل PasswordCredential، Session، Invitation، Endpoint و UI نیست.
+
+## Provisioning کنترل‌شده سازمان — DEC-SEC-2026-001
+
+### Platform-controlled provisioning
+
+فرایند سراسری، صریح، محدود و ممیزی‌شده‌ای برای ایجاد Organization و ایجاد یا اعطای نقش `organization_admin`.
+
+این فرایند جزو عملیات عادی tenant نیست و از session یا RBAC عادی Organization Admin مشتق نمی‌شود.
+
+### Organization Admin
+
+`organization_admin` نقش مدیریتی tenant-scoped است.
+
+- Organization Admin می‌تواند در محدوده Permissionهای مصوب، Member و Manager را مدیریت کند.
+- Organization Admin حق ایجاد Organization جدید برای خود ندارد.
+- Organization Admin حق self-elevation ندارد.
+- Organization Admin حق grant یا replacement نقش `organization_admin` برای خود یا دیگری ندارد.
+- اولین یا هر اعطای بعدی `organization_admin` فقط از مسیر platform-controlled provisioning مجاز است.
+
+### Platform Operator
+
+`platform_operator` نقش فنی سکو است.
+
+وجود این نقش به‌تنهایی نباید Permission ضمنی روی داده tenant ایجاد کند. عملیات provisioning یک مسیر سراسری صریح و ممیزی‌شده است و نباید به معنی دسترسی عمومی Platform Operator به محتوای Organization باشد.
+
+### زنجیره اعتماد
+
+`Platform-controlled provisioning -> Organization -> organization_admin -> manager/member`

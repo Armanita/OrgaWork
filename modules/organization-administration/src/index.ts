@@ -12,6 +12,7 @@ import { generateSecurityToken, hashSecurityToken } from '@workspace/security';
 export const invitationPolicy = { lifetimeMilliseconds: 72 * 60 * 60 * 1000 } as const;
 export type MembershipStatus = 'invited' | 'active' | 'suspended' | 'revoked';
 export type OrganizationRoleKey = 'member' | 'manager' | 'organization_admin';
+export type TenantAssignableOrganizationRoleKey = 'member' | 'manager';
 
 export class OrganizationAdministrationError extends Error {
   override readonly name = 'OrganizationAdministrationError';
@@ -66,7 +67,7 @@ export interface OrganizationAdministrationRepository {
     readonly organizationId: string;
     readonly email: string;
     readonly tokenHash: string;
-    readonly roleKey: OrganizationRoleKey;
+    readonly roleKey: TenantAssignableOrganizationRoleKey;
     readonly expiresAt: string;
     readonly now: string;
   }): Promise<{ readonly id: string; readonly reused: boolean }>;
@@ -89,7 +90,7 @@ export interface OrganizationAdministrationRepository {
   replaceMembershipRoles(input: {
     readonly organizationId: string;
     readonly membershipId: string;
-    readonly roleKeys: readonly OrganizationRoleKey[];
+    readonly roleKeys: readonly TenantAssignableOrganizationRoleKey[];
     readonly now: string;
   }): Promise<boolean>;
   createTeam(input: {
@@ -386,7 +387,14 @@ export function createPostgreSqlOrganizationAdministrationRepository(
         const result = await transaction.query(
           `UPDATE public.orgawork_memberships
               SET status = $3, updated_at = $4, version = version + 1
-            WHERE organization_id = $1 AND id = $2`,
+            WHERE organization_id = $1
+              AND id = $2
+              AND NOT EXISTS (
+                SELECT 1
+                  FROM public.orgawork_membership_roles AS protected_role
+                 WHERE protected_role.membership_id = public.orgawork_memberships.id
+                   AND protected_role.role_key = 'organization_admin'
+              )`,
           [input.organizationId, input.membershipId, input.status, input.now],
         );
         if (input.status === 'revoked' || input.status === 'suspended') {
@@ -404,8 +412,14 @@ export function createPostgreSqlOrganizationAdministrationRepository(
           `SELECT id
              FROM public.orgawork_memberships
             WHERE id = $1
-              AND organization_id = $2
-              AND status = 'active'`,
+               AND organization_id = $2
+               AND status = 'active'
+               AND NOT EXISTS (
+                 SELECT 1
+                   FROM public.orgawork_membership_roles AS protected_role
+                  WHERE protected_role.membership_id = public.orgawork_memberships.id
+                    AND protected_role.role_key = 'organization_admin'
+               )`,
           [input.membershipId, input.organizationId],
         );
         if ((membership.rowCount ?? 0) !== 1) {
@@ -499,7 +513,7 @@ export function createOrganizationAdministrationService(
     createInvitation: async (input: {
       organizationId: string;
       email: string;
-      roleKey?: OrganizationRoleKey;
+      roleKey?: TenantAssignableOrganizationRoleKey;
     }) => {
       const token = generateSecurityToken();
       const current = now();
@@ -546,7 +560,7 @@ export function createOrganizationAdministrationService(
     replaceMembershipRoles: (
       organizationId: string,
       membershipId: string,
-      roleKeys: readonly OrganizationRoleKey[],
+      roleKeys: readonly TenantAssignableOrganizationRoleKey[],
     ) =>
       repository.replaceMembershipRoles({
         organizationId,
@@ -589,3 +603,5 @@ export function createOrganizationAdministrationService(
       repository.removeTeamMember({ teamId, organizationId, membershipId }),
   };
 }
+
+export * from './platform-control-plane.js';
